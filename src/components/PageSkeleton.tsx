@@ -12,37 +12,10 @@ import Button from "./shared/Button";
 import Search from "./Search";
 import Create from "./Create";
 import CreateEntry from "./CreateEntry";
+import { PageArchitecture } from "../types";
 
 interface PageSkeletonProps {
-  page: {
-    title: string;
-    collection?:
-      | "clients"
-      | "entries"
-      | "deliveries"
-      | "products"
-      | "jobs"
-      | "prestations"
-      | "users"
-      | "orders";
-    table_titles: {
-      name: string;
-      field: string;
-    }[];
-    table_data: (data: any) => any;
-    search_layout?: {
-      group_fields: {
-        name: string;
-        field: string;
-      }[];
-    }[];
-    create_layout?: {
-      group_fields: {
-        name: string;
-        field: string;
-      }[];
-    }[];
-  };
+  page: PageArchitecture;
   data?: any[][];
   current_page: number;
   total_items: number;

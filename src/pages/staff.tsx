@@ -4,6 +4,7 @@ import { trpc } from "../utils/trpc";
 
 import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
+import { PageArchitecture } from "../types";
 
 const Staff = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const Staff = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.staff}
+      page={PAGE_ARCHITECTURE.staff as PageArchitecture}
       data={data}
       current_page={Number(p) || 0}
       total_items={totalItems}

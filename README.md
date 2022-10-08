@@ -2,7 +2,6 @@
 
 ### Todo
 
-- trpc: config current id
 - notifications: Toast and useNotifications
 - staff page config!
 - fix user password check
@@ -12,9 +11,9 @@
 
 The machine that will run this app should have installed:
 
-- node.js [https://nodejs.org/en/]
-- git [https://git-scm.com/downloads]
-- pocketbase [https://pocketbase.io/docs/]
+- Node.js [https://nodejs.org/en/]
+- Git [https://git-scm.com/downloads]
+- MySQL [https://www.mysql.com/downloads/] or Postgres [https://www.postgresql.org/download/]
 
 ### Quickstart
 
@@ -25,7 +24,7 @@ The machine that will run this app should have installed:
   - `yarn`;
   - `yarn build`;
 - Then start the production server:
-  - `yarn start:local`;
+  - `yarn start` for localhost, or `yarn start:local` for the local network;
 - App uses MySQL by default, to change the datasource, go to `prisma/schema.prisma` and change the provider along with the URI in the .env file;
 
 ### Issues

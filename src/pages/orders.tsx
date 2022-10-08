@@ -7,6 +7,7 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsOrder from "../components/details/DetailsOrder";
 import { selectSelectedAll, select_orders } from "../redux/selectedAllSlice";
+import { PageArchitecture } from "../types";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const Orders = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.orders}
+      page={PAGE_ARCHITECTURE.orders as PageArchitecture}
       data={selected_orders}
       current_page={Number(p) || 0}
       total_items={totalItems}

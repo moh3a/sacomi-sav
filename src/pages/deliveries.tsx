@@ -10,6 +10,7 @@ import {
   selectSelectedAll,
   select_deliveries,
 } from "../redux/selectedAllSlice";
+import { PageArchitecture } from "../types";
 
 const Deliveries = () => {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const Deliveries = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.deliveries}
+      page={PAGE_ARCHITECTURE.deliveries as PageArchitecture}
       data={selected_deliveries}
       current_page={Number(p) || 0}
       total_items={totalItems}

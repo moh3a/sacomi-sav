@@ -7,6 +7,7 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsClient from "../components/details/DetailsClient";
 import { selectSelectedAll, select_clients } from "../redux/selectedAllSlice";
+import { PageArchitecture } from "../types";
 
 const Clients = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const Clients = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.clients}
+      page={PAGE_ARCHITECTURE.clients as PageArchitecture}
       data={selected_clients}
       current_page={Number(p) || 0}
       total_items={totalItems}

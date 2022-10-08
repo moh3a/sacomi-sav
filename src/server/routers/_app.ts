@@ -7,12 +7,14 @@ import { productRouter } from "./products";
 import { prestationRouter } from "./services";
 import { jobRouter } from "./jobs";
 import { userRouter } from "./users";
+import { configRouter } from "./config";
 
 export const appRouter = t.router({
   healthcheck: t.procedure.query(() => {
     return "yay";
   }),
 
+  config: configRouter,
   clients: clientRouter,
   deliveries: deliveryRouter,
   entries: entryRouter,

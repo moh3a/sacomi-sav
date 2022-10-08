@@ -7,6 +7,7 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsEntry from "../components/details/DetailsEntry";
 import { selectSelectedAll, select_entries } from "../redux/selectedAllSlice";
+import { PageArchitecture } from "../types";
 
 const Entries = () => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const Entries = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.entries}
+      page={PAGE_ARCHITECTURE.entries as PageArchitecture}
       data={selected_entries}
       current_page={Number(p) || 0}
       total_items={totalItems}

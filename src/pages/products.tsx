@@ -7,6 +7,7 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsProduct from "../components/details/DetailsProduct";
 import { selectSelectedAll, select_products } from "../redux/selectedAllSlice";
+import { PageArchitecture } from "../types";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const Products = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.products}
+      page={PAGE_ARCHITECTURE.products as PageArchitecture}
       data={selected_products}
       current_page={Number(p) || 0}
       total_items={totalItems}

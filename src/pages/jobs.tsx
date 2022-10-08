@@ -7,6 +7,7 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsJob from "../components/details/DetailsJob";
 import { selectSelectedAll, select_jobs } from "../redux/selectedAllSlice";
+import { PageArchitecture } from "../types";
 
 const Jobs = () => {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const Jobs = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.jobs}
+      page={PAGE_ARCHITECTURE.jobs as PageArchitecture}
       data={selected_jobs}
       current_page={Number(p) || 0}
       total_items={totalItems}
