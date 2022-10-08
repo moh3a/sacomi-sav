@@ -1,0 +1,197 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  // provider             = "postgresql" // ? postgres
+  provider             = "mysql" // ! mysql
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  email    String? @unique
+  fullName String?
+  password String
+  picture  String
+  role     Role    @default(TECHNICIAN)
+
+  @@index([username])
+}
+
+enum Role {
+  TECHNICIAN
+  RECEPTION
+  ADMIN
+}
+
+model Product {
+  id            Int     @id @default(autoincrement())
+  product_model String  @unique
+  product_brand String?
+  product_type  String?
+  Jobs          Job[]
+
+  @@index([product_model])
+}
+
+model Client {
+  id           Int          @id @default(autoincrement())
+  name         String       @unique
+  // address      String?      @db.Text // ? postgres
+  address      String?      @db.MediumText // ! mysql
+  // observations String?      @db.Text // ? postgres
+  observations String?      @db.MediumText // ! mysql
+  // contact      String?      @db.Text // ? postgres
+  contact      String?      @db.MediumText // ! mysql
+  // phone_number String?      @db.Text // ? postgres
+  phone_number String?      @db.MediumText // ! mysql
+  status       String?
+  type         String?
+  wilaya       String?
+  Entries      Entry[]
+  Jobs         Job[]
+  Deliveries   Delivery[]
+  Prestations  Prestation[]
+
+  @@index([name])
+}
+
+model Entry {
+  id           Int       @id @default(autoincrement())
+  entry_id     String    @unique
+  // observations String?   @db.Text // ? postgres 
+  observations String?   @db.MediumText // ! mysql
+  entry_date   String?
+  entry_time   String?
+  warranty     String?
+  global       String?
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @updatedAt
+  clientId     Int
+  client       Client    @relation(fields: [clientId], references: [id])
+  Jobs         Job[]
+
+  @@index([entry_id, entry_date])
+}
+
+model Job {
+  id                    Int     @id @default(autoincrement())
+  job_id                Int     @unique
+  entryId               Int
+  entry                 Entry   @relation(fields: [entryId], references: [id])
+  clientId              Int
+  client                Client  @relation(fields: [clientId], references: [id])
+  productId             Int
+  product               Product @relation(fields: [productId], references: [id])
+  prestation_id         String?
+  awaiting_intervention String?
+  warranty              String?
+  repaired_date         String?
+  exit_date             String?
+  // designation           String? @db.Text // ? postgres 
+  designation           String? @db.MediumText // ! mysql
+  // diagnostic            String? @db.Text // ? postgres 
+  diagnostic            String? @db.MediumText // ! mysql
+  // status                String? @db.Text // ? postgres 
+  status                String? @db.MediumText // ! mysql
+  // serial_number         String? @db.Text // ? postgres 
+  serial_number         String? @db.MediumText // ! mysql
+  // new_serial_number     String? @db.Text // ? postgres 
+  new_serial_number     String? @db.MediumText // ! mysql
+  localisation          String?
+  technician            String?
+  entry_subid           String?
+  product_same_model    String?
+  used_parts            String?
+  spare_parts           String?
+  rma_asus              String?
+
+  @@index([job_id])
+}
+
+model Delivery {
+  id              Int       @id @default(autoincrement())
+  delivery_id     String    @unique
+  delivery_date   String?
+  clientId        Int
+  client          Client    @relation(fields: [clientId], references: [id])
+  entry_id        String?
+  sage_exit_id    String?
+  delivery_date_1 String?
+  observations    String?
+  createdAt       DateTime? @default(now())
+  updatedAt       DateTime? @updatedAt
+
+  @@index([delivery_id])
+}
+
+model Order {
+  id            Int       @id @default(autoincrement())
+  order_id      String    @unique
+  // order_content String?   @db.Text // ? postgres 
+  order_content String?   @db.MediumText // ! mysql
+  // observations  String?   @db.Text // ? postgres 
+  observations  String?   @db.MediumText // ! mysql
+  order_date    String?
+  receipt_date  String?
+  sage_entry_id String?
+  quantity      String?
+  payment       String?
+  createdAt     DateTime? @default(now())
+  updatedAt     DateTime? @updatedAt
+
+  @@index([order_id])
+}
+
+model Prestation {
+  id                Int                 @id @default(autoincrement())
+  prestation_id     String              @unique
+  prestation_date   String?
+  clientId          Int
+  client            Client              @relation(fields: [clientId], references: [id])
+  // observations      String?             @db.Text // ? postgres 
+  observations      String?             @db.MediumText // ! mysql
+  is_paid           String?
+  to_bill           String?
+  recovery_date     String?
+  payment_date      String?
+  total_amount      String?
+  invoice           String?
+  createdAt         DateTime?           @default(now())
+  updatedAt         DateTime?           @updatedAt
+  PrestationDetails PrestationDetails[]
+
+  @@index([prestation_id])
+}
+
+model PrestationDetails {
+  id              Int        @id @default(autoincrement())
+  prestationId    Int
+  prestation      Prestation @relation(fields: [prestationId], references: [id])
+  is_paid         String?
+  to_bill         String?
+  payment_date    String?
+  payment_method  String?
+  invoice         String?
+  prestation_date String?
+  designation     String?
+  price_ht        String?
+  price_ttc       String?
+  quantity        String?
+  subtotal        String?
+  total_amount    String?
+  observations    String?
+}
+
+model Config {
+  id                     Int    @id @default(autoincrement())
+  current_entries_id     String
+  current_deliveries_id  String
+  current_jobs_id        Int
+  current_orders_id      String
+  current_prestations_id String
+}

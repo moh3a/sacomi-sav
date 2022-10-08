@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-display: swap;
+}
+
+.darkmode-input:checked ~ .dot {
+  transform: translateX(100%);
+  background-color: black;
+}
+
+body::-webkit-scrollbar {
+  width: 12px; /* width of the entire scrollbar */
+  height: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: white; /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgb(229 231 235); /* color of the scroll thumb */
+  border-radius: 25px; /* roundness of the scroll thumb */
+  border: 2px solid white; /* creates padding around scroll thumb */
+}
+
+div::-webkit-scrollbar {
+  width: 12px; /* width of the entire scrollbar */
+  height: 12px;
+}
+
+div::-webkit-scrollbar-track {
+  background: white; /* color of the tracking area */
+}
+
+div::-webkit-scrollbar-thumb {
+  background-color: rgb(117, 123, 136); /* color of the scroll thumb */
+  border-radius: 25px; /* roundness of the scroll thumb */
+  border: 2px solid white; /* creates padding around scroll thumb */
+}
