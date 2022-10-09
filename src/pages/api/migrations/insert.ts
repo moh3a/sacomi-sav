@@ -45,7 +45,6 @@ handler.post(async (req, res) => {
       );
 
       const insertDb = async () => {
-        console.log("Should not insert data yet.");
         if (migration.collection === "clients") {
           await prisma.client.createMany({ data, skipDuplicates: true });
         } else if (migration.collection === "products") {
@@ -84,7 +83,6 @@ handler.post(async (req, res) => {
               if (client) {
                 delete item.name;
                 if (migration.collection === "prestations") {
-                  
                   delete item.client_type;
                 }
                 newdata.push({ ...item, clientId: client?.id });

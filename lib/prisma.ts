@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { genSalt, hash } from "bcrypt";
+import {  genSaltSync,  hashSync } from "bcrypt";
 
 // add prisma to the NodeJS global type
 interface CustomNodeJsGlobal extends Global {
@@ -23,8 +23,8 @@ prisma.$use(async (params, next) => {
     (params.action === "create" || params.action === "createMany") &&
     params.model === "User"
   ) {
-    const salt = await genSalt(10);
-    params.args.data.password = await hash(params.args.data.password, salt);
+    const salt = genSaltSync();
+    params.args.data.password = hashSync(params.args.data.password, salt);
   }
   return next(params);
 });

@@ -44,7 +44,7 @@ export const deliveryRouter = t.router({
       }
     }),
   byId: t.procedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       if (ctx.session) {
         const delivery = await ctx.prisma.delivery.findUnique({

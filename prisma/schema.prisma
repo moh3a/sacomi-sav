@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  // provider             = "postgresql" // ? postgres
-  provider             = "mysql" // ! mysql
+  provider             = "postgresql" // ? postgres
+  // provider             = "mysql" // ! mysql
   url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
@@ -29,7 +29,8 @@ enum Role {
 }
 
 model Product {
-  id            Int     @id @default(autoincrement())
+  id            String  @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   product_model String  @unique
   product_brand String?
   product_type  String?
@@ -39,16 +40,17 @@ model Product {
 }
 
 model Client {
-  id           Int          @id @default(autoincrement())
+  id           String       @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   name         String       @unique
-  // address      String?      @db.Text // ? postgres
-  address      String?      @db.MediumText // ! mysql
-  // observations String?      @db.Text // ? postgres
-  observations String?      @db.MediumText // ! mysql
-  // contact      String?      @db.Text // ? postgres
-  contact      String?      @db.MediumText // ! mysql
-  // phone_number String?      @db.Text // ? postgres
-  phone_number String?      @db.MediumText // ! mysql
+  address      String?      @db.Text // ? postgres
+  // address      String?      @db.MediumText // ! mysql
+  observations String?      @db.Text // ? postgres
+  // observations String?      @db.MediumText // ! mysql
+  contact      String?      @db.Text // ? postgres
+  // contact      String?      @db.MediumText // ! mysql
+  phone_number String?      @db.Text // ? postgres
+  // phone_number String?      @db.MediumText // ! mysql
   status       String?
   type         String?
   wilaya       String?
@@ -61,17 +63,18 @@ model Client {
 }
 
 model Entry {
-  id           Int       @id @default(autoincrement())
+  id           String    @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   entry_id     String    @unique
-  // observations String?   @db.Text // ? postgres 
-  observations String?   @db.MediumText // ! mysql
+  observations String?   @db.Text // ? postgres 
+  // observations String?   @db.MediumText // ! mysql
   entry_date   String?
   entry_time   String?
   warranty     String?
   global       String?
   createdAt    DateTime? @default(now())
   updatedAt    DateTime? @updatedAt
-  clientId     Int
+  clientId     String
   client       Client    @relation(fields: [clientId], references: [id])
   Jobs         Job[]
 
@@ -79,29 +82,30 @@ model Entry {
 }
 
 model Job {
-  id                    Int     @id @default(autoincrement())
+  id                    String  @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   job_id                Int     @unique
-  entryId               Int
+  entryId               String
   entry                 Entry   @relation(fields: [entryId], references: [id])
-  clientId              Int
+  clientId              String
   client                Client  @relation(fields: [clientId], references: [id])
-  productId             Int
+  productId             String
   product               Product @relation(fields: [productId], references: [id])
   prestation_id         String?
   awaiting_intervention String?
   warranty              String?
   repaired_date         String?
   exit_date             String?
-  // designation           String? @db.Text // ? postgres 
-  designation           String? @db.MediumText // ! mysql
-  // diagnostic            String? @db.Text // ? postgres 
-  diagnostic            String? @db.MediumText // ! mysql
-  // status                String? @db.Text // ? postgres 
-  status                String? @db.MediumText // ! mysql
-  // serial_number         String? @db.Text // ? postgres 
-  serial_number         String? @db.MediumText // ! mysql
-  // new_serial_number     String? @db.Text // ? postgres 
-  new_serial_number     String? @db.MediumText // ! mysql
+  designation           String? @db.Text // ? postgres 
+  // designation           String? @db.MediumText // ! mysql
+  diagnostic            String? @db.Text // ? postgres 
+  // diagnostic            String? @db.MediumText // ! mysql
+  status                String? @db.Text // ? postgres 
+  // status                String? @db.MediumText // ! mysql
+  serial_number         String? @db.Text // ? postgres 
+  // serial_number         String? @db.MediumText // ! mysql
+  new_serial_number     String? @db.Text // ? postgres 
+  // new_serial_number     String? @db.MediumText // ! mysql
   localisation          String?
   technician            String?
   entry_subid           String?
@@ -114,10 +118,11 @@ model Job {
 }
 
 model Delivery {
-  id              Int       @id @default(autoincrement())
+  id              String    @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   delivery_id     String    @unique
   delivery_date   String?
-  clientId        Int
+  clientId        String
   client          Client    @relation(fields: [clientId], references: [id])
   entry_id        String?
   sage_exit_id    String?
@@ -130,12 +135,13 @@ model Delivery {
 }
 
 model Order {
-  id            Int       @id @default(autoincrement())
+  id            String    @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   order_id      String    @unique
-  // order_content String?   @db.Text // ? postgres 
-  order_content String?   @db.MediumText // ! mysql
-  // observations  String?   @db.Text // ? postgres 
-  observations  String?   @db.MediumText // ! mysql
+  order_content String?   @db.Text // ? postgres 
+  // order_content String?   @db.MediumText // ! mysql
+  observations  String?   @db.Text // ? postgres 
+  // observations  String?   @db.MediumText // ! mysql
   order_date    String?
   receipt_date  String?
   sage_entry_id String?
@@ -148,13 +154,14 @@ model Order {
 }
 
 model Prestation {
-  id                Int                 @id @default(autoincrement())
+  id                String              @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   prestation_id     String              @unique
   prestation_date   String?
-  clientId          Int
+  clientId          String
   client            Client              @relation(fields: [clientId], references: [id])
-  // observations      String?             @db.Text // ? postgres 
-  observations      String?             @db.MediumText // ! mysql
+  observations      String?             @db.Text // ? postgres 
+  // observations      String?             @db.MediumText // ! mysql
   is_paid           String?
   to_bill           String?
   recovery_date     String?
@@ -169,8 +176,9 @@ model Prestation {
 }
 
 model PrestationDetails {
-  id              Int        @id @default(autoincrement())
-  prestationId    Int
+  id              String     @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
+  prestationId    String
   prestation      Prestation @relation(fields: [prestationId], references: [id])
   is_paid         String?
   to_bill         String?
@@ -188,7 +196,8 @@ model PrestationDetails {
 }
 
 model Config {
-  id                     Int    @id @default(autoincrement())
+  id                     String @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
   current_entries_id     String
   current_deliveries_id  String
   current_jobs_id        Int

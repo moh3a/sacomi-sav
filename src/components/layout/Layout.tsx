@@ -22,7 +22,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const dispatch = useDispatch();
   trpc.config.all.useQuery(undefined, {
     onSettled(data) {
-      if (data) dispatch(getIds(data.config));
+      if (data && data.config) dispatch(getIds(data.config));
     },
   });
 

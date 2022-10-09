@@ -56,7 +56,7 @@ export const prestationRouter = t.router({
       }
     }),
   byId: t.procedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       if (ctx.session) {
         const prestation = await ctx.prisma.prestation.findUnique({

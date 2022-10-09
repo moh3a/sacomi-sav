@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { compareSync } from "bcrypt";
 import prisma from "../../../../lib/prisma";
-import { matchPasswords } from "../../../server/utils";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -20,13 +20,13 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (user) {
-            const isMatch = await matchPasswords(credentials.password, user);
+            const isMatch = compareSync(credentials.password, user.password);
             if (!isMatch) {
-              throw `invalid_credentials`;
+              throw `/auth?error=invalid_credentials`;
             }
             return user;
           } else {
-            // throw `user_not_found`;
+            // throw `/auth?error=user_not_found`;
             const newuser = await prisma.user.create({
               data: {
                 role: "TECHNICIAN",
@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
             return newuser;
           }
         } else {
-          throw `provide_email_and_password`;
+          throw `/auth?error=provide_email_and_password`;
         }
       },
     }),
@@ -67,7 +67,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.JWT_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // 24 hours
+    // maxAge: 24 * 60 * 60, // 24 hours
   },
 };
 

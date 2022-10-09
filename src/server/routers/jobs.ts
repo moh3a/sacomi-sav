@@ -84,7 +84,7 @@ export const jobRouter = t.router({
       }
     }),
   byId: t.procedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       if (ctx.session) {
         const job = await ctx.prisma.job.findUnique({

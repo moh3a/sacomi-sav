@@ -3,8 +3,7 @@
 ### Todo
 
 - rows component: state change isnt reflected in ui
-- fix user password check
-- generate ids for db
+- _fix user password check_ ASAP
 
 ### Prerequisites
 
