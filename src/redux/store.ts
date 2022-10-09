@@ -5,9 +5,9 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 // REDUCERS
 import selectedOneReducer from "./selectedOneSlice";
-import selectedIdReducer from "./selectedIdSlice";
 import selectedAllReducer from "./selectedAllSlice";
-import notificationsReducer from "./notificationsSlice";
+import selectedIdReducer from "./selectedIdSlice";
+import currentIdReducer from "./currentIdSlice";
 
 let store: any;
 
@@ -17,9 +17,9 @@ const initialState = {};
 // ROOT REDUCER
 const reducer = combineReducers({
   selectedOne: selectedOneReducer,
-  selectedId: selectedIdReducer,
   selectedAll: selectedAllReducer,
-  notifications: notificationsReducer,
+  selectedId: selectedIdReducer,
+  currentId: currentIdReducer,
 });
 
 // ADD THE REDUX THUNK MIDDLEWARE FOR ASYNC FUNCTIONS

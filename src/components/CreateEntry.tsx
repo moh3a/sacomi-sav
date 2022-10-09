@@ -14,8 +14,8 @@ import { trpc } from "../utils/trpc";
 import Button from "./shared/Button";
 import TextInput from "./shared/TextInput";
 import Autocomplete from "./shared/Autocomplete";
-import { create_notification } from "../redux/notificationsSlice";
 import { Client } from "@prisma/client";
+import Rows from "./shared/Rows";
 
 interface CreateProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -23,6 +23,8 @@ interface CreateProps {
 
 const CreateEntry = ({ setIsOpen }: CreateProps) => {
   const dispatch = useDispatch();
+
+  // GENERAL STATE
   const [state, setState] = useState({
     entry_id: "",
     entry_date: "",
@@ -31,61 +33,48 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
     global: "",
     observations: "",
   });
-  const [query, setQuery] = useState("");
-  const [client, setClient] = useState<Client | null | undefined>(undefined);
-  const [data, setData] = useState<Client[] | null | undefined>([]);
+
+  // CLIENT STATE
+  // const [query, setQuery] = useState("");
+  // const [client, setClient] = useState<Client | null | undefined>(undefined);
+  // const [data, setData] = useState<Client[] | null | undefined>([]);
+  // const clientsMutations = trpc.clients.byUnique.useMutation();
+  // const fetchClients = useCallback(async () => {
+  //   if (query) {
+  //     await clientsMutations.mutateAsync(
+  //       { name: query },
+  //       {
+  //         onSettled(data) {
+  //           setData(data?.clients);
+  //         },
+  //       }
+  //     );
+  //   } else {
+  //     setData([]);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [query]);
+  // useEffect(() => {
+  //   fetchClients();
+  // }, [fetchClients]);
+
+  // FINISH UP AND CREATE
   const mutation = trpc.entries.create.useMutation();
-
-  const clientsMutations = trpc.clients.byUnique.useMutation();
-  const fetchClients = useCallback(async () => {
-    if (query) {
-      await clientsMutations.mutateAsync(
-        { name: query },
-        {
-          onSettled(data) {
-            setData(data?.clients);
-          },
-        }
-      );
-    } else {
-      setData([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
-
-  useEffect(() => {
-    fetchClients();
-  }, [fetchClients]);
-
   const createHandler = async (event: FormEvent) => {
     event.preventDefault();
-    let created_object: any = {};
-    Object.keys(state).forEach((field) => {
-      if (state[field as keyof typeof state])
-        created_object = {
-          ...created_object,
-          [field]: state[field as keyof typeof state],
-        };
-    });
-    mutation?.mutateAsync(state, {
-      onSettled(data, error) {
-        if (error)
-          dispatch(
-            create_notification({ type: "error", message: error.message })
-          );
-        if (data) {
-          if (data.success) {
-            dispatch(
-              create_notification({ type: "success", message: data?.message })
-            );
-          } else {
-            dispatch(
-              create_notification({ type: "error", message: data?.message })
-            );
-          }
-        }
-      },
-    });
+    // let created_object: any = {};
+    // Object.keys(state).forEach((field) => {
+    //   if (state[field as keyof typeof state])
+    //     created_object = {
+    //       ...created_object,
+    //       [field]: state[field as keyof typeof state],
+    //     };
+    // });
+    // mutation?.mutateAsync(state, {
+    //   onSettled(data, error) {
+    //
+    //   },
+    // });
     setIsOpen(false);
   };
 
@@ -113,7 +102,7 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
             />
           </div>
 
-          <div className="my-4 mx-2 flex items-center">
+          {/* <div className="my-4 mx-2 flex items-center">
             <div className="w-36">Nom du client</div>
             <Autocomplete
               placeholder="Nom du client"
@@ -129,14 +118,14 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
             <div>
               {client.name} - {client.phone_number}
             </div>
-          )}
+          )} */}
         </div>
       </div>
       {/* end grid */}
+      <Rows />
 
       <div className="flex justify-end items-center">
         <Button type="submit" variant="solid">
-          <PlusCircleIcon className="h-5 w-5 inline" aria-hidden="true" />
           Créer
         </Button>
       </div>

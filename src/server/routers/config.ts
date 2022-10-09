@@ -2,6 +2,12 @@ import { z } from "zod";
 import { t } from "../trpc";
 
 export const configRouter = t.router({
+  all: t.procedure.query(async ({ ctx }) => {
+    if (ctx.session) {
+      const config = await ctx.prisma.config.findFirst();
+      return { config };
+    } else return { config: null };
+  }),
   currentId: t.procedure
     .input(
       z.object({

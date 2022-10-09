@@ -1,31 +1,33 @@
-import { useDispatch } from "react-redux";
-import { reset_notification } from "../../redux/notificationsSlice";
-import useNotifications from "../../utils/useNotifications";
+import { useContext } from "react";
+import NotificationsContext, {
+  NotificationStatus,
+} from "../../utils/NotificationsContext";
 
 const Toast = () => {
-  const dispatch = useDispatch();
-  const { message, type } = useNotifications();
+  const notification = useContext(NotificationsContext);
 
   return (
     <>
-      {type && (
+      {notification?.notification !== NotificationStatus.None && (
         <div
           className={`absolute top-32 right-10 z-50 w-72 ${
-            type === "success"
+            notification?.notification === NotificationStatus.Success
               ? "bg-green-500"
-              : type === "warning"
+              : notification?.notification === NotificationStatus.Warning
               ? "bg-yellow-500"
-              : type === "error"
+              : notification?.notification === NotificationStatus.Error
               ? "bg-red-500"
               : "bg-grim"
           } text-sm text-white rounded-md shadow-lg mb-3 ml-3`}
           role="alert"
         >
           <div className="flex p-4">
-            <span className="overflow-hidden">{message}</span>
+            <span className="overflow-hidden">
+              {notification?.notificationText}
+            </span>
             <div className="ml-auto">
               <button
-                onClick={() => dispatch(reset_notification())}
+                onClick={() => notification?.clear()}
                 type="button"
                 className="inline-flex flex-shrink-0 justify-center items-center h-4 w-4 rounded-md text-white/[.5] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-600 transition-all text-sm dark:focus:ring-offset-gray-900 dark:focus:ring-gray-800"
               >

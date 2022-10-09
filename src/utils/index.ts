@@ -1,10 +1,3 @@
-import { compare } from "bcrypt";
-import { User } from "@prisma/client";
-
-export const matchPasswords = async (password: string, user: User) => {
-  return await compare(password, user.password);
-};
-
 export const sanitize = (str: string) => {
   return str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, "").trim();
 };

@@ -10,6 +10,7 @@ import type { AppType } from "next/dist/shared/lib/utils";
 import { trpc } from "../utils/trpc";
 import { APP_TITLE } from "../../lib/config";
 import { useStore } from "../redux/store";
+import { NotificationsProvider } from "../utils/NotificationsContext";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -26,7 +27,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <ThemeProvider attribute="class">
         <SessionProvider session={session}>
           <ReduxProvider store={store}>
-            {getLayout(<Component {...pageProps} />)}
+            <NotificationsProvider>
+              {getLayout(<Component {...pageProps} />)}
+            </NotificationsProvider>
           </ReduxProvider>
         </SessionProvider>
       </ThemeProvider>

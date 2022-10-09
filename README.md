@@ -2,8 +2,7 @@
 
 ### Todo
 
-- notifications: Toast and useNotifications
-- staff page config!
+- rows component: state change isnt reflected in ui
 - fix user password check
 - generate ids for db
 

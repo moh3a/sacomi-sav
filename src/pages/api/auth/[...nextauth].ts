@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../../../../lib/prisma";
-import { matchPasswords } from "../../../utils";
+import { matchPasswords } from "../../../server/utils";
 
 export const authOptions: NextAuthOptions = {
   providers: [

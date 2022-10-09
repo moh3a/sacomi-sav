@@ -24,6 +24,7 @@ export interface Collection {
     | "prestations"
     | "users"
     | "orders";
+  withIds: "deliveries" | "entries" | "jobs" | "orders" | "prestations";
 }
 
 export interface PageArchitecture {

@@ -12,7 +12,7 @@ import Button from "./shared/Button";
 import Search from "./Search";
 import Create from "./Create";
 import CreateEntry from "./CreateEntry";
-import { PageArchitecture } from "../types";
+import { Collection, PageArchitecture } from "../types";
 
 interface PageSkeletonProps {
   page: PageArchitecture;
@@ -87,7 +87,7 @@ const PageSkeleton = ({
           <Create
             setIsOpen={setOpenCreateModal}
             title={page.title}
-            collection={page.collection}
+            collection={page.collection as Collection["withIds"]}
             layout={page.create_layout}
           />
         </Modal>
