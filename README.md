@@ -2,8 +2,8 @@
 
 ### Todo
 
+- check session and if admin for migrations
 - rows component: state change isnt reflected in ui
-- _fix user password check_ ASAP
 
 ### Prerequisites
 

@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import {  genSaltSync,  hashSync } from "bcrypt";
 
 // add prisma to the NodeJS global type
 interface CustomNodeJsGlobal extends Global {
@@ -18,16 +17,16 @@ export const prisma =
         : ["error"],
   });
 
-prisma.$use(async (params, next) => {
-  if (
-    (params.action === "create" || params.action === "createMany") &&
-    params.model === "User"
-  ) {
-    const salt = genSaltSync();
-    params.args.data.password = hashSync(params.args.data.password, salt);
-  }
-  return next(params);
-});
+// prisma.$use(async (params, next) => {
+//   if (
+//     (params.action === "create" || params.action === "createMany") &&
+//     params.model === "User"
+//   ) {
+//     const salt = genSaltSync();
+//     params.args.data.password = hashSync(params.args.data.password, salt);
+//   }
+//   return next(params);
+// });
 
 if (process.env.NODE_ENV === "development") global.prisma = prisma;
 export default prisma;

@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compareSync } from "bcrypt";
+import { compareSync, genSaltSync, hashSync } from "bcrypt";
+
 import prisma from "../../../../lib/prisma";
 
 export const authOptions: NextAuthOptions = {
@@ -27,10 +28,12 @@ export const authOptions: NextAuthOptions = {
             return user;
           } else {
             // throw `/auth?error=user_not_found`;
+                const salt = genSaltSync();
+                let password = hashSync(credentials.password, salt);
             const newuser = await prisma.user.create({
               data: {
                 role: "TECHNICIAN",
-                password: credentials.password,
+                password: password,
                 username: credentials.username,
                 picture: `https://avatars.dicebear.com/api/bottts/${credentials.username}.svg`,
               },
