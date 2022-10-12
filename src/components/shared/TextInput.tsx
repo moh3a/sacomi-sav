@@ -7,6 +7,7 @@ interface InputProps {
   type?: "text" | "url" | "email" | string;
   value?: string;
   setValue?: Dispatch<SetStateAction<string>>;
+  size?: number;
   readOnly?: boolean;
   placeholder?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -31,6 +32,7 @@ const TextInput = ({
   tabIndex,
   id,
   name,
+  size,
 }: InputProps) => {
   return (
     <input
@@ -52,6 +54,8 @@ const TextInput = ({
       placeholder={placeholder}
       className={className ? className : TEXT_INPUT}
       tabIndex={tabIndex}
+      size={size || undefined}
+      maxLength={size || undefined}
     />
   );
 };

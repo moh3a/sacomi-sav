@@ -2,7 +2,7 @@
 
 ### Todo
 
-- rows component: state change isnt reflected in ui
+- create data. one size fits all component
 
 ### Prerequisites
 

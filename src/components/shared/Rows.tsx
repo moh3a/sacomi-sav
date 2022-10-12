@@ -3,6 +3,7 @@ import { PlusCircleIcon } from "@heroicons/react/outline";
 
 import Button from "./Button";
 import TextInput from "./TextInput";
+import { PRIMARY_COLOR, ROUNDED } from "../../../lib/design";
 
 const Rows = () => {
   const [products, setProducts] = useState([
@@ -17,27 +18,29 @@ const Rows = () => {
   return (
     <>
       {products.map((product, index) => (
-        <div key={index} className="w-full flex justify-around">
-          {Object.keys(product).map((key, idx) => (
-            <div key={idx}>
+        <div key={index} className="w-full flex justify-between my-1">
+          {Object.keys(product).map((key) => (
+            <div key={key}>
               <TextInput
                 placeholder={key}
                 value={product[key as keyof typeof product]}
                 onChange={(e) =>
-                  setProducts((prev) => {
-                    let newstate = prev;
-                    newstate[index][key as keyof typeof product] =
-                      e.target.value;
-                    console.log(newstate);
-                    return newstate;
-                  })
+                  setProducts(
+                    products.map((product, i) => {
+                      if (index === i)
+                        product[key as keyof typeof product] = e.target.value;
+                      return product;
+                    })
+                  )
                 }
               />
             </div>
           ))}
         </div>
       ))}
-      <div>
+      <div
+        className={`w-full flex justify-center border ${PRIMARY_COLOR.border} ${ROUNDED} my-1`}
+      >
         <Button
           type="button"
           onClick={() =>
