@@ -10,21 +10,6 @@ const upload = multer({
   }),
 });
 
-interface ExtendedNextApi extends NextApiRequest {
-  files?: [
-    {
-      fieldname: string;
-      originalname: string;
-      encoding: string;
-      mimetype: string;
-      destination: string;
-      filename: string;
-      path: string;
-      size: number;
-    }
-  ];
-}
-
 const handler = nc({
   onError(error, req: NextApiRequest, res: NextApiResponse) {
     res.status(501).json({

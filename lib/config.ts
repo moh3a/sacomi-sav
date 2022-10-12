@@ -396,9 +396,9 @@ export const PAGE_ARCHITECTURE = {
       data.map((user: User) => {
         return [
           user.id,
-          user.picture || "",
+          user.image || "",
           user.username || "",
-          user.fullName || "",
+          user.name || "",
           user.role || "",
         ];
       }),

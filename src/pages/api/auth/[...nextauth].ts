@@ -28,14 +28,14 @@ export const authOptions: NextAuthOptions = {
             return user;
           } else {
             // throw `/auth?error=user_not_found`;
-                const salt = genSaltSync();
-                let password = hashSync(credentials.password, salt);
+            const salt = genSaltSync();
+            let password = hashSync(credentials.password, salt);
             const newuser = await prisma.user.create({
               data: {
                 role: "TECHNICIAN",
                 password: password,
                 username: credentials.username,
-                picture: `https://avatars.dicebear.com/api/bottts/${credentials.username}.svg`,
+                image: `https://avatars.dicebear.com/api/bottts/${credentials.username}.svg`,
               },
             });
             return newuser;
@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.name = user.username as string;
-        token.image = user.picture as string | undefined;
+        token.image = user.image as string | undefined;
         token.role = user.role;
       }
       return token;

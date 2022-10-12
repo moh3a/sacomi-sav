@@ -10,13 +10,18 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+//
+//
+//
+//
+// NEXT-AUTH MODELS HERE
 model User {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(cuid())
   username String  @unique
   email    String? @unique
-  fullName String?
+  name     String?
   password String
-  picture  String
+  image    String?
   role     Role    @default(TECHNICIAN)
 
   @@index([username])
@@ -28,6 +33,11 @@ enum Role {
   ADMIN
 }
 
+//
+//
+//
+//
+// SAV MODELS HERE
 model Product {
   id            String  @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
