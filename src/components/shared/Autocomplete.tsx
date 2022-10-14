@@ -27,7 +27,7 @@ const Autocomplete = ({
       <div className="relative mt-1">
         <div className="relative w-full">
           <Combobox.Input
-            className={TEXT_INPUT}
+            className={` ${TEXT_INPUT} w-full`}
             placeholder={placeholder}
             displayValue={(model: any) => model && model[displayValue]}
             onChange={(event) => setQuery(event.target.value)}

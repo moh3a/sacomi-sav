@@ -2,7 +2,7 @@
 
 ### Todo
 
-- create data. one size fits all component
+- create entries work. create jobs in parallel and products should be an autocomplete
 
 ### Prerequisites
 

@@ -10,8 +10,8 @@ import Table from "./shared/Table";
 import Modal from "./shared/Modal";
 import Button from "./shared/Button";
 import Search from "./Search";
-import Create from "./Create";
-import CreateEntry from "./CreateEntry";
+import Create from "./create/Create";
+import CreateEntry from "./create/CreateEntry";
 import { Collection, PageArchitecture } from "../types";
 
 interface PageSkeletonProps {
@@ -77,21 +77,19 @@ const PageSkeleton = ({
           )}
         </div>
       </div>
-      {page.collection === "entries" && (
-        <Modal isOpen={openCreateModal} setIsOpen={setOpenCreateModal}>
-          <CreateEntry setIsOpen={setOpenCreateModal} />
-        </Modal>
-      )}
-      {page.create_layout && (
-        <Modal isOpen={openCreateModal} setIsOpen={setOpenCreateModal}>
+      <Modal isOpen={openCreateModal} setIsOpen={setOpenCreateModal}>
+        {page.create_layout && (
           <Create
             setIsOpen={setOpenCreateModal}
             title={page.title}
             collection={page.collection as Collection["withIds"]}
             layout={page.create_layout}
           />
-        </Modal>
-      )}
+        )}
+        {page.collection === "entries" && (
+          <CreateEntry setIsOpen={setOpenCreateModal} />
+        )}
+      </Modal>
       {page.search_layout && (
         <Modal isOpen={openSearchModal} setIsOpen={setOpenSearchModal}>
           <Search

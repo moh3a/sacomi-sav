@@ -35,7 +35,7 @@ export const entryRouter = t.router({
           skip: input.p * ITEMS_PER_PAGE,
           take: ITEMS_PER_PAGE,
         });
-        const count = await ctx.prisma.entry.count();
+        const count: number = await ctx.prisma.entry.count();
         return { entries, count };
       } else {
         return { entries: [], count: 0 };
@@ -83,9 +83,19 @@ export const entryRouter = t.router({
             select: { id: true },
           });
           if (client) {
+            if (!input.entry_date)
+              input.entry_date = new Date().toISOString().substring(0, 10);
+            if (!input.entry_time)
+              input.entry_time = new Date().toISOString().substring(11, 16);
             delete input.client_name;
             const entry = await ctx.prisma.entry.create({
               data: { ...input, clientId: client.id },
+            });
+            await ctx.prisma.config.update({
+              where: {
+                id: "config",
+              },
+              data: { current_entries_id: input.entry_id },
             });
             return {
               entry,

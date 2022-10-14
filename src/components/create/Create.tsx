@@ -7,15 +7,15 @@ import {
 } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 
-import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../lib/design";
-import Button from "./shared/Button";
-import TextInput from "./shared/TextInput";
-import { trpc } from "../utils/trpc";
+import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../../lib/design";
+import Button from "../shared/Button";
+import TextInput from "../shared/TextInput";
+import { trpc } from "../../utils/trpc";
 import { useSelector } from "react-redux";
-import { generate_new_id } from "../utils";
-import { selectCurrentId } from "../redux/currentIdSlice";
-import NotificationsContext from "../utils/NotificationsContext";
-import { Collection } from "../types";
+import { generate_new_id } from "../../utils";
+import { selectCurrentId } from "../../redux/currentIdSlice";
+import NotificationsContext from "../../utils/NotificationsContext";
+import { Collection } from "../../types";
 
 interface CreateProps {
   title: string;

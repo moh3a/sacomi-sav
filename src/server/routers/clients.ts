@@ -44,11 +44,21 @@ export const clientRouter = t.router({
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         const clients = await ctx.prisma.client.findMany({
-          where: { name: { contains: input.name } },
+          where: { name: { contains: input.name.toUpperCase() } },
           take: 20,
         });
         return { clients };
       } else return { clients: null };
+    }),
+  clientExists: t.procedure
+    .input(z.object({ name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const client = await ctx.prisma.client.findUnique({
+          where: { name: input.name.toUpperCase() },
+        });
+        return { exists: client ? true : false };
+      } else return { exists: null };
     }),
   create: t.procedure
     .input(

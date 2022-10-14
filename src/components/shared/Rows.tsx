@@ -1,35 +1,32 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 
 import Button from "./Button";
 import TextInput from "./TextInput";
 import { PRIMARY_COLOR, ROUNDED } from "../../../lib/design";
 
-const Rows = () => {
-  const [products, setProducts] = useState([
-    {
-      entry_subid: "",
-      product_model: "",
-      designation: "",
-      warranty: "",
-    },
-  ]);
+interface RowsProps {
+  initial_state: any;
+  state: any[];
+  setState: Dispatch<SetStateAction<any[]>>;
+}
 
+const Rows = ({ initial_state, setState, state }: RowsProps) => {
   return (
     <>
-      {products.map((product, index) => (
+      {state.map((s, index) => (
         <div key={index} className="w-full flex justify-between my-1">
-          {Object.keys(product).map((key) => (
+          {Object.keys(s).map((key) => (
             <div key={key}>
               <TextInput
                 placeholder={key}
-                value={product[key as keyof typeof product]}
+                value={s[key as keyof typeof s]}
                 onChange={(e) =>
-                  setProducts(
-                    products.map((product, i) => {
+                  setState(
+                    state.map((s, i) => {
                       if (index === i)
-                        product[key as keyof typeof product] = e.target.value;
-                      return product;
+                        s[key as keyof typeof s] = e.target.value;
+                      return s;
                     })
                   )
                 }
@@ -44,17 +41,9 @@ const Rows = () => {
         <Button
           type="button"
           onClick={() =>
-            setProducts((prev) => {
+            setState((prev) => {
               let newstate = prev;
-              newstate = [
-                ...prev,
-                {
-                  entry_subid: "",
-                  product_model: "",
-                  designation: "",
-                  warranty: "",
-                },
-              ];
+              newstate = [...prev, initial_state];
               return newstate;
             })
           }
