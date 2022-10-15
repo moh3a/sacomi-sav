@@ -2,7 +2,8 @@
 
 ### Todo
 
-- create entries work. create jobs in parallel and products should be an autocomplete
+- style notifications toast
+- create the rest of the models
 
 ### Prerequisites
 

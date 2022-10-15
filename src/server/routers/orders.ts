@@ -54,13 +54,14 @@ export const orderRouter = t.router({
     }),
   byUnique: t.procedure
     .input(z.object({ order_id: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const order = await ctx.prisma.order.findUnique({
-          where: { order_id: input.order_id },
+        const orders = await ctx.prisma.order.findMany({
+          where: { order_id: { contains: input.order_id.toUpperCase() } },
+          take: 20,
         });
-        return { order };
-      } else return { order: null };
+        return { orders };
+      } else return { orders: null };
     }),
   create: t.procedure
     .input(

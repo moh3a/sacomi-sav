@@ -1,38 +1,70 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 
+import { PRIMARY_COLOR, ROUNDED } from "../../../lib/design";
 import Button from "./Button";
 import TextInput from "./TextInput";
-import { PRIMARY_COLOR, ROUNDED } from "../../../lib/design";
+import Autocomplete from "./Autocomplete";
+import { Column } from "../../types";
 
 interface RowsProps {
-  initial_state: any;
-  state: any[];
+  initial_state: Column[];
+  state: Column[][];
   setState: Dispatch<SetStateAction<any[]>>;
 }
 
 const Rows = ({ initial_state, setState, state }: RowsProps) => {
   return (
     <>
-      {state.map((s, index) => (
-        <div key={index} className="w-full flex justify-between my-1">
-          {Object.keys(s).map((key) => (
-            <div key={key}>
-              <TextInput
-                placeholder={key}
-                value={s[key as keyof typeof s]}
-                onChange={(e) =>
-                  setState(
-                    state.map((s, i) => {
-                      if (index === i)
-                        s[key as keyof typeof s] = e.target.value;
-                      return s;
-                    })
-                  )
-                }
-              />
-            </div>
-          ))}
+      {state.map((row, row_index) => (
+        <div key={row_index} className="w-full flex justify-between my-1">
+          {row &&
+            row.map((col, col_index) => (
+              <div key={col_index}>
+                {col.autocomplete && col.collection ? (
+                  <Autocomplete
+                    collection={col.collection}
+                    placeholder={col.name}
+                    displayValue={col.field}
+                    value={col.value}
+                    setSelected={(value) => {
+                      setState(
+                        state.map((r, i) => {
+                          if (row_index === i)
+                            r = r.map((c, j) => {
+                              if (c.index) c.value = String(row_index + 1);
+                              if (col_index === j && c.autocomplete)
+                                c.value = value[col.field];
+                              return c;
+                            });
+                          return r;
+                        })
+                      );
+                    }}
+                  />
+                ) : (
+                  <TextInput
+                    placeholder={col.name}
+                    value={col.value}
+                    readOnly={col.index}
+                    onChange={(event) =>
+                      setState(
+                        state.map((r, i) => {
+                          if (row_index === i)
+                            r = r.map((c, j) => {
+                              if (c.index) c.value = String(row_index + 1);
+                              if (col_index === j)
+                                c.value = event.target.value.toUpperCase();
+                              return c;
+                            });
+                          return r;
+                        })
+                      )
+                    }
+                  />
+                )}
+              </div>
+            ))}
         </div>
       ))}
       <div

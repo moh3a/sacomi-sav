@@ -96,14 +96,15 @@ export const jobRouter = t.router({
     }),
   byUnique: t.procedure
     .input(z.object({ job_id: z.number() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const job = await ctx.prisma.job.findUnique({
+        const jobs = await ctx.prisma.job.findMany({
           where: { job_id: input.job_id },
           include: { client: true, entry: true, product: true },
+          take: 20,
         });
-        return { job };
-      } else return { job: null };
+        return { jobs };
+      } else return { jobs: null };
     }),
   create: t.procedure
     .input(

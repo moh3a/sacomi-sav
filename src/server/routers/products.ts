@@ -53,13 +53,16 @@ export const productRouter = t.router({
     }),
   byUnique: t.procedure
     .input(z.object({ product_model: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const product = await ctx.prisma.product.findUnique({
-          where: { product_model: input.product_model },
+        const products = await ctx.prisma.product.findMany({
+          where: {
+            product_model: { contains: input.product_model.toUpperCase() },
+          },
+          take: 20,
         });
-        return { product };
-      } else return { product: null };
+        return { products };
+      } else return { products: null };
     }),
   create: t.procedure
     .input(

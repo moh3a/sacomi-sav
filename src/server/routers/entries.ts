@@ -54,14 +54,15 @@ export const entryRouter = t.router({
     }),
   byUnique: t.procedure
     .input(z.object({ entry_id: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const entry = await ctx.prisma.entry.findUnique({
-          where: { entry_id: input.entry_id },
+        const entries = await ctx.prisma.entry.findMany({
+          where: { entry_id: { contains: input.entry_id.toUpperCase() } },
           include: { client: true, _count: true },
+          take: 20,
         });
-        return { entry };
-      } else return { entry: null };
+        return { entries };
+      } else return { entries: null };
     }),
   create: t.procedure
     .input(
@@ -73,11 +74,13 @@ export const entryRouter = t.router({
         global: z.string().nullish(),
         observations: z.string().nullish(),
         client_name: z.string().nullish(),
+        products: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          let products = JSON.parse(JSON.stringify(input.products));
           const client = await ctx.prisma.client.findUnique({
             where: { name: input.client_name! },
             select: { id: true },
@@ -88,9 +91,46 @@ export const entryRouter = t.router({
             if (!input.entry_time)
               input.entry_time = new Date().toISOString().substring(11, 16);
             delete input.client_name;
+            delete input.products;
             const entry = await ctx.prisma.entry.create({
               data: { ...input, clientId: client.id },
             });
+
+            let get_jobs = async () => {
+              if (products) {
+                for (let product of products) {
+                  if (product.product_model) {
+                    const p = await ctx.prisma.product.findUnique({
+                      where: { product_model: product.product_model },
+                      select: { id: true },
+                    });
+                    const config = await ctx.prisma.config.findFirst({
+                      select: { current_jobs_id: true },
+                    });
+                    if (p && config) {
+                      delete product.product_model;
+                      await ctx.prisma.job.create({
+                        data: {
+                          job_id: config.current_jobs_id + 1,
+                          clientId: client.id,
+                          productId: p.id,
+                          entryId: entry.id,
+                          ...product,
+                        },
+                      });
+                      await ctx.prisma.config.update({
+                        where: {
+                          id: "config",
+                        },
+                        data: { current_jobs_id: config.current_jobs_id + 1 },
+                      });
+                    }
+                  }
+                }
+              }
+            };
+            await get_jobs();
+
             await ctx.prisma.config.update({
               where: {
                 id: "config",

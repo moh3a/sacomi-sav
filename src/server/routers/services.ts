@@ -68,14 +68,17 @@ export const prestationRouter = t.router({
     }),
   byUnique: t.procedure
     .input(z.object({ prestation_id: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const prestation = await ctx.prisma.prestation.findUnique({
-          where: { prestation_id: input.prestation_id },
+        const prestations = await ctx.prisma.prestation.findMany({
+          where: {
+            prestation_id: { contains: input.prestation_id.toUpperCase() },
+          },
           include: { client: true, _count: true },
+          take: 20,
         });
-        return { prestation };
-      } else return { prestation: null };
+        return { prestations };
+      } else return { prestations: null };
     }),
   create: t.procedure
     .input(

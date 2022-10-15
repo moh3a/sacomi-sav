@@ -3,9 +3,7 @@ import {
   FormEvent,
   Fragment,
   SetStateAction,
-  useCallback,
   useContext,
-  useEffect,
   useState,
 } from "react";
 import { useSelector } from "react-redux";
@@ -17,16 +15,17 @@ import { Client } from "@prisma/client";
 
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../../lib/design";
-import { trpc } from "../../utils/trpc";
 import Button from "../shared/Button";
 import TextInput from "../shared/TextInput";
 import Rows from "../shared/Rows";
 import Tabs from "../shared/Tabs";
+import LoadingSpinner from "../shared/LoadingSpinner";
 import Autocomplete from "../shared/Autocomplete";
 import { selectCurrentId } from "../../redux/currentIdSlice";
+import { trpc } from "../../utils/trpc";
 import { generate_new_id } from "../../utils";
 import NotificationsContext from "../../utils/NotificationsContext";
-import LoadingSpinner from "../shared/LoadingSpinner";
+import { Column } from "../../types";
 
 interface CreateProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -42,28 +41,7 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
   const [selectedTab, setSelectedTab] = useState(0);
 
   // EXISTING CLIENT STATE
-  const [query, setQuery] = useState("");
   const [client, setClient] = useState<Client | null | undefined>(undefined);
-  const [data, setData] = useState<Client[] | null | undefined>([]);
-  const clientsMutations = trpc.clients.byUnique.useMutation();
-  const fetchClients = useCallback(async () => {
-    if (query) {
-      await clientsMutations.mutateAsync(
-        { name: query },
-        {
-          onSettled(data) {
-            setData(data?.clients);
-          },
-        }
-      );
-    } else {
-      setData([]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
-  useEffect(() => {
-    fetchClients();
-  }, [fetchClients]);
 
   // NEW CLIENT STATE
   const get_client_state = () => {
@@ -91,12 +69,31 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
   };
 
   // NAME ENTRIES
-  const initial_product = {
-    entry_subid: "",
-    product_model: "",
-    designation: "",
-    warranty: "",
-  };
+  const initial_product: Column[] = [
+    {
+      name: "N°",
+      field: "entry_subid",
+      value: "",
+      index: true,
+    },
+    {
+      name: "Modèle du produit",
+      field: "product_model",
+      collection: "products",
+      value: "",
+      autocomplete: true,
+    },
+    {
+      name: "Désignation",
+      field: "designation",
+      value: "",
+    },
+    {
+      name: "Garantie",
+      field: "warranty",
+      value: "",
+    },
+  ];
   const [products, setProducts] = useState([initial_product]);
 
   // FINISH UP AND CREATE
@@ -121,11 +118,19 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
     } else if (selectedTab === 1 && newClient.name) {
       client_name = newClient.name;
     }
-    if (id && client_name && products[0].product_model) {
+    let created_products = products.map((product) => {
+      let s: any = {};
+      product.forEach((value) => {
+        if (value.value) s[value.field] = value.value;
+      });
+      return s;
+    });
+    if (id && client_name && created_products[0].product_model) {
       await entryCreateMutation.mutateAsync(
         {
           entry_id: id,
           client_name: client_name,
+          products: created_products,
         },
         {
           onSettled(data, error) {
@@ -141,19 +146,6 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
       );
     }
     setLoading(false);
-    // let created_object: any = {};
-    // Object.keys(state).forEach((field) => {
-    //   if (state[field as keyof typeof state])
-    //     created_object = {
-    //       ...created_object,
-    //       [field]: state[field as keyof typeof state],
-    //     };
-    // });
-    // mutation?.mutateAsync(state, {
-    //   onSettled(data, error) {
-    //
-    //   },
-    // });
   };
 
   return (
@@ -182,9 +174,7 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
                 <Autocomplete
                   placeholder="Nom du client"
                   displayValue="name"
-                  filteredResult={data}
-                  query={query}
-                  setQuery={setQuery}
+                  collection="clients"
                   selected={client}
                   setSelected={setClient}
                 />
@@ -251,12 +241,7 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
         Entrées
       </div>
       <Rows
-        initial_state={{
-          entry_subid: "",
-          product_model: "",
-          designation: "",
-          warranty: "",
-        }}
+        initial_state={initial_product}
         state={products}
         setState={setProducts}
       />

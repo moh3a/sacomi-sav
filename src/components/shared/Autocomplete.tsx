@@ -1,27 +1,61 @@
-import { Dispatch, Fragment, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+
+import { trpc } from "../../utils/trpc";
 import { PRIMARY_COLOR, TEXT_INPUT } from "../../../lib/design";
+import { Collection } from "../../types";
 
 interface AutocompleteProps {
-  filteredResult: any;
-  placeholder: string;
-  query: string;
-  setQuery: Dispatch<SetStateAction<string>>;
+  collection: Collection["name"];
   displayValue: string;
-  selected: any;
+  placeholder: string;
+  value?: string;
+  selected?: any;
   setSelected: Dispatch<SetStateAction<any>>;
 }
 
 const Autocomplete = ({
-  filteredResult,
   placeholder,
+  value,
   displayValue,
-  query,
-  setQuery,
   selected,
   setSelected,
+  collection,
 }: AutocompleteProps) => {
+  const [query, setQuery] = useState("");
+  const [filteredResult, setFilteredResult] = useState<any>([]);
+
+  const mutations = trpc[collection].byUnique.useMutation();
+  const fetchData = useCallback(async () => {
+    if (query) {
+      await mutations.mutateAsync(
+        // @ts-ignore
+        { [displayValue]: query },
+        {
+          onSettled(data) {
+            // @ts-ignore
+            if (data) setFilteredResult(data[collection]);
+          },
+        }
+      );
+    } else {
+      setFilteredResult([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   return (
     <Combobox value={selected} onChange={setSelected}>
       <div className="relative mt-1">
@@ -29,7 +63,9 @@ const Autocomplete = ({
           <Combobox.Input
             className={` ${TEXT_INPUT} w-full`}
             placeholder={placeholder}
-            displayValue={(model: any) => model && model[displayValue]}
+            displayValue={(model: any) =>
+              value ? value : model && model[displayValue]
+            }
             onChange={(event) => setQuery(event.target.value)}
           />
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">

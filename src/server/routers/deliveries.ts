@@ -56,14 +56,15 @@ export const deliveryRouter = t.router({
     }),
   byUnique: t.procedure
     .input(z.object({ delivery_id: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const delivery = await ctx.prisma.delivery.findUnique({
-          where: { delivery_id: input.delivery_id },
+        const deliveries = await ctx.prisma.delivery.findMany({
+          where: { delivery_id: { contains: input.delivery_id.toUpperCase() } },
           include: { client: true },
+          take: 20,
         });
-        return { delivery };
-      } else return { delivery: null };
+        return { deliveries };
+      } else return { deliveries: null };
     }),
   create: t.procedure
     .input(

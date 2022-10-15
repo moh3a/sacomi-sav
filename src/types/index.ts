@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface DetailsProps {
   id: number;
 }
@@ -47,6 +49,15 @@ export interface PageArchitecture {
       field: string;
     }[];
   }[];
+}
+
+export interface Column {
+  name: string;
+  field: string;
+  collection?: Collection["name"];
+  value: string;
+  autocomplete?: boolean;
+  index?: boolean;
 }
 
 export interface IUser {

@@ -29,13 +29,13 @@ export const userRouter = t.router({
     }),
   byUnique: t.procedure
     .input(z.object({ username: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
-        const user = await ctx.prisma.user.findUnique({
+        const users = await ctx.prisma.user.findMany({
           where: { username: input.username },
         });
-        return { user };
-      } else return { user: null };
+        return { users };
+      } else return { users: null };
     }),
   create: t.procedure
     .input(
