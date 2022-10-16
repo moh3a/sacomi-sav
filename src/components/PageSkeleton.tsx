@@ -12,6 +12,7 @@ import Button from "./shared/Button";
 import Search from "./Search";
 import Create from "./create/Create";
 import CreateEntry from "./create/CreateEntry";
+import CreatePrestation from "./create/CreatePrestation";
 import { Collection, PageArchitecture } from "../types";
 
 interface PageSkeletonProps {
@@ -51,7 +52,9 @@ const PageSkeleton = ({
           </span>
         </h1>
         <div className="flex justify-center">
-          {(page.create_layout || page.collection === "entries") && (
+          {(page.create_layout ||
+            page.collection === "entries" ||
+            page.collection === "prestations") && (
             <div className="mx-1">
               <Button
                 onClick={() => setOpenCreateModal(!openCreateModal)}
@@ -88,6 +91,9 @@ const PageSkeleton = ({
         )}
         {page.collection === "entries" && (
           <CreateEntry setIsOpen={setOpenCreateModal} />
+        )}
+        {page.collection === "prestations" && (
+          <CreatePrestation setIsOpen={setOpenCreateModal} />
         )}
       </Modal>
       {page.search_layout && (

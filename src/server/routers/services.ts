@@ -92,20 +92,42 @@ export const prestationRouter = t.router({
         total_amount: z.string().nullish(),
         invoice: z.string().nullish(),
         client_name: z.string().nullish(),
+        services: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          let services = JSON.parse(JSON.stringify(input.services));
+
           const client = await ctx.prisma.client.findUnique({
             where: { name: input.client_name! },
             select: { id: true },
           });
           if (client) {
+            if (!input.prestation_date)
+              input.prestation_date = new Date().toISOString().substring(0, 10);
             delete input.client_name;
+            delete input.services;
             const prestation = await ctx.prisma.prestation.create({
               data: { ...input, clientId: client.id },
             });
+
+            let get_details = async () => {
+              if (prestation && services) {
+                for (const service of services) {
+                  if (service.designation) {
+                    await ctx.prisma.prestationDetails.create({
+                      data: {
+                        prestationId: prestation.id,
+                        ...service,
+                      },
+                    });
+                  }
+                }
+              }
+            };
+            await get_details();
             return {
               prestation,
               success: true,
