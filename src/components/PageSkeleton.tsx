@@ -3,7 +3,7 @@ import Head from "next/head";
 import { PlusIcon, SearchIcon } from "@heroicons/react/outline";
 
 import { ITEMS_PER_PAGE, PAGE_TITLE } from "../../lib/config";
-import { TEXT_GRADIENT } from "../../lib/design";
+import { TEXT_GRADIENT } from "./design";
 import Pagination from "./shared/Pagination";
 import Filters from "./layout/Filters";
 import Table from "./shared/Table";

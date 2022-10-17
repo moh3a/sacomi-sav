@@ -1,7 +1,7 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { SearchIcon } from "@heroicons/react/outline";
 
-import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../lib/design";
+import { TEXT_GRADIENT } from "./design";
 import Button from "./shared/Button";
 import TextInput from "./shared/TextInput";
 import { useRouter } from "next/router";
@@ -59,7 +59,7 @@ const Search = ({ title, layout, setIsOpen }: SearchProps) => {
         {layout.map((group, index) => (
           <div key={index}>
             {group.group_title && (
-              <div className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}>
+              <div className={`text-lg uppercase text-primary`}>
                 {group.group_title}
               </div>
             )}

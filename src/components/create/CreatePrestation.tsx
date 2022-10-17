@@ -6,6 +6,10 @@ import {
   useContext,
   useState,
 } from "react";
+import {
+  ExclamationCircleIcon,
+  PlusCircleIcon,
+} from "@heroicons/react/outline";
 import { useSelector } from "react-redux";
 import { Client } from "@prisma/client";
 
@@ -17,15 +21,11 @@ import { trpc } from "../../utils/trpc";
 import NotificationsContext from "../../utils/NotificationsContext";
 import Button from "../shared/Button";
 import LoadingSpinner from "../shared/LoadingSpinner";
-import {
-  ExclamationCircleIcon,
-  PlusCircleIcon,
-} from "@heroicons/react/outline";
-import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../../lib/design";
 import TextInput from "../shared/TextInput";
 import Autocomplete from "../shared/Autocomplete";
 import Tabs from "../shared/Tabs";
 import Rows from "../shared/Rows";
+import { TEXT_GRADIENT } from "../design";
 
 interface CreateProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -195,14 +195,12 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
         Créer | Prestation
       </h2>
 
-      <div className={`text-lg uppercase text-${PRIMARY_COLOR.light} `}>
+      <div className={`text-lg uppercase text-primary `}>
         ID de la prestation:{" "}
         <span className={`font-bold ${TEXT_GRADIENT} `}>{id}</span>
       </div>
 
-      <div className={`text-lg uppercase text-${PRIMARY_COLOR.light} `}>
-        Client
-      </div>
+      <div className={`text-lg uppercase text-primary `}>Client</div>
       <Tabs
         setSelectedTab={setSelectedTab}
         tabs={[
@@ -232,9 +230,7 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
                 {PAGE_ARCHITECTURE.clients.create_layout.map((group, index) => (
                   <div key={index}>
                     {group.group_title && (
-                      <div
-                        className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}
-                      >
+                      <div className={`text-lg uppercase text-primary`}>
                         {group.group_title}
                       </div>
                     )}
@@ -276,18 +272,14 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
         ]}
       />
 
-      <div className={`text-lg uppercase text-${PRIMARY_COLOR.light} `}>
-        Services
-      </div>
+      <div className={`text-lg uppercase text-primary `}>Services</div>
       <Rows
         initial_state={initial_service}
         state={services}
         setState={setServices}
       />
 
-      <div className={`text-lg uppercase text-${PRIMARY_COLOR.light} `}>
-        Infos
-      </div>
+      <div className={`text-lg uppercase text-primary `}>Infos</div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
         {state.map((field, index) => (
           <div key={field.field} className="flex items-center">

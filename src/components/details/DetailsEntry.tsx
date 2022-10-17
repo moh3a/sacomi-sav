@@ -1,6 +1,6 @@
 import { Client, Entry, Prisma } from "@prisma/client";
 import { useDispatch, useSelector } from "react-redux";
-import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../../lib/design";
+import { TEXT_GRADIENT } from "../design";
 import { selectSelectedId } from "../../redux/selectedIdSlice";
 import { selectSelectedOne, select_entry } from "../../redux/selectedOneSlice";
 import { formatFMDate } from "../../utils/filemaker/utils";
@@ -33,7 +33,7 @@ const DetailsEntry = () => {
       {selected_entry ? (
         <div className="lg:flex">
           <div className="my-4 mx-2 lg:flex-1">
-            <div className={`text-lg text-${PRIMARY_COLOR.light}`}>ENTREE</div>
+            <div className={`text-lg text-primary`}>ENTREE</div>
             <div className="text-lg">
               Numéro de bon{" "}
               <span className={`text-lg font-bold ${TEXT_GRADIENT}`}>
@@ -45,7 +45,7 @@ const DetailsEntry = () => {
             </div>
           </div>
           <div className="my-4 mx-2 lg:flex-1">
-            <div className={`text-lg text-${PRIMARY_COLOR.light}`}>CLIENT</div>
+            <div className={`text-lg text-primary`}>CLIENT</div>
             <div>
               <span className={`text-lg font-bold ${TEXT_GRADIENT}`}>
                 {selected_entry.client?.name}

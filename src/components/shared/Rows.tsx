@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 
-import { PRIMARY_COLOR, ROUNDED } from "../../../lib/design";
+import { ROUNDED } from "../design";
 import Button from "./Button";
 import TextInput from "./TextInput";
 import Autocomplete from "./Autocomplete";
@@ -68,7 +68,7 @@ const Rows = ({ initial_state, setState, state }: RowsProps) => {
         </div>
       ))}
       <div
-        className={`w-full flex justify-center border ${PRIMARY_COLOR.border} ${ROUNDED} my-1`}
+        className={`w-full flex justify-center border primary ${ROUNDED} my-1`}
       >
         <Button
           type="button"

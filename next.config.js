@@ -8,6 +8,10 @@ const nextConfig = {
   serverRuntimeConfig: {
     PROJECT_ROOT: __dirname,
   },
+  publicRuntimeConfig: {
+    HOST: process.env.HOST,
+    PORT: process.env.PORT,
+  },
 };
 
 module.exports = nextConfig;

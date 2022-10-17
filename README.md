@@ -13,7 +13,7 @@ The machine that will run this app should have installed:
 
 - Node.js [https://nodejs.org/en/]
 - Git [https://git-scm.com/downloads]
-- MySQL [https://www.mysql.com/downloads/] or Postgres [https://www.postgresql.org/download/]
+- Postgres [https://www.postgresql.org/download/] or MySQL [https://www.mysql.com/downloads/]
 
 ### Quickstart
 

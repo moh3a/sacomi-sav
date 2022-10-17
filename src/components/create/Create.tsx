@@ -7,7 +7,7 @@ import {
 } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 
-import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../../lib/design";
+import { TEXT_GRADIENT } from "../design";
 import Button from "../shared/Button";
 import TextInput from "../shared/TextInput";
 import { trpc } from "../../utils/trpc";
@@ -83,7 +83,7 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
         {layout.map((group, index) => (
           <div key={index}>
             {group.group_title && (
-              <div className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}>
+              <div className={`text-lg uppercase text-primary`}>
                 {group.group_title}
               </div>
             )}

@@ -1,6 +1,6 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import React, { Dispatch, SetStateAction, useState } from "react";
-import { PASSWORD_INPUT } from "../../../lib/design";
+import { PASSWORD_INPUT } from "../design";
 
 interface PasswordProps {
   id?: string;

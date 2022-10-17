@@ -27,7 +27,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   });
 
   return (
-    <div className="w-screen h-screen max-w-screen-2xl max-h-screen-2xl lg:overflow-hidden bg-gradient-to-r from-teal-100 via-rose-100 to-teal-100 dark:from-slate-900 dark:via-neutral-900 dark:to-slate-900">
+    <div className="w-screen h-screen max-w-screen-2xl max-h-screen-2xl lg:overflow-hidden bg-gradient-to-r from-primaryLight via-secondaryLight to-primaryLight dark:from-primaryDark dark:via-secondaryDark dark:to-primaryDark text-contentLight dark:text-contentDark ">
       <Toast />
       <Navbar />
       <main>{children}</main>

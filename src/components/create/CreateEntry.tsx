@@ -14,7 +14,7 @@ import {
 import { Client } from "@prisma/client";
 
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
-import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../../lib/design";
+import { TEXT_GRADIENT } from "../design";
 import Button from "../shared/Button";
 import TextInput from "../shared/TextInput";
 import Rows from "../shared/Rows";
@@ -156,14 +156,12 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
         Créer | Entrée
       </h2>
 
-      <div className={`text-lg uppercase text-${PRIMARY_COLOR.light} `}>
+      <div className={`text-lg uppercase text-primary `}>
         ID d&apos;entrée:{" "}
         <span className={`font-bold ${TEXT_GRADIENT} `}>{id}</span>
       </div>
 
-      <div className={`text-lg uppercase text-${PRIMARY_COLOR.light} `}>
-        Client
-      </div>
+      <div className={`text-lg uppercase text-primary `}>Client</div>
       <Tabs
         setSelectedTab={setSelectedTab}
         tabs={[
@@ -193,9 +191,7 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
                 {PAGE_ARCHITECTURE.clients.create_layout.map((group, index) => (
                   <div key={index}>
                     {group.group_title && (
-                      <div
-                        className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}
-                      >
+                      <div className={`text-lg uppercase text-primary`}>
                         {group.group_title}
                       </div>
                     )}
@@ -237,9 +233,7 @@ const CreateEntry = ({ setIsOpen }: CreateProps) => {
         ]}
       />
 
-      <div className={`text-lg uppercase text-${PRIMARY_COLOR.light} `}>
-        Entrées
-      </div>
+      <div className={`text-lg uppercase text-primary `}>Entrées</div>
       <Rows
         initial_state={initial_product}
         state={products}

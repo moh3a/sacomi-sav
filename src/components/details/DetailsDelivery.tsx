@@ -1,12 +1,10 @@
 import { Client, Delivery } from "@prisma/client";
 import { useDispatch, useSelector } from "react-redux";
-import { PRIMARY_COLOR, TEXT_GRADIENT } from "../../../lib/design";
 import { selectSelectedId } from "../../redux/selectedIdSlice";
 import {
   selectSelectedOne,
   select_delivery,
 } from "../../redux/selectedOneSlice";
-import { formatFMDate } from "../../utils/filemaker/utils";
 import { trpc } from "../../utils/trpc";
 import LoadingSpinner from "../shared/LoadingSpinner";
 
@@ -35,29 +33,25 @@ const DetailsDelivery = () => {
       {selected_delivery ? (
         <>
           <div className="my-4 mx-2">
-            <div className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}>
+            <div className={`text-lg uppercase text-primary`}>
               bon de livraison
             </div>
           </div>
           <div className="my-4 mx-2">
-            <div className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}>
-              client
-            </div>
+            <div className={`text-lg uppercase text-primary`}>client</div>
           </div>
           <div className="my-4 mx-2">
-            <div className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}>
+            <div className={`text-lg uppercase text-primary`}>
               bon de retour
             </div>
           </div>
           <div className="my-4 mx-2">
-            <div className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}>
+            <div className={`text-lg uppercase text-primary`}>
               contenu de la livraison
             </div>
           </div>
           <div className="my-4 mx-2">
-            <div className={`text-lg uppercase text-${PRIMARY_COLOR.light}`}>
-              infos
-            </div>
+            <div className={`text-lg uppercase text-primary`}>infos</div>
           </div>
         </>
       ) : (

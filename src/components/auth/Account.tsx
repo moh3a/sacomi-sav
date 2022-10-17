@@ -39,15 +39,13 @@ const Account = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-full shadow-md bg-gray-50 dark:bg-zinc-900 ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-full shadow-md bg-primaryLight dark:bg-primaryDark ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="p-1 ">
             <Menu.Item>
               {({ active }) => (
                 <button
                   className={classNames(
-                    active
-                      ? "bg-gray-200 text-gray-900 dark:bg-zinc-800 dark:text-white"
-                      : "text-gray-700 dark:text-gray-200",
+                    active ? "bg-secondaryLight  dark:bg-secondaryDark" : "",
                     "rounded-full w-full px-4 py-2 text-sm"
                   )}
                   onClick={() => signOut()}

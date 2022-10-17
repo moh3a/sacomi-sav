@@ -1,5 +1,5 @@
 import React from "react";
-import { BUTTON_VARIANTS, PADDING, ROUNDED, SHADOW } from "../../../lib/design";
+import { BUTTON_VARIANTS, PADDING, ROUNDED, SHADOW } from "../design";
 
 interface ButtonProps {
   variant?: "solid" | "outline";
@@ -41,7 +41,7 @@ const Button = ({
           : variant === "outline"
           ? BUTTON_VARIANTS.outline
           : className) +
-        (withShadow ? " " + SHADOW.light + ` dark:${SHADOW.dark}` : "") +
+        (withShadow ? " " + SHADOW : "") +
         (className ? className : ` ${PADDING} ${ROUNDED} `)
       }
       onClick={onClick}

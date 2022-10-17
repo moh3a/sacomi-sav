@@ -10,7 +10,7 @@ const LoadingSpinner = ({
         size === "medium" && "w-6 h-6"
       } ${
         size === "large" && "w-8 h-8"
-      } text-slate-100 dark:text-slate-900 fill-teal-600 animate-spin`}
+      } text-contentDark dark:text-contentDark fill-primary animate-spin`}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

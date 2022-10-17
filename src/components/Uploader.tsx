@@ -63,9 +63,9 @@ export const Uploader = () => {
         </div>
       )}
       {progress !== 0 && (
-        <div className="bg-neutral-200 mx-auto max-w-md rounded-full h-2.5 mt-4 dark:bg-neutral-800">
+        <div className="bg-primaryLight mx-auto max-w-md rounded-full h-2.5 mt-4 dark:bg-primaryDark">
           <div
-            className="bg-teal-500 h-2.5 rounded-full"
+            className="bg-primary h-2.5 rounded-full"
             style={{ width: progress + "%" }}
           />
         </div>
@@ -73,7 +73,7 @@ export const Uploader = () => {
       {message.type && (
         <div
           className={`mb-4 font-bold text-center ${
-            message.type === "success" ? "text-teal-500" : "text-red.500"
+            message.type === "success" ? "text-primary" : "text-danger"
           } italic`}
         >
           {message.text}

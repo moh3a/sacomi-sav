@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { TEXT_GRADIENT } from "../../../lib/design";
+import { SHADOW, TEXT_GRADIENT } from "../design";
 import { AuthenticationPageProps } from "../../types";
 import Button from "../shared/Button";
 import PasswordInput from "../shared/PasswordInput";
@@ -15,7 +15,7 @@ export default function SignIn({ csrfToken }: AuthenticationPageProps) {
       autoComplete="off"
       method="post"
       action="/api/auth/callback/credentials"
-      className="mx-auto my-8 p-4 max-w-lg flex-col rounded-2xl bg-white bg-opacity-50 dark:bg-black dark:bg-opacity-10 shadow-md shadow-teal-600"
+      className={` mx-auto my-8 p-4 max-w-lg flex-col rounded-2xl bg-white bg-opacity-50 dark:bg-black dark:bg-opacity-10 ${SHADOW} `}
     >
       <h1 className="text-center">
         <span className={`uppercase text-2xl font-bold ${TEXT_GRADIENT}`}>

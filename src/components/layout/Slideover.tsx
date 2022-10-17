@@ -7,11 +7,7 @@ import { XIcon } from "@heroicons/react/outline";
 
 import DarkMode from "../DarkMode";
 import { PAGES } from "../../../lib/config";
-import {
-  BG_GRADIENT,
-  PRIMARY_TEXT_COLOR,
-  TEXT_GRADIENT,
-} from "../../../lib/design";
+import { BG_GRADIENT, ROUNDED, TEXT_GRADIENT } from "../design";
 
 export default function Slideover({
   open,
@@ -62,7 +58,7 @@ export default function Slideover({
                     <div className="absolute top-0 right-0 -mr-8 flex pt-4 pl-2 sm:-mr-10 sm:pl-4">
                       <button
                         type="button"
-                        className="rounded-md text-slate-300 hover:text-slate-100 focus:outline-none focus:ring-2 focus:ring-white"
+                        className={`text-contentDark hover:text-primary ${ROUNDED} `}
                         onClick={() => setOpen(false)}
                       >
                         <span className="sr-only">Close panel</span>
@@ -86,7 +82,7 @@ export default function Slideover({
                                 key={page.name}
                                 className={`mx-4 font-bold ${
                                   router.asPath === page.url
-                                    ? `py-1 px-3 rounded-r-full ${PRIMARY_TEXT_COLOR.dark} dark:${PRIMARY_TEXT_COLOR.light} ${BG_GRADIENT}`
+                                    ? `py-1 px-3 rounded-r-full text-contentLight dark:text-contentDark ${BG_GRADIENT}`
                                     : TEXT_GRADIENT
                                 }`}
                               >

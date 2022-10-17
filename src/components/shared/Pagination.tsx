@@ -5,7 +5,7 @@ import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/solid";
-import { BG_GRADIENT_REVERSE, PRIMARY_COLOR } from "../../../lib/design";
+import { BG_GRADIENT } from "../design";
 import { useRouter } from "next/router";
 
 interface PaginationProps {
@@ -29,7 +29,7 @@ const PageNumber = ({
       onClick={() =>
         router.push({ href, query: { ...router.query, p: p?.toString() } })
       }
-      className={`relative cursor-pointer flex justify-center items-center w-8 h-8 mx-1 rounded-full border  ${BG_GRADIENT_REVERSE} text-sm  font-medium  hover:text-${PRIMARY_COLOR.light}`}
+      className={`relative cursor-pointer flex justify-center items-center w-8 h-8 mx-1 rounded-full border ${BG_GRADIENT} text-sm font-medium  hover:text-primary`}
     >
       {children}
     </a>

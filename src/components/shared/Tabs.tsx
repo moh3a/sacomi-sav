@@ -1,6 +1,6 @@
 import { Tab } from "@headlessui/react";
 import { Dispatch, ReactNode, SetStateAction } from "react";
-import { ROUNDED } from "../../../lib/design";
+import { ROUNDED } from "../design";
 
 interface TabsProps {
   tabs: { title: string; children: ReactNode }[];
@@ -22,8 +22,8 @@ export default function Tabs({ tabs, setSelectedTab }: TabsProps) {
             key={index}
             className={({ selected }) =>
               classNames(
-                "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-teal-600",
-                "ring-white ring-opacity-60 ring-offset-2 ring-offset-teal-400 focus:outline-none focus:ring-2",
+                "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-primary",
+                "ring-white ring-opacity-60 ring-offset-2 ring-offset-primary focus:outline-none focus:ring-2",
                 selected
                   ? "bg-white shadow"
                   : "text-teal-100 hover:bg-white/[0.12] hover:text-white"
@@ -41,7 +41,7 @@ export default function Tabs({ tabs, setSelectedTab }: TabsProps) {
             key={index}
             className={classNames(
               "p-3",
-              "ring-white ring-opacity-60 ring-offset-2 ring-offset-teal-400 focus:outline-none focus:ring-2"
+              "ring-white ring-opacity-60 ring-offset-2 ring-offset-primary focus:outline-none focus:ring-2"
             )}
           >
             {tab.children}

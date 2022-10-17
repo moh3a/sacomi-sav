@@ -7,6 +7,7 @@ import DarkMode from "../DarkMode";
 import Account from "../auth/Account";
 import Slideover from "./Slideover";
 import { useRouter } from "next/router";
+import { BG_GRADIENT_REVERSE, SHADOW } from "../design";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -29,7 +30,9 @@ const Navbar = () => {
         <Slideover open={sideOpen} setOpen={setSideOpen} />
         <div className="flex-1">
           <Link href="/" passHref>
-            <button className="inline px-2 py-1 -skew-y-6 font-bold text-slate-100 dark:text-slate-800 bg-gradient-to-r dark:from-rose-100 dark:to-teal-100 from-neutral-900 to-slate-900 shadow-md shadow-teal-600">
+            <button
+              className={`inline px-2 py-1 -skew-y-6 font-bold text-contentDark dark:text-contentLight ${BG_GRADIENT_REVERSE} ${SHADOW} `}
+            >
               SAV Thomson
             </button>
           </Link>
@@ -46,9 +49,9 @@ const Navbar = () => {
           {PAGES.map((page) => (
             <div
               key={page.name}
-              className={`mx-4 font-bold text-slate-600 hover:text-slate-800 dark:text-slate-100 dark:hover:text-slate-300 ${
+              className={`mx-4 font-bold hover:text-primary ${
                 router.asPath.includes(page.url) &&
-                "underline underline-offset-2 decoration-double decoration-teal-400 "
+                "underline underline-offset-2 decoration-double decoration-primary "
               }`}
             >
               <Link href={page.url}>{page.name}</Link>

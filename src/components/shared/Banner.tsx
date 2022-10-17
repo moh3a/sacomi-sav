@@ -8,11 +8,11 @@ const Banner = ({ type, message }: BannerProps) => {
     <div
       className={`w-full z-100 my-3 text-sm text-left text-white ${
         type === "success"
-          ? "bg-green-500"
+          ? "bg-success"
           : type === "warning"
-          ? "bg-yellow-500"
+          ? "bg-warning"
           : type === "error"
-          ? "bg-red-500"
+          ? "bg-danger"
           : "bg-grim"
       } h-12 flex items-center p-5`}
       role="alert"

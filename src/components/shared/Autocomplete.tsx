@@ -10,7 +10,7 @@ import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 
 import { trpc } from "../../utils/trpc";
-import { PRIMARY_COLOR, TEXT_INPUT } from "../../../lib/design";
+import { TEXT_INPUT } from "../design";
 import { Collection } from "../../types";
 
 interface AutocompleteProps {
@@ -93,7 +93,7 @@ const Autocomplete = ({
                   key={index}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? `bg-${PRIMARY_COLOR.light} text-white` : ""
+                      active ? `bg-primary text-white` : ""
                     }`
                   }
                   value={value}
@@ -110,7 +110,7 @@ const Autocomplete = ({
                       {selected ? (
                         <span
                           className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                            active ? "text-white" : "text-teal-600"
+                            active ? "text-white" : "text-primary"
                           }`}
                         >
                           <CheckIcon className="h-5 w-5" aria-hidden="true" />

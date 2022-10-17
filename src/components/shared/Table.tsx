@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
-import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import { useDispatch } from "react-redux";
+
 import { select_id } from "../../redux/selectedIdSlice";
+import { SHADOW } from "../design";
 
 interface TableProps {
   titles: { name: string; field?: string; isImage?: boolean }[];
@@ -51,7 +53,9 @@ const Table = ({
         } min-w-xl max-w-screen-2xl flex items-center justify-center font-sans text-xs`}
       >
         <div className={`w-full ${compact && "lg:w-5/6"}`}>
-          <div className="bg-opacity-75 bg-white dark:bg-black dark:bg-opacity-25 rounded-xl my-6 shadow-md shadow-teal-500">
+          <div
+            className={`bg-opacity-75 bg-white dark:bg-black dark:bg-opacity-25 rounded-xl my-6 ${SHADOW} `}
+          >
             <table className="min-w-max w-full table-auto">
               <thead>
                 <tr className="uppercase leading-normal">
@@ -68,7 +72,7 @@ const Table = ({
                 {data.map((row, index) => (
                   <tr
                     key={index}
-                    className="border-t border-slate-200 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800 max-w-xs cursor-pointer"
+                    className="border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark max-w-xs cursor-pointer"
                     onClick={() => rowClickHandler(row)}
                   >
                     {row.map((col, i) => {
@@ -82,9 +86,9 @@ const Table = ({
                                 className="cursor-pointer w-8 h-8 rounded-full"
                               />
                             ) : col === true ? (
-                              <CheckCircleIcon className="text-green-500 w-5 h-5 inline" />
+                              <CheckCircleIcon className="text-success w-5 h-5 inline" />
                             ) : col === false ? (
-                              <XCircleIcon className="text-red-500 w-5 h-5 inline" />
+                              <XCircleIcon className="text-danger w-5 h-5 inline" />
                             ) : (
                               trim(col)
                             )}

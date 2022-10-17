@@ -39,11 +39,11 @@ const FileUpload = ({
   return (
     <form ref={formRef}>
       <button
-        className={`bg-slate-100 hover:bg-slate-200 text-black p-2 font-bold rounded-full`}
+        className={`bg-secondaryLight hover:bg-slate-200 p-2 font-bold rounded-full`}
         type="button"
         onClick={onClickHandler}
       >
-        <UploadIcon className="h-5 w-5 text-teal-500" />
+        <UploadIcon className="h-5 w-5 text-primary" />
       </button>
       <input
         accept={acceptedFileTypes}

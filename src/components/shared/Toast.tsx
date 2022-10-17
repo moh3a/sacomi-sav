@@ -12,11 +12,11 @@ const Toast = () => {
         <div
           className={`absolute top-32 right-10 z-50 w-72 ${
             notification?.notification === NotificationStatus.Success
-              ? "bg-green-500"
+              ? "bg-success"
               : notification?.notification === NotificationStatus.Warning
-              ? "bg-yellow-500"
+              ? "bg-warning"
               : notification?.notification === NotificationStatus.Error
-              ? "bg-red-500"
+              ? "bg-danger"
               : "bg-grim"
           } text-sm text-white rounded-md shadow-lg mb-3 ml-3`}
           role="alert"
