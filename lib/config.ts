@@ -7,6 +7,7 @@ import {
   Prestation,
   Prisma,
   Product,
+  Transaction,
   User,
 } from "@prisma/client";
 import { PageArchitecture } from "../src/types";
@@ -407,14 +408,49 @@ export const PAGE_ARCHITECTURE = {
   caisse: {
     title: "Caisse",
     table_titles: [
-      { name: "Date", field: "balance_detail.date" },
-      { name: "ID Prest", field: "balance_detail.prestation.prestation_id" },
-      { name: "Client", field: "balance_detail.prestation.client_name" },
-      { name: "Chèque", field: "balance_detail.check" },
-      { name: "Recette", field: "balance_detail.cash.income" },
-      { name: "Dépense", field: "balance_detail.cash.expense" },
-      { name: "Solde", field: "balance_detail.balance" },
+      { name: "Date", field: "date" },
+      { name: "ID Prest", field: "prestation_id" },
+      { name: "Client / Titre", field: "client_name" },
+      { name: "Chèque", field: "check" },
+      { name: "Recette", field: "income" },
+      { name: "Dépense", field: "expense" },
+      { name: "Solde", field: "balance" },
     ],
-    table_data: (data: any) => data,
+    table_data: (data: any) =>
+      data.map(
+        (
+          transaction: Transaction & {
+            prestation: Prestation & { client: Client };
+          }
+        ) => {
+          return [
+            transaction.id,
+            transaction.date.toISOString().substring(0, 10),
+            transaction.prestation.prestation_id || "",
+            transaction.prestation.client.name || transaction.title,
+            transaction.type === "CHEQUE" ? true : false,
+            transaction.type === "INCOME" ? true : false,
+            transaction.type === "EXPENSE" ? true : false,
+            transaction.amount,
+          ];
+        }
+      ),
+    create_layout: [
+      {
+        group_title: "Infos",
+        group_fields: [
+          { name: "Date", field: "date" },
+          { name: "ID de la Prestation", field: "prestation_id" },
+          { name: "Titre", field: "title" },
+        ],
+      },
+      {
+        group_title: "Montant",
+        group_fields: [
+          { name: "Type", field: "type", radio: true },
+          { name: "Montant", field: "amount" },
+        ],
+      },
+    ],
   },
 };

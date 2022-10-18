@@ -9,6 +9,7 @@ const initialState = {
   selected_orders: [],
   selected_products: [],
   selected_prestations: [],
+  selected_transactions: [],
 };
 
 export const selectedAllSlice = createSlice({
@@ -36,6 +37,9 @@ export const selectedAllSlice = createSlice({
     select_prestations: (state, action) => {
       state.selected_prestations = action.payload;
     },
+    select_transactions: (state, action) => {
+      state.selected_transactions = action.payload;
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -49,6 +53,7 @@ export const {
   select_orders,
   select_prestations,
   select_products,
+  select_transactions,
 } = selectedAllSlice.actions;
 
 export default selectedAllSlice.reducer;

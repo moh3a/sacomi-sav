@@ -6,6 +6,7 @@ import { orderRouter } from "./orders";
 import { productRouter } from "./products";
 import { prestationRouter } from "./services";
 import { jobRouter } from "./jobs";
+import { transactionRouter } from "./transactions";
 import { userRouter } from "./users";
 import { configRouter } from "./config";
 
@@ -22,6 +23,7 @@ export const appRouter = t.router({
   products: productRouter,
   prestations: prestationRouter,
   jobs: jobRouter,
+  transactions: transactionRouter,
   users: userRouter,
 });
 

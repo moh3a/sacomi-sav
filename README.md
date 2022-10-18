@@ -2,9 +2,10 @@
 
 ### Todo
 
+- finish up transactions
 - style notifications toast
 - add features to the create column: datepickers, radio
-- create the rest of the models (deliveries, staff, caisse)
+- create the rest of the models (deliveries, staff)
 
 ### Prerequisites
 
