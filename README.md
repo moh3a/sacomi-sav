@@ -3,9 +3,8 @@
 ### Todo
 
 - style notifications toast
-- add features to the create column: checkboxes, datepickers, radio
-- create the rest of the models (deliveries, staff)
-- create db model for: caisse
+- add features to the create column: datepickers, radio
+- create the rest of the models (deliveries, staff, caisse)
 
 ### Prerequisites
 

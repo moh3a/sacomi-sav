@@ -4,6 +4,7 @@ import {
   Fragment,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import {
@@ -26,6 +27,7 @@ import Autocomplete from "../shared/Autocomplete";
 import Tabs from "../shared/Tabs";
 import Rows from "../shared/Rows";
 import { TEXT_GRADIENT } from "../design";
+import Checkbox from "../shared/Checkbox";
 
 interface CreateProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -74,26 +76,32 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
       name: "Désignation",
       field: "designation",
       value: "",
+      type: "text",
     },
     {
       name: "Quantité",
       field: "quantity",
       value: "",
+      size: 4,
+      type: "number",
     },
     {
       name: "HT",
       field: "price_ht",
       value: "",
+      type: "number",
     },
     {
       name: "TTC",
       field: "price_ttc",
       value: "",
+      type: "number",
     },
     {
       name: "Sous-total",
       field: "subtotal",
       value: "",
+      type: "number",
     },
   ];
   const [services, setServices] = useState([initial_service]);
@@ -104,6 +112,13 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
       name: "Payé",
       field: "is_paid",
       value: "",
+      checkbox: true,
+    },
+    {
+      name: "A facturer",
+      field: "to_bill",
+      value: "",
+      checkbox: true,
     },
     {
       name: "Date d'encaissement",
@@ -113,11 +128,6 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
     {
       name: "Date de récupération",
       field: "recovery_date",
-      value: "",
-    },
-    {
-      name: "A facturer",
-      field: "to_bill",
       value: "",
     },
     {
@@ -283,19 +293,40 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
         {state.map((field, index) => (
           <div key={field.field} className="flex items-center">
-            <div className="w-36">{field.name}</div>
-            <TextInput
-              placeholder={field.name}
-              value={field.value}
-              onChange={(e) =>
-                setState(
-                  state.map((f, i) => {
-                    if (i === index) f.value = e.target.value;
-                    return f;
-                  })
-                )
-              }
-            />
+            {field.checkbox ? (
+              <Checkbox
+                checked={field.value ? true : false}
+                label={field.name}
+                tabIndex={index}
+                onChange={(e) =>
+                  setState(
+                    state.map((f, i) => {
+                      if (i === index) f.value = e.target.checked;
+                      return f;
+                    })
+                  )
+                }
+              />
+            ) : (
+              <>
+                <div className={field.size ? "" : "w-36"}>{field.name}</div>
+                <TextInput
+                  placeholder={field.name}
+                  value={field.value}
+                  onChange={(e) =>
+                    setState(
+                      state.map((f, i) => {
+                        if (i === index) f.value = e.target.value;
+                        return f;
+                      })
+                    )
+                  }
+                  type={field.type}
+                  size={field.size}
+                  tabIndex={index}
+                />
+              </>
+            )}
           </div>
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, HTMLInputTypeAttribute, SetStateAction } from "react";
 
 export interface DetailsProps {
   id: number;
@@ -55,9 +55,12 @@ export interface Column {
   name: string;
   field: string;
   collection?: Collection["name"];
-  value: string;
+  value: any;
   autocomplete?: boolean;
+  checkbox?: boolean;
   index?: boolean;
+  size?: number;
+  type?: HTMLInputTypeAttribute;
 }
 
 export interface IUser {

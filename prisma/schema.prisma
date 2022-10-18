@@ -181,6 +181,7 @@ model Prestation {
   createdAt         DateTime?           @default(now())
   updatedAt         DateTime?           @updatedAt
   PrestationDetails PrestationDetails[]
+  Transactions      Transaction[]
 
   @@index([prestation_id])
 }
@@ -210,7 +211,25 @@ model Config {
   // id           Int       @id @default(autoincrement()) // ! mysql
   current_entries_id     String
   current_deliveries_id  String
-  current_jobs_id        Int
   current_orders_id      String
   current_prestations_id String
+  current_jobs_id        Int
+  current_balance        Int
+}
+
+model Transaction {
+  id           String          @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
+  date         DateTime        @db.Date
+  type         TransactionType
+  title        String?
+  prestationId String?
+  prestation   Prestation?     @relation(fields: [prestationId], references: [id])
+  amount       Int
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  CHEQUE
 }

@@ -6,6 +6,7 @@ import Button from "./Button";
 import TextInput from "./TextInput";
 import Autocomplete from "./Autocomplete";
 import { Column } from "../../types";
+import NumberInput from "./NumberInput";
 
 interface RowsProps {
   initial_state: Column[];
@@ -42,6 +43,27 @@ const Rows = ({ initial_state, setState, state }: RowsProps) => {
                       );
                     }}
                   />
+                ) : col.type === "number" ? (
+                  <NumberInput
+                    placeholder={col.name}
+                    value={col.value}
+                    readOnly={col.index}
+                    onChange={(event) =>
+                      setState(
+                        state.map((r, i) => {
+                          if (row_index === i)
+                            r = r.map((c, j) => {
+                              if (c.index) c.value = String(row_index + 1);
+                              if (col_index === j)
+                                c.value = event.target.value.toUpperCase();
+                              return c;
+                            });
+                          return r;
+                        })
+                      )
+                    }
+                    type={col.type}
+                  />
                 ) : (
                   <TextInput
                     placeholder={col.name}
@@ -61,6 +83,8 @@ const Rows = ({ initial_state, setState, state }: RowsProps) => {
                         })
                       )
                     }
+                    type={col.type}
+                    size={col.size}
                   />
                 )}
               </div>
