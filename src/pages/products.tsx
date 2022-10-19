@@ -39,7 +39,7 @@ const Products = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.products as PageArchitecture}
+      page={PAGE_ARCHITECTURE.products}
       data={selected_products}
       current_page={Number(p) || 0}
       total_items={totalItems}

@@ -39,7 +39,7 @@ const Orders = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.orders as PageArchitecture}
+      page={PAGE_ARCHITECTURE.orders}
       data={selected_orders}
       current_page={Number(p) || 0}
       total_items={totalItems}

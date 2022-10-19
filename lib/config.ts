@@ -10,7 +10,7 @@ import {
   Transaction,
   User,
 } from "@prisma/client";
-import { PageArchitecture } from "../src/types";
+import { Collection, PageArchitecture } from "../src/types";
 import { formatFMDate, formatFMTime } from "../src/utils/filemaker/utils";
 
 export const ENTREPRISE_NAME = "Sacomi";
@@ -48,7 +48,9 @@ export const PAGES = [
   { name: "Paramètres", url: "/settings" },
 ];
 
-export const PAGE_ARCHITECTURE = {
+type PageEntry<T extends {}> = { [K in Collection["name"]]: T };
+
+export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
   // ENTREES
   entries: {
     title: "Entrées",
@@ -82,13 +84,13 @@ export const PAGE_ARCHITECTURE = {
       {
         group_title: "Entrée",
         group_fields: [
-          { name: "ID Entrée", field: "entry_id" },
-          { name: "Date d'entrée", field: "entry_date" },
+          { name: "ID Entrée", field: "entry_id", value: "" },
+          { name: "Date d'entrée", field: "entry_date", value: "" },
         ],
       },
       {
         group_title: "Client",
-        group_fields: [{ name: "Nom du client", field: "name" }],
+        group_fields: [{ name: "Nom du client", field: "name", value: "" }],
       },
     ],
   },
@@ -115,8 +117,8 @@ export const PAGE_ARCHITECTURE = {
     search_layout: [
       {
         group_fields: [
-          { name: "Nom du client", field: "name" },
-          { name: "Type du client", field: "type" },
+          { name: "Nom du client", field: "name", value: "" },
+          { name: "Type du client", field: "type", value: "" },
         ],
       },
     ],
@@ -124,18 +126,18 @@ export const PAGE_ARCHITECTURE = {
       {
         group_title: "Infos",
         group_fields: [
-          { name: "Nom du client", field: "name" },
-          { name: "Revendeur / Particulier", field: "type" },
-          { name: "Etat du client", field: "status" },
+          { name: "Nom du client", field: "name", value: "" },
+          { name: "Revendeur / Particulier", field: "type", value: "" },
+          { name: "Etat du client", field: "status", value: "" },
         ],
       },
       {
         group_title: "Contact",
         group_fields: [
-          { name: "Numéro du téléphone", field: "phone_number" },
-          { name: "Contact", field: "contact" },
-          { name: "Addresse", field: "address" },
-          { name: "Wilaya", field: "wilaya" },
+          { name: "Numéro du téléphone", field: "phone_number", value: "" },
+          { name: "Contact", field: "contact", value: "" },
+          { name: "Addresse", field: "address", value: "" },
+          { name: "Wilaya", field: "wilaya", value: "" },
         ],
       },
     ],
@@ -161,18 +163,18 @@ export const PAGE_ARCHITECTURE = {
     search_layout: [
       {
         group_fields: [
-          { name: "Type du produit", field: "product_type" },
-          { name: "Marque du produit", field: "product_brand" },
-          { name: "Modèle du produit", field: "product_model" },
+          { name: "Type du produit", field: "product_type", value: "" },
+          { name: "Marque du produit", field: "product_brand", value: "" },
+          { name: "Modèle du produit", field: "product_model", value: "" },
         ],
       },
     ],
     create_layout: [
       {
         group_fields: [
-          { name: "Type du produit", field: "product_type" },
-          { name: "Marque du produit", field: "product_brand" },
-          { name: "Modèle du produit", field: "product_model" },
+          { name: "Type du produit", field: "product_type", value: "" },
+          { name: "Marque du produit", field: "product_brand", value: "" },
+          { name: "Modèle du produit", field: "product_model", value: "" },
         ],
       },
     ],
@@ -211,13 +213,13 @@ export const PAGE_ARCHITECTURE = {
       {
         group_title: "BL",
         group_fields: [
-          { name: "ID du BL", field: "delivery_id" },
-          { name: "Date du BL", field: "delivery_date" },
+          { name: "ID du BL", field: "delivery_id", value: "" },
+          { name: "Date du BL", field: "delivery_date", value: "" },
         ],
       },
       {
         group_title: "Client",
-        group_fields: [{ name: "Nom du client", field: "name" }],
+        group_fields: [{ name: "Nom du client", field: "name", value: "" }],
       },
     ],
   },
@@ -248,18 +250,23 @@ export const PAGE_ARCHITECTURE = {
     search_layout: [
       {
         group_fields: [
-          { name: "ID de la commande", field: "order_id" },
-          { name: "Date de la commande", field: "order_date" },
-          { name: "Contenu de la commande", field: "order_content" },
+          { name: "ID de la commande", field: "order_id", value: "" },
+          { name: "Date de la commande", field: "order_date", value: "" },
+          { name: "Contenu de la commande", field: "order_content", value: "" },
         ],
       },
     ],
     create_layout: [
       {
         group_fields: [
-          { name: "ID de la commande", field: "order_id", autogenerated: true },
-          { name: "Date de la commande", field: "order_date" },
-          { name: "Contenu de la commande", field: "order_content" },
+          {
+            name: "ID de la commande",
+            field: "order_id",
+            value: "",
+            autogenerated: true,
+          },
+          { name: "Date de la commande", field: "order_date", value: "" },
+          { name: "Contenu de la commande", field: "order_content", value: "" },
         ],
       },
     ],
@@ -304,11 +311,15 @@ export const PAGE_ARCHITECTURE = {
     search_layout: [
       {
         group_fields: [
-          { name: "ID Prestation", field: "prestation_id" },
-          { name: "Date de la prestation", field: "prestation_date" },
-          { name: "Nom du client", field: "name" },
-          { name: "Prestation payée", field: "is_paid" },
-          { name: "Date du paiement", field: "payment_date" },
+          { name: "ID Prestation", field: "prestation_id", value: "" },
+          {
+            name: "Date de la prestation",
+            field: "prestation_date",
+            value: "",
+          },
+          { name: "Nom du client", field: "name", value: "" },
+          { name: "Prestation payée", field: "is_paid", value: "" },
+          { name: "Date du paiement", field: "payment_date", value: "" },
         ],
       },
     ],
@@ -359,32 +370,34 @@ export const PAGE_ARCHITECTURE = {
       {
         group_title: "Entrée",
         group_fields: [
-          { name: "Date d'entrée", field: "entry_date" },
-          { name: "ID d'entrée", field: "entry_id" },
+          { name: "Date d'entrée", field: "entry_date", value: "" },
+          { name: "ID d'entrée", field: "entry_id", value: "" },
         ],
       },
       {
         group_title: "Client",
-        group_fields: [{ name: "Nom du client", field: "name" }],
+        group_fields: [{ name: "Nom du client", field: "name", value: "" }],
       },
       {
         group_title: "Produit",
-        group_fields: [{ name: "Modèle du produit", field: "product_model" }],
+        group_fields: [
+          { name: "Modèle du produit", field: "product_model", value: "" },
+        ],
       },
       {
         group_title: "Intervention",
         group_fields: [
-          { name: "Numéro de série", field: "serial_number" },
-          { name: "Diagnostique", field: "diagnostics" },
-          { name: "Technicien", field: "technician" },
-          { name: "Etat", field: "status" },
-          { name: "Date de sortie", field: "exit_date" },
+          { name: "Numéro de série", field: "serial_number", value: "" },
+          { name: "Diagnostique", field: "diagnostics", value: "" },
+          { name: "Technicien", field: "technician", value: "" },
+          { name: "Etat", field: "status", value: "" },
+          { name: "Date de sortie", field: "exit_date", value: "" },
         ],
       },
     ],
   },
   // STAFF
-  staff: {
+  users: {
     title: "Personnel SAV",
     collection: "users",
     table_titles: [
@@ -405,8 +418,9 @@ export const PAGE_ARCHITECTURE = {
       }),
   },
   // CAISSE
-  caisse: {
+  transactions: {
     title: "Caisse",
+    collection: "transactions",
     table_titles: [
       { name: "Date", field: "date" },
       { name: "ID Prest", field: "prestation_id" },
@@ -414,7 +428,7 @@ export const PAGE_ARCHITECTURE = {
       { name: "Chèque", field: "check" },
       { name: "Recette", field: "income" },
       { name: "Dépense", field: "expense" },
-      { name: "Solde", field: "balance" },
+      { name: "Solde [DZD]", field: "balance" },
     ],
     table_data: (data: any) =>
       data.map(
@@ -426,8 +440,10 @@ export const PAGE_ARCHITECTURE = {
           return [
             transaction.id,
             transaction.date.toISOString().substring(0, 10),
-            transaction.prestation.prestation_id || "",
-            transaction.prestation.client.name || transaction.title,
+            (transaction.prestation && transaction.prestation.prestation_id) ||
+              "",
+            (transaction.prestation && transaction.prestation.client.name) ||
+              transaction.title,
             transaction.type === "CHEQUE" ? true : false,
             transaction.type === "INCOME" ? true : false,
             transaction.type === "EXPENSE" ? true : false,
@@ -439,16 +455,20 @@ export const PAGE_ARCHITECTURE = {
       {
         group_title: "Infos",
         group_fields: [
-          { name: "Date", field: "date" },
-          { name: "ID de la Prestation", field: "prestation_id" },
-          { name: "Titre", field: "title" },
+          { name: "ID de la Prestation", field: "prestation_id", value: "" },
+          { name: "Titre", field: "title", value: "" },
         ],
       },
       {
         group_title: "Montant",
         group_fields: [
-          { name: "Type", field: "type", radio: true },
-          { name: "Montant", field: "amount" },
+          { name: "Type", field: "type", value: "", radio: true },
+          {
+            name: "Montant HT [DZD]",
+            field: "amount",
+            value: 0,
+            type: "number",
+          },
         ],
       },
     ],

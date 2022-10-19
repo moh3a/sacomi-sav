@@ -11,6 +11,7 @@ const nextConfig = {
   publicRuntimeConfig: {
     HOST: process.env.HOST,
     PORT: process.env.PORT,
+    WORK_ENV: process.env.WORK_ENV,
   },
 };
 

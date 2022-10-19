@@ -48,9 +48,10 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
   // NEW CLIENT STATE
   const get_client_state = () => {
     let s: any = {};
-    PAGE_ARCHITECTURE.clients.create_layout.forEach((group) => {
-      group.group_fields.forEach((field) => (s[field.field] = ""));
-    });
+    if (PAGE_ARCHITECTURE.clients.create_layout)
+      PAGE_ARCHITECTURE.clients.create_layout.forEach((group) => {
+        group.group_fields.forEach((field) => (s[field.field] = ""));
+      });
     return s;
   };
   const [newClient, setNewClient] = useState(get_client_state());
@@ -237,45 +238,49 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
             title: "Créer un nouveau client!",
             children: (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
-                {PAGE_ARCHITECTURE.clients.create_layout.map((group, index) => (
-                  <div key={index}>
-                    {group.group_title && (
-                      <div className={`text-lg uppercase text-primary`}>
-                        {group.group_title}
-                      </div>
-                    )}
-                    {group.group_fields.map((field) => (
-                      <Fragment key={field.field}>
-                        {field.field === "name" && newClientError && (
-                          <div className="font-bold text-red-600">
-                            <ExclamationCircleIcon
-                              className="h-4 w-4 inline mr-1"
-                              aria-hidden="true"
-                            />
-                            {newClientError}
+                {PAGE_ARCHITECTURE.clients.create_layout &&
+                  PAGE_ARCHITECTURE.clients.create_layout.map(
+                    (group, index) => (
+                      <div key={index}>
+                        {group.group_title && (
+                          <div className={`text-lg uppercase text-primary`}>
+                            {group.group_title}
                           </div>
                         )}
-                        <div className="my-4 mx-2 flex items-center">
-                          <div className="w-36">{field.name}</div>
-                          <TextInput
-                            placeholder={field.name}
-                            value={newClient[field.field]}
-                            onChange={(e) => {
-                              field.field === "name" && setNewClientError("");
-                              setNewClient({
-                                ...newClient,
-                                [field.field]: e.target.value.toUpperCase(),
-                              });
-                            }}
-                            onBlur={() =>
-                              field.field === "name" && checkClientExists()
-                            }
-                          />
-                        </div>
-                      </Fragment>
-                    ))}
-                  </div>
-                ))}
+                        {group.group_fields.map((field) => (
+                          <Fragment key={field.field}>
+                            {field.field === "name" && newClientError && (
+                              <div className="font-bold text-red-600">
+                                <ExclamationCircleIcon
+                                  className="h-4 w-4 inline mr-1"
+                                  aria-hidden="true"
+                                />
+                                {newClientError}
+                              </div>
+                            )}
+                            <div className="my-4 mx-2 flex items-center">
+                              <div className="w-36">{field.name}</div>
+                              <TextInput
+                                placeholder={field.name}
+                                value={newClient[field.field]}
+                                onChange={(e) => {
+                                  field.field === "name" &&
+                                    setNewClientError("");
+                                  setNewClient({
+                                    ...newClient,
+                                    [field.field]: e.target.value.toUpperCase(),
+                                  });
+                                }}
+                                onBlur={() =>
+                                  field.field === "name" && checkClientExists()
+                                }
+                              />
+                            </div>
+                          </Fragment>
+                        ))}
+                      </div>
+                    )
+                  )}
               </div>
             ),
           },

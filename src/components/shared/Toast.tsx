@@ -10,26 +10,37 @@ const Toast = () => {
     <>
       {notification?.notification !== NotificationStatus.None && (
         <div
-          className={`absolute top-32 right-10 z-50 w-72 ${
+          className={`absolute top-32 right-10 z-50 w-72 font-bold text-black dark:text-white bg-white dark:bg-black bg-opacity-75 dark:bg-opacity-25 rounded-xl mb-3 ml-3 shadow-md ${
             notification?.notification === NotificationStatus.Success
-              ? "bg-success"
+              ? "shadow-success/50"
               : notification?.notification === NotificationStatus.Warning
-              ? "bg-warning"
+              ? "shadow-warning/50"
               : notification?.notification === NotificationStatus.Error
-              ? "bg-danger"
-              : "bg-grim"
-          } text-sm text-white rounded-md shadow-lg mb-3 ml-3`}
+              ? "shadow-danger/50"
+              : "shadow-black/50"
+          } `}
           role="alert"
         >
-          <div className="flex p-4">
-            <span className="overflow-hidden">
+          <div className="flex">
+            <div
+              className={`rounded-l-xl w-4 ${
+                notification?.notification === NotificationStatus.Success
+                  ? "bg-success"
+                  : notification?.notification === NotificationStatus.Warning
+                  ? "bg-warning"
+                  : notification?.notification === NotificationStatus.Error
+                  ? "bg-danger"
+                  : "bg-grim"
+              } bg-opacity-75 dark:bg-opacity-25 `}
+            ></div>
+            <span className="overflow-hidden p-4">
               {notification?.notificationText}
             </span>
-            <div className="ml-auto">
+            <div className="ml-auto p-4">
               <button
                 onClick={() => notification?.clear()}
                 type="button"
-                className="inline-flex flex-shrink-0 justify-center items-center h-4 w-4 rounded-md text-white/[.5] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-600 transition-all text-sm dark:focus:ring-offset-gray-900 dark:focus:ring-gray-800"
+                className="inline-flex flex-shrink-0 justify-center items-center h-4 w-4 rounded-md text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-600 transition-all text-sm dark:focus:ring-offset-gray-900 dark:focus:ring-gray-800"
               >
                 <span className="sr-only">Close</span>
                 <svg

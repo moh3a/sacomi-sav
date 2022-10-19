@@ -62,7 +62,7 @@ const Jobs = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.jobs as PageArchitecture}
+      page={PAGE_ARCHITECTURE.jobs}
       data={selected_jobs}
       current_page={Number(p) || 0}
       total_items={totalItems}

@@ -24,7 +24,7 @@ const Staff = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.staff as PageArchitecture}
+      page={PAGE_ARCHITECTURE.users}
       data={data}
       current_page={Number(p) || 0}
       total_items={totalItems}

@@ -35,7 +35,7 @@ const Entries = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.entries as PageArchitecture}
+      page={PAGE_ARCHITECTURE.entries}
       data={selected_entries}
       current_page={Number(p) || 0}
       total_items={totalItems}

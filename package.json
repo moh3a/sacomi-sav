@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:local": "node src/utils/set_env.js && dotenv -- cross-var next dev -H %HOST%",
+    "dev:local": "node src/utils/set_env.js && dotenv -- cross-var WORK_ENV=local next dev -H %HOST%",
     "build": "next build",
     "start": "next start",
-    "start:local": "node src/utils/set_env.js && dotenv -- cross-var next start -H %HOST%",
+    "start:local": "node src/utils/set_env.js && dotenv -- cross-var WORK_ENV=local next start -H %HOST%",
     "lint": "next lint"
   },
   "dependencies": {

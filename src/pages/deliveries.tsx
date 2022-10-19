@@ -42,7 +42,7 @@ const Deliveries = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.deliveries as PageArchitecture}
+      page={PAGE_ARCHITECTURE.deliveries}
       data={selected_deliveries}
       current_page={Number(p) || 0}
       total_items={totalItems}

@@ -30,7 +30,7 @@ const Clients = () => {
 
   return (
     <PageSkeleton
-      page={PAGE_ARCHITECTURE.clients as PageArchitecture}
+      page={PAGE_ARCHITECTURE.clients}
       data={selected_clients}
       current_page={Number(p) || 0}
       total_items={totalItems}

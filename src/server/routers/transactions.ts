@@ -22,6 +22,7 @@ export const transactionRouter = t.router({
               },
             },
           },
+          orderBy: { id: "desc" },
           skip: input.p * ITEMS_PER_PAGE,
           take: ITEMS_PER_PAGE,
         });
@@ -40,21 +41,20 @@ export const transactionRouter = t.router({
         return { transaction };
       } else return { transaction: null };
     }),
-  //   byUnique: t.procedure
-  //     .input(z.object({ name: z.string() }))
-  //     .mutation(async ({ ctx, input }) => {
-  //       if (ctx.session) {
-  //         const transactions = await ctx.prisma.transaction.findMany({
-  //           where: { name: { contains: input.name.toUpperCase() } },
-  //           take: 20,
-  //         });
-  //         return { transactions };
-  //       } else return { transactions: null };
-  //     }),
+  byUnique: t.procedure
+    .input(z.object({ name: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const transactions = await ctx.prisma.transaction.findMany({
+          where: { type: "EXPENSE" },
+          take: 20,
+        });
+        return { transactions };
+      } else return { transactions: null };
+    }),
   create: t.procedure
     .input(
       z.object({
-        date: z.string(),
         prestation_id: z.string().nullish(),
         title: z.string().nullish(),
         type: z.enum(["INCOME", "EXPENSE", "CHEQUE"]),
@@ -80,6 +80,18 @@ export const transactionRouter = t.router({
               ...input,
             },
           });
+          if (transaction.type === "EXPENSE") {
+            await ctx.prisma.config.update({
+              where: { id: "config" },
+              data: { current_balance: { decrement: transaction.amount } },
+            });
+          }
+          if (transaction.type === "INCOME") {
+            await ctx.prisma.config.update({
+              where: { id: "config" },
+              data: { current_balance: { increment: transaction.amount } },
+            });
+          }
           return {
             transaction,
             success: true,

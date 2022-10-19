@@ -3,7 +3,10 @@ import { getCsrfToken } from "next-auth/react";
 
 import Auth from "../components/auth/Auth";
 import Banner from "../components/shared/Banner";
-import { AuthenticationPageProps } from "../types";
+
+export interface AuthenticationPageProps {
+  csrfToken: string | undefined;
+}
 
 const Authentication = ({ csrfToken }: AuthenticationPageProps) => {
   const router = useRouter();

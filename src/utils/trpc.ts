@@ -5,7 +5,7 @@ import superjson from "superjson";
 
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
-const { PORT, HOST } = publicRuntimeConfig;
+const { PORT, HOST, WORK_ENV } = publicRuntimeConfig;
 
 function getBaseUrl() {
   if (typeof window !== "undefined")
@@ -17,7 +17,8 @@ function getBaseUrl() {
     return `https://${process.env.VERCEL_URL}`;
 
   // assume localhost
-  return `http://${HOST ?? "localhost"}:${PORT ?? 3000}`;
+  if (WORK_ENV) return `http://${HOST ?? "localhost"}:${PORT ?? 3000}`;
+  return `http://localhost:3000`;
 }
 
 export const trpc = createTRPCNext<AppRouter>({

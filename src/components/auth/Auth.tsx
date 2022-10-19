@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { SHADOW, TEXT_GRADIENT } from "../design";
-import { AuthenticationPageProps } from "../../types";
+import { AuthenticationPageProps } from "../../pages/auth";
 import Button from "../shared/Button";
 import PasswordInput from "../shared/PasswordInput";
 import TextInput from "../shared/TextInput";

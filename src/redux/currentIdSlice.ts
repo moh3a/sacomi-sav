@@ -7,6 +7,7 @@ const initialState = {
   current_jobs_id: 0,
   current_orders_id: "",
   current_prestations_id: "",
+  current_balance: 0,
 };
 
 export const currentIdSlice = createSlice({
@@ -19,6 +20,7 @@ export const currentIdSlice = createSlice({
       state.current_jobs_id = action.payload.current_jobs_id;
       state.current_orders_id = action.payload.current_orders_id;
       state.current_prestations_id = action.payload.current_prestations_id;
+      state.current_balance = action.payload.current_balance;
     },
   },
   extraReducers: (builder) => {},

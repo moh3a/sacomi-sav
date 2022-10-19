@@ -220,7 +220,7 @@ model Config {
 model Transaction {
   id           String          @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
-  date         DateTime        @db.Date
+  date         DateTime        @default(now()) @db.Date
   type         TransactionType
   title        String?
   prestationId String?
