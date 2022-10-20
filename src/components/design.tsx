@@ -18,5 +18,5 @@ export const BUTTON_VARIANTS = {
 /**
  * INPUTS
  */
-export const TEXT_INPUT = ` caret-primary border border-primary focus:outline outline-primary ${ROUNDED} ${PADDING} `;
+export const TEXT_INPUT = ` caret-primary border border-primary focus:outline outline-primary bg-primaryLight dark:bg-primaryDark ${ROUNDED} ${PADDING} `;
 export const PASSWORD_INPUT = ` caret-primary border border-primary focus:outline outline-primary ${ROUNDED} ${PADDING} `;

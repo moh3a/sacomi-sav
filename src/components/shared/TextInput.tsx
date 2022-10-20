@@ -16,6 +16,7 @@ interface InputProps {
   onKeyUp?: () => void;
   tabIndex?: number;
   className?: string;
+  required?: boolean;
 }
 
 const TextInput = ({
@@ -33,11 +34,13 @@ const TextInput = ({
   id,
   name,
   size,
+  required,
 }: InputProps) => {
   return (
     <input
       id={id}
       name={name}
+      required={required}
       type={type ? type : "text"}
       value={value}
       onChange={(e) =>

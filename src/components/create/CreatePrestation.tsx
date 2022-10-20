@@ -28,6 +28,7 @@ import Tabs from "../shared/Tabs";
 import Rows from "../shared/Rows";
 import { TEXT_GRADIENT } from "../design";
 import Checkbox from "../shared/Checkbox";
+import DateInput from "../shared/DateInput";
 
 interface CreateProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -113,23 +114,25 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
       name: "Payé",
       field: "is_paid",
       value: "",
-      checkbox: true,
+      type: "checkbox",
     },
     {
       name: "A facturer",
       field: "to_bill",
       value: "",
-      checkbox: true,
+      type: "checkbox",
     },
     {
       name: "Date d'encaissement",
       field: "payment_date",
       value: "",
+      type: "date",
     },
     {
       name: "Date de récupération",
       field: "recovery_date",
       value: "",
+      type: "date",
     },
     {
       name: "Facture",
@@ -175,6 +178,7 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
     });
 
     if (id && client_name && created_services[0].designation) {
+      console.log(id, client_name, created_services, created_prestation);
       await prestationCreateMutation.mutateAsync(
         {
           prestation_id: id,
@@ -298,7 +302,7 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
         {state.map((field, index) => (
           <div key={field.field} className="flex items-center">
-            {field.checkbox ? (
+            {field.type === "checkbox" && (
               <Checkbox
                 checked={field.value ? true : false}
                 label={field.name}
@@ -312,7 +316,27 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
                   )
                 }
               />
-            ) : (
+            )}
+            {field.type === "date" && (
+              <>
+                <div className={field.size ? "" : "w-36"}>{field.name}</div>
+                <DateInput
+                  tabIndex={index}
+                  value={field.value}
+                  onChange={(e) =>
+                    setState(
+                      state.map((f, i) => {
+                        if (i === index) f.value = e.target.value;
+                        return f;
+                      })
+                    )
+                  }
+                  min={"2005-01-01"}
+                  max={new Date().toISOString().substring(0, 10)}
+                />
+              </>
+            )}
+            {(!field.type || field.type === "text") && (
               <>
                 <div className={field.size ? "" : "w-36"}>{field.name}</div>
                 <TextInput

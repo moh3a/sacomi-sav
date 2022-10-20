@@ -7,7 +7,6 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsJob from "../components/details/DetailsJob";
 import { selectSelectedAll, select_jobs } from "../redux/selectedAllSlice";
-import { PageArchitecture } from "../types";
 
 const Jobs = () => {
   const dispatch = useDispatch();

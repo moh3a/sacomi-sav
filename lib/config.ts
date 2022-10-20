@@ -462,7 +462,17 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       {
         group_title: "Montant",
         group_fields: [
-          { name: "Type", field: "type", value: "", radio: true },
+          {
+            name: "Type",
+            field: "type",
+            value: "",
+            type: "radio",
+            options: [
+              { name: "Recette", value: "INCOME" },
+              { name: "Chèque", value: "CHEQUE" },
+              { name: "Dépense", value: "EXPENSE" },
+            ],
+          },
           {
             name: "Montant HT [DZD]",
             field: "amount",

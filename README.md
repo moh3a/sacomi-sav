@@ -2,7 +2,6 @@
 
 ### Todo
 
-- add features to the create column: datepickers, radio
 - create the rest of the models (deliveries, staff)
 
 ### Prerequisites

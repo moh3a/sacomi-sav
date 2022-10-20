@@ -48,3 +48,23 @@ div::-webkit-scrollbar-thumb {
   border-radius: 25px; /* roundness of the scroll thumb */
   border: 2px solid white; /* creates padding around scroll thumb */
 }
+
+/* ::-webkit-datetime-edit {
+  padding: 2 em;
+}
+::-webkit-datetime-edit-fields-wrapper {
+  background: green;
+}
+::-webkit-datetime-edit-text {
+  color: blue;
+  padding: 0 0.3em;
+}
+::-webkit-datetime-edit-month-field {
+  color: red;
+}
+::-webkit-datetime-edit-day-field {
+  color: orange;
+}
+::-webkit-datetime-edit-year-field {
+  color: red;
+} */

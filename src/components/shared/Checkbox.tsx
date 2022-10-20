@@ -30,7 +30,7 @@ const Checkbox = ({
   checked,
 }: CheckboxProps) => {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center accent-primary">
       <input
         id={id}
         name={name}

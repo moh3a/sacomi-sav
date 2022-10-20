@@ -7,7 +7,6 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsClient from "../components/details/DetailsClient";
 import { selectSelectedAll, select_clients } from "../redux/selectedAllSlice";
-import { PageArchitecture } from "../types";
 
 const Clients = () => {
   const dispatch = useDispatch();

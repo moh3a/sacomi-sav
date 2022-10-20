@@ -7,7 +7,6 @@ import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import DetailsOrder from "../components/details/DetailsOrder";
 import { selectSelectedAll, select_orders } from "../redux/selectedAllSlice";
-import { PageArchitecture } from "../types";
 
 const Orders = () => {
   const dispatch = useDispatch();

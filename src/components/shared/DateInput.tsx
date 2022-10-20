@@ -1,64 +1,60 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
-import { TEXT_INPUT } from "../design";
+import { PADDING, ROUNDED, TEXT_INPUT } from "../design";
 
-interface InputProps {
+interface DateInputProps {
   id?: string;
   name?: string;
-  type?: "number" | string;
-  value?: number;
-  setValue?: Dispatch<SetStateAction<number>>;
+  value?: string;
+  setValue?: Dispatch<SetStateAction<string>>;
   readOnly?: boolean;
-  placeholder?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onBlur?: () => void;
-  onKeyUp?: () => void;
   tabIndex?: number;
   className?: string;
   required?: boolean;
+  min?: string;
+  max?: string;
 }
 
-const NumberInput = ({
+const DateInput = ({
   className,
   onBlur,
   onFocus,
   onChange,
-  onKeyUp,
-  placeholder,
   readOnly,
-  setValue,
-  type,
   value,
+  setValue,
   tabIndex,
   id,
   name,
+  max,
+  min,
   required,
-}: InputProps) => {
+}: DateInputProps) => {
   return (
     <input
       id={id}
       name={name}
+      type="date"
       required={required}
-      type={type ? type : "number"}
       value={value}
       onChange={(e) =>
         setValue
-          ? setValue(Number(e.target.value))
+          ? setValue(e.target.value)
           : onChange
           ? onChange(e)
-          : console.log(Number(e))
+          : console.log(e)
       }
       onBlur={onBlur}
-      onKeyUp={onKeyUp}
       onFocus={onFocus}
       readOnly={readOnly}
-      placeholder={placeholder}
       className={className ? className : TEXT_INPUT}
-      min={0}
-      max={9999999}
       tabIndex={tabIndex}
+      min={min}
+      max={max}
     />
   );
 };
 
-export default NumberInput;
+export default DateInput;

@@ -10,7 +10,6 @@ import {
   selectSelectedAll,
   select_prestations,
 } from "../redux/selectedAllSlice";
-import { PageArchitecture } from "../types";
 
 const Prestations = () => {
   const dispatch = useDispatch();

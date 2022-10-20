@@ -4,7 +4,6 @@ import { trpc } from "../utils/trpc";
 
 import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
-import { PageArchitecture } from "../types";
 
 const Staff = () => {
   const router = useRouter();
