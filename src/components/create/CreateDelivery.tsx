@@ -57,7 +57,7 @@ const CreateDelivery = ({ setIsOpen }: CreateProps) => {
   };
   const [newClient, setNewClient] = useState(get_client_state());
   const [newClientError, setNewClientError] = useState("");
-  const checkClientExistsMutations = trpc.clients.clientExists.useMutation();
+  const checkClientExistsMutations = trpc.clients.checkExists.useMutation();
   const checkClientExists = async () => {
     if (newClient.name) {
       await checkClientExistsMutations.mutateAsync(

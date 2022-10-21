@@ -50,15 +50,18 @@ export const clientRouter = t.router({
         return { clients };
       } else return { clients: null };
     }),
-  clientExists: t.procedure
+  checkExists: t.procedure
     .input(z.object({ name: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         const client = await ctx.prisma.client.findUnique({
           where: { name: input.name.toUpperCase() },
         });
-        return { exists: client ? true : false };
-      } else return { exists: null };
+        return {
+          exists: client ? true : false,
+          message: "Client existe déjà.",
+        };
+      } else return { exists: null, message: "" };
     }),
   create: t.procedure
     .input(
@@ -80,6 +83,45 @@ export const clientRouter = t.router({
             client,
             success: true,
             message: `Client créé avec succès.`,
+          };
+        } else {
+          return {
+            client: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          client: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        type: z.string().nullish(),
+        status: z.string().nullish(),
+        phone_number: z.string().nullish(),
+        contact: z.string().nullish(),
+        address: z.string().nullish(),
+        wilaya: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const client = await ctx.prisma.client.update({
+            where: { id: input.id },
+            data: input,
+          });
+          return {
+            client,
+            success: true,
+            message: `Client modifié avec succès.`,
           };
         } else {
           return {

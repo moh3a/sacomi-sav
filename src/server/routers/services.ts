@@ -80,6 +80,19 @@ export const prestationRouter = t.router({
         return { prestations };
       } else return { prestations: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ prestation_id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const prestation = await ctx.prisma.prestation.findUnique({
+          where: { prestation_id: input.prestation_id.toUpperCase() },
+        });
+        return {
+          exists: prestation ? true : false,
+          message: "Prestation existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -139,6 +152,47 @@ export const prestationRouter = t.router({
               success: false,
               message: `Client n'existe pas.`,
             };
+        } else {
+          return {
+            prestation: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          prestation: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        prestation_id: z.string(),
+        prestation_date: z.string().nullish(),
+        is_paid: z.string().nullish(),
+        to_bill: z.string().nullish(),
+        recovery_date: z.string().nullish(),
+        payment_date: z.string().nullish(),
+        total_amount: z.string().nullish(),
+        invoice: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const prestation = await ctx.prisma.prestation.update({
+            where: { id: input.id },
+            data: input,
+          });
+
+          return {
+            prestation,
+            success: true,
+            message: `Prestation modifiée avec succès.`,
+          };
         } else {
           return {
             prestation: null,

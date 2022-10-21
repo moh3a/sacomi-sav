@@ -52,6 +52,19 @@ export const transactionRouter = t.router({
         return { transactions };
       } else return { transactions: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const transaction = await ctx.prisma.transaction.findUnique({
+          where: { id: input.id },
+        });
+        return {
+          exists: transaction ? true : false,
+          message: "Cette transaction existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -96,6 +109,41 @@ export const transactionRouter = t.router({
             transaction,
             success: true,
             message: `Transaction créée avec succès.`,
+          };
+        } else {
+          return {
+            transaction: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          transaction: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        prestation_id: z.string().nullish(),
+        title: z.string().nullish(),
+        type: z.enum(["INCOME", "EXPENSE", "CHEQUE"]),
+        amount: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const transaction = await ctx.prisma.transaction.findUnique({
+            where: { id: input.id },
+          });
+          return {
+            transaction,
+            success: true,
+            message: `Transaction modifiée avec succès.`,
           };
         } else {
           return {

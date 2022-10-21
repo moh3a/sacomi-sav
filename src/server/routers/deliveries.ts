@@ -66,6 +66,19 @@ export const deliveryRouter = t.router({
         return { deliveries };
       } else return { deliveries: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ delivery_id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const delivery = await ctx.prisma.delivery.findUnique({
+          where: { delivery_id: input.delivery_id.toUpperCase() },
+        });
+        return {
+          exists: delivery ? true : false,
+          message: "Bon de livraison existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -102,6 +115,44 @@ export const deliveryRouter = t.router({
               success: false,
               message: `Client n'existe pas.`,
             };
+        } else {
+          return {
+            delivery: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          delivery: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        delivery_id: z.string(),
+        delivery_date: z.string().nullish(),
+        entry_id: z.string().nullish(),
+        sage_exit_id: z.string().nullish(),
+        delivery_date_1: z.string().nullish(),
+        observations: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const delivery = await ctx.prisma.delivery.update({
+            where: { id: input.id },
+            data: input,
+          });
+          return {
+            delivery,
+            success: true,
+            message: `Livraison modifiée avec succès.`,
+          };
         } else {
           return {
             delivery: null,

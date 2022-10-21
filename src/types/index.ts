@@ -23,12 +23,23 @@ export interface Collection {
     | "users"
     | "transactions"
     | "orders";
+  unit:
+    | "client"
+    | "entry"
+    | "delivery"
+    | "product"
+    | "job"
+    | "prestation"
+    | "user"
+    | "transaction"
+    | "order";
   withIds: "deliveries" | "entries" | "jobs" | "orders" | "prestations";
 }
 
 export interface PageArchitecture {
   title: string;
   collection?: Collection["name"];
+  unit?: Collection["unit"];
   table_titles: {
     name: string;
     field: string;
@@ -48,6 +59,7 @@ export interface PageArchitecture {
 export interface Column {
   name: string;
   field: string;
+  unique?: boolean;
   collection?: Collection["name"];
   value: any;
   required?: boolean;

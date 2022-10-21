@@ -2,7 +2,7 @@
 
 ### Todo
 
-- create the all the models details (clients, entries, products, orders, deliveries, prestations, transactions, jobs)
+- create the all the models details (entries, deliveries, prestations, transactions, jobs)
 
 ### Prerequisites
 

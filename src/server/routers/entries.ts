@@ -64,6 +64,19 @@ export const entryRouter = t.router({
         return { entries };
       } else return { entries: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ entry_id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const entry = await ctx.prisma.entry.findUnique({
+          where: { entry_id: input.entry_id.toUpperCase() },
+        });
+        return {
+          exists: entry ? true : false,
+          message: "Bon d'entrée existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -148,6 +161,43 @@ export const entryRouter = t.router({
               success: false,
               message: `Client n'existe pas.`,
             };
+        } else
+          return {
+            entry: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+      } else
+        return {
+          entry: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        entry_id: z.string(),
+        entry_date: z.string().nullish(),
+        entry_time: z.string().nullish(),
+        warranty: z.string().nullish(),
+        global: z.string().nullish(),
+        observations: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const entry = await ctx.prisma.entry.update({
+            where: { id: input.id },
+            data: input,
+          });
+          return {
+            entry,
+            success: true,
+            message: `Entrée modifiée avec succès.`,
+          };
         } else
           return {
             entry: null,

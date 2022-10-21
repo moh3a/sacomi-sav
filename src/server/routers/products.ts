@@ -64,6 +64,19 @@ export const productRouter = t.router({
         return { products };
       } else return { products: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ product_model: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const product = await ctx.prisma.product.findUnique({
+          where: { product_model: input.product_model.toUpperCase() },
+        });
+        return {
+          exists: product ? true : false,
+          message: "Produit existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -80,6 +93,41 @@ export const productRouter = t.router({
             product,
             success: true,
             message: `Produit créé avec succès.`,
+          };
+        } else {
+          return {
+            product: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          product: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        product_model: z.string(),
+        product_type: z.string().nullish(),
+        product_brand: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const product = await ctx.prisma.product.update({
+            where: { id: input.id },
+            data: input,
+          });
+          return {
+            product,
+            success: true,
+            message: `Produit modifié avec succès.`,
           };
         } else {
           return {

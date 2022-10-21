@@ -120,18 +120,16 @@ const Rows = ({ initial_state, setState, state }: RowsProps) => {
         </div>
       ))}
       <div
-        className={`w-full flex justify-center border primary ${ROUNDED} my-1`}
+        onClick={() =>
+          setState((prev) => {
+            let newstate = prev;
+            newstate = [...prev, initial_state];
+            return newstate;
+          })
+        }
+        className={`cursor-pointer w-full flex justify-center text-white bg-primary ${ROUNDED} mt-2 mb-1`}
       >
-        <Button
-          type="button"
-          onClick={() =>
-            setState((prev) => {
-              let newstate = prev;
-              newstate = [...prev, initial_state];
-              return newstate;
-            })
-          }
-        >
+        <Button type="button">
           <PlusCircleIcon className="h-5 w-5 inline" aria-hidden="true" />
         </Button>
       </div>

@@ -32,6 +32,7 @@ const DetailsEntry = () => {
     <div>
       {selected_entry ? (
         <div className="lg:flex">
+          {/* start entree */}
           <div className="my-4 mx-2 lg:flex-1">
             <div className={`text-lg text-primary`}>ENTREE</div>
             <div className="text-lg">
@@ -44,6 +45,9 @@ const DetailsEntry = () => {
               Date d&apos;entrée {formatFMDate(selected_entry.entry_date)}
             </div>
           </div>
+          {/* end entree */}
+
+          {/* start client */}
           <div className="my-4 mx-2 lg:flex-1">
             <div className={`text-lg text-primary`}>CLIENT</div>
             <div>
@@ -53,6 +57,7 @@ const DetailsEntry = () => {
             </div>
             <div>Numéro de téléphone {selected_entry.client?.phone_number}</div>
           </div>
+          {/* end client */}
         </div>
       ) : (
         <LoadingSpinner size="large" />

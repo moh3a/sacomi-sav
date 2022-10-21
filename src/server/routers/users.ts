@@ -38,6 +38,19 @@ export const userRouter = t.router({
         return { users };
       } else return { users: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ username: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const user = await ctx.prisma.user.findUnique({
+          where: { username: input.username },
+        });
+        return {
+          exists: user ? true : false,
+          message: "Cet utilisateur existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -60,6 +73,43 @@ export const userRouter = t.router({
             member,
             success: true,
             message: `Personnel créé avec succès.`,
+          };
+        } else {
+          return {
+            member: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          member: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        username: z.string(),
+        email: z.string().nullish(),
+        fullName: z.string().nullish(),
+        image: z.string().nullish(),
+        role: z.enum(["ADMIN", "RECEPTION", "TECHNICIAN"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const member = await ctx.prisma.user.update({
+            where: { id: input.id },
+            data: input,
+          });
+          return {
+            member,
+            success: true,
+            message: `Personnel modifié avec succès.`,
           };
         } else {
           return {

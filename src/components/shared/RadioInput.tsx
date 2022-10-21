@@ -36,9 +36,11 @@ export default function RadioInput({
                     : ""
                 }
                   ${
-                    checked ? "bg-primary bg-opacity-75 text-white" : "bg-white"
+                    checked
+                      ? "bg-primary bg-opacity-75 text-white"
+                      : "bg-white dark:bg-black"
                   }
-                    relative flex cursor-pointer ${ROUNDED} ${PADDING} shadow-md focus:outline-none`
+                    relative flex cursor-pointer ${ROUNDED} ${PADDING} shadow-sm shadow-primaryDark dark:shadow-primaryLight focus:outline-none`
               }
             >
               {({ checked }) => (

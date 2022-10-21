@@ -15,6 +15,7 @@ import CreateEntry from "./create/CreateEntry";
 import CreatePrestation from "./create/CreatePrestation";
 import { Collection, PageArchitecture } from "../types";
 import CreateDelivery from "./create/CreateDelivery";
+import Edit from "./edit/Edit";
 
 interface PageSkeletonProps {
   page: PageArchitecture;
@@ -128,11 +129,21 @@ const PageSkeleton = ({
           />
         </>
       )}
-      {!link && details_component && (
+      {/* {!link && details_component && (
         <Modal isOpen={openDetailsModal} setIsOpen={setOpenDetailsModal}>
           {details_component}
         </Modal>
-      )}
+      )} */}
+
+      <Modal isOpen={openDetailsModal} setIsOpen={setOpenDetailsModal}>
+        <Edit
+          setIsOpen={setOpenCreateModal}
+          title={page.title}
+          collection={page.collection as Collection["withIds"]}
+          unit={page.unit as Collection["unit"]}
+          layout={page.create_layout!}
+        />
+      </Modal>
     </>
   );
 };

@@ -63,6 +63,19 @@ export const orderRouter = t.router({
         return { orders };
       } else return { orders: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ order_id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const order = await ctx.prisma.order.findUnique({
+          where: { order_id: input.order_id.toUpperCase() },
+        });
+        return {
+          exists: order ? true : false,
+          message: "Bon de commande existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -84,6 +97,46 @@ export const orderRouter = t.router({
             order,
             success: true,
             message: `Commande créée avec succès.`,
+          };
+        } else {
+          return {
+            order: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          order: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        order_id: z.string(),
+        order_date: z.string().nullish(),
+        order_content: z.string().nullish(),
+        receipt_date: z.string().nullish(),
+        sage_entry_id: z.string().nullish(),
+        quantity: z.string().nullish(),
+        payment: z.string().nullish(),
+        observations: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const order = await ctx.prisma.order.update({
+            where: { id: input.id },
+            data: input,
+          });
+          return {
+            order,
+            success: true,
+            message: `Commande modifiée avec succès.`,
           };
         } else {
           return {

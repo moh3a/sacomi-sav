@@ -45,7 +45,7 @@ export default function Modal({
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel
-                className={`w-full max-w-md lg:max-w-6xl transform rounded-2xl bg-white dark:bg-black p-6 text-left align-middle shadow-xl transition-all`}
+                className={`w-full max-w-md lg:max-w-6xl transform rounded-2xl bg-white bg-opacity-95 dark:bg-black dark:bg-opacity-95 p-6 text-left align-middle shadow-xl transition-all`}
               >
                 <Dialog.Title
                   as="h3"

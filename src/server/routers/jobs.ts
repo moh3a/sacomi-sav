@@ -106,6 +106,19 @@ export const jobRouter = t.router({
         return { jobs };
       } else return { jobs: null };
     }),
+  checkExists: t.procedure
+    .input(z.object({ job_id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const job = await ctx.prisma.job.findUnique({
+          where: { job_id: input.job_id },
+        });
+        return {
+          exists: job ? true : false,
+          message: "Cette fiche d'intervention existe déjà.",
+        };
+      } else return { exists: null, message: "" };
+    }),
   create: t.procedure
     .input(
       z.object({
@@ -160,6 +173,54 @@ export const jobRouter = t.router({
               success: true,
               message: `Entrée, client ou produit n'existe pas.`,
             };
+        } else {
+          return {
+            job: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          job: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        id: z.string(),
+        job_id: z.number(),
+        awaiting_intervention: z.string().nullish(),
+        warranty: z.string().nullish(),
+        repaired_date: z.string().nullish(),
+        exit_date: z.string().nullish(),
+        designation: z.string().nullish(),
+        diagnostic: z.string().nullish(),
+        status: z.string().nullish(),
+        serial_number: z.string().nullish(),
+        new_serial_number: z.string().nullish(),
+        localisation: z.string().nullish(),
+        technician: z.string().nullish(),
+        entry_subid: z.string().nullish(),
+        product_same_model: z.string().nullish(),
+        entry_id: z.string().nullish(),
+        product_model: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const job = await ctx.prisma.job.update({
+            where: { id: input.id },
+            data: input,
+          });
+          return {
+            job,
+            success: true,
+            message: `Intervention modifiéé avec succès.`,
+          };
         } else {
           return {
             job: null,

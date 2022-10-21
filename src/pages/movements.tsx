@@ -13,6 +13,7 @@ import {
 import { PAGE_ARCHITECTURE } from "../../lib/config";
 import PageSkeleton from "../components/PageSkeleton";
 import { TEXT_GRADIENT } from "../components/design";
+import DetailsTransaction from "../components/details/DetailsTransaction";
 import { trpc } from "../utils/trpc";
 import { get_month } from "../utils";
 import { selectCurrentId } from "../redux/currentIdSlice";
@@ -60,6 +61,7 @@ const Movements = () => {
         current_page={Number(p) || 0}
         total_items={totalItems}
         table_compact={true}
+        details_component={<DetailsTransaction />}
       />
     </>
   );

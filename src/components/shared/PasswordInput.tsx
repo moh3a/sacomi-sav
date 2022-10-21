@@ -1,6 +1,6 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
 import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { PASSWORD_INPUT } from "../design";
+import { TEXT_INPUT } from "../design";
 
 interface PasswordProps {
   id?: string;
@@ -54,7 +54,7 @@ const PasswordInput = ({
         onKeyUp={onKeyUp}
         readOnly={readOnly}
         placeholder={placeholder}
-        className={className ? className : PASSWORD_INPUT}
+        className={className ? className : TEXT_INPUT}
         tabIndex={tabIndex}
         maxLength={16}
         minLength={4}
