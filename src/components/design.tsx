@@ -18,5 +18,4 @@ export const BUTTON_VARIANTS = {
 /**
  * INPUTS
  */
-// export const TEXT_INPUT = ` caret-primary border border-primary focus:outline outline-primary bg-primaryLight dark:bg-primaryDark ${ROUNDED} ${PADDING} `;
 export const TEXT_INPUT = ` caret-primary focus:outline outline-primary shadow-sm bg-white shadow-primaryDark dark:bg-black dark:shadow-primaryLight ${ROUNDED} ${PADDING} `;

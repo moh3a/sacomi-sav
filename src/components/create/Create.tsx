@@ -51,6 +51,7 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
   };
 
   const [state, setState] = useState(get_state());
+  // const [state, setState] = useState(layout.map((group) => group.group_fields)); // ! todo
 
   const notification = useContext(NotificationsContext);
   const createHandler = async (event: FormEvent) => {

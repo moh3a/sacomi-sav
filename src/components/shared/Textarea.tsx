@@ -1,5 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
-import { PADDING, ROUNDED } from "../design";
+import { PADDING, ROUNDED, TEXT_INPUT } from "../design";
 
 interface TextareaProps {
   id?: string;
@@ -50,11 +50,7 @@ const Textarea = ({
       onKeyUp={onKeyUp}
       readOnly={readOnly}
       placeholder={placeholder}
-      className={
-        className
-          ? className
-          : ` caret-primary border border-primary focus:outline outline-primary bg-primaryLight dark:bg-primaryDark ${ROUNDED} ${PADDING} `
-      }
+      className={className ? className : TEXT_INPUT}
       rows={2}
       cols={22}
       tabIndex={tabIndex}

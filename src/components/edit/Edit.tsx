@@ -6,8 +6,14 @@ import {
   useEffect,
   useState,
 } from "react";
-import { ExclamationCircleIcon, SaveIcon } from "@heroicons/react/outline";
+import {
+  ExclamationCircleIcon,
+  SaveIcon,
+  ExternalLinkIcon,
+} from "@heroicons/react/outline";
 import { useDispatch, useSelector } from "react-redux";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import { TEXT_GRADIENT } from "../design";
@@ -35,6 +41,7 @@ const Edit = ({ collection, unit, title, setIsOpen }: EditProps) => {
   const { selected_id } = useSelector(selectSelectedId);
   const { selected_one } = useSelector(selectSelectedOne);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   trpc[collection].byId.useQuery(
     { id: selected_id },
@@ -51,14 +58,15 @@ const Edit = ({ collection, unit, title, setIsOpen }: EditProps) => {
   const [edition, setEdition] = useState<any>({});
   useEffect(() => {
     let s: any = {};
-    if (PAGE_ARCHITECTURE[collection].create_layout && selected_one)
+    if (PAGE_ARCHITECTURE[collection].create_layout && selected_one) {
       PAGE_ARCHITECTURE[collection].create_layout?.forEach((group) => {
         group.group_fields.forEach((field) => {
           s[field.field] = selected_one[field.field];
           if (field.unique) setUniqueField(field.field);
         });
       });
-    s.id = selected_one.id;
+      s.id = selected_one.id;
+    }
     setEdition(s);
   }, [collection, selected_one]);
 
@@ -109,7 +117,16 @@ const Edit = ({ collection, unit, title, setIsOpen }: EditProps) => {
             <h2
               className={`uppercase text-xl font-bold text-center ${TEXT_GRADIENT}`}
             >
-              Modifier | {title}
+              Modifier | {title}{" "}
+              <Button
+                type="button"
+                onClick={() => router.push(`/${collection}/${selected_id}`)}
+              >
+                <ExternalLinkIcon
+                  className="h-6 w-6 text-primary inline"
+                  aria-hidden="true"
+                />
+              </Button>
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
               {PAGE_ARCHITECTURE[collection].create_layout &&

@@ -1,15 +1,11 @@
 import {
   Dispatch,
   FormEvent,
-  Fragment,
   SetStateAction,
   useContext,
   useState,
 } from "react";
-import {
-  ExclamationCircleIcon,
-  PlusCircleIcon,
-} from "@heroicons/react/outline";
+import { PlusCircleIcon } from "@heroicons/react/outline";
 import { useSelector } from "react-redux";
 import { Client } from "@prisma/client";
 
@@ -21,13 +17,10 @@ import { trpc } from "../../utils/trpc";
 import NotificationsContext from "../../utils/NotificationsContext";
 import Button from "../shared/Button";
 import LoadingSpinner from "../shared/LoadingSpinner";
-import TextInput from "../shared/TextInput";
-import Autocomplete from "../shared/Autocomplete";
-import Tabs from "../shared/Tabs";
 import Rows from "../shared/Rows";
 import { TEXT_GRADIENT } from "../design";
-import Checkbox from "../shared/Checkbox";
-import DateInput from "../shared/DateInput";
+import Inputs from "../Inputs";
+import FindOrCreateClient from "./FindOrCreateClient";
 
 interface CreateProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -41,10 +34,8 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
 
   // SELECTED CLIENT TAB: EXISTING OR CREATE NEW
   const [selectedTab, setSelectedTab] = useState(0);
-
   // EXISTING CLIENT STATE
   const [client, setClient] = useState<Client | null | undefined>(undefined);
-
   // NEW CLIENT STATE
   const get_client_state = () => {
     let s: any = {};
@@ -56,20 +47,6 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
   };
   const [newClient, setNewClient] = useState(get_client_state());
   const [newClientError, setNewClientError] = useState("");
-  const checkClientExistsMutations = trpc.clients.checkExists.useMutation();
-  const checkClientExists = async () => {
-    if (newClient.name) {
-      await checkClientExistsMutations.mutateAsync(
-        { name: newClient.name },
-        {
-          onSettled(data) {
-            if (data && data.exists) setNewClientError("Client existe déjà.");
-            else setNewClientError("");
-          },
-        }
-      );
-    }
-  };
 
   // ENTER PRESTATION DETAILS
   const initial_service: Column[] = [
@@ -215,79 +192,12 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
       </div>
 
       <div className={`text-lg uppercase text-primary `}>Client</div>
-      <Tabs
+      <FindOrCreateClient
+        client={newClient}
+        setClient={setNewClient}
+        setNewClientError={setNewClientError}
+        newClientError={newClientError}
         setSelectedTab={setSelectedTab}
-        tabs={[
-          {
-            title: "Client existant?",
-            children: (
-              <>
-                <Autocomplete
-                  placeholder="Nom du client"
-                  displayValue="name"
-                  collection="clients"
-                  selected={client}
-                  setSelected={setClient}
-                />
-                {client && (
-                  <div>
-                    {client.name} - {client.phone_number}
-                  </div>
-                )}
-              </>
-            ),
-          },
-          {
-            title: "Créer un nouveau client!",
-            children: (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
-                {PAGE_ARCHITECTURE.clients.create_layout &&
-                  PAGE_ARCHITECTURE.clients.create_layout.map(
-                    (group, index) => (
-                      <div key={index}>
-                        {group.group_title && (
-                          <div className={`text-lg uppercase text-primary`}>
-                            {group.group_title}
-                          </div>
-                        )}
-                        {group.group_fields.map((field) => (
-                          <Fragment key={field.field}>
-                            {field.field === "name" && newClientError && (
-                              <div className="font-bold text-red-600">
-                                <ExclamationCircleIcon
-                                  className="h-4 w-4 inline mr-1"
-                                  aria-hidden="true"
-                                />
-                                {newClientError}
-                              </div>
-                            )}
-                            <div className="my-4 mx-2 flex items-center">
-                              <div className="w-36">{field.name}</div>
-                              <TextInput
-                                placeholder={field.name}
-                                value={newClient[field.field]}
-                                onChange={(e) => {
-                                  field.field === "name" &&
-                                    setNewClientError("");
-                                  setNewClient({
-                                    ...newClient,
-                                    [field.field]: e.target.value.toUpperCase(),
-                                  });
-                                }}
-                                onBlur={() =>
-                                  field.field === "name" && checkClientExists()
-                                }
-                              />
-                            </div>
-                          </Fragment>
-                        ))}
-                      </div>
-                    )
-                  )}
-              </div>
-            ),
-          },
-        ]}
       />
 
       <div className={`text-lg uppercase text-primary `}>Services</div>
@@ -299,64 +209,7 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
 
       <div className={`text-lg uppercase text-primary `}>Infos</div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
-        {state.map((field, index) => (
-          <div key={field.field} className="flex items-center">
-            {field.type === "checkbox" && (
-              <Checkbox
-                checked={field.value ? true : false}
-                label={field.name}
-                tabIndex={index}
-                onChange={(e) =>
-                  setState(
-                    state.map((f, i) => {
-                      if (i === index) f.value = e.target.checked;
-                      return f;
-                    })
-                  )
-                }
-              />
-            )}
-            {field.type === "date" && (
-              <>
-                <div className={field.size ? "" : "w-36"}>{field.name}</div>
-                <DateInput
-                  tabIndex={index}
-                  value={field.value}
-                  onChange={(e) =>
-                    setState(
-                      state.map((f, i) => {
-                        if (i === index) f.value = e.target.value;
-                        return f;
-                      })
-                    )
-                  }
-                  min={"2005-01-01"}
-                  max={new Date().toISOString().substring(0, 10)}
-                />
-              </>
-            )}
-            {(!field.type || field.type === "text") && (
-              <>
-                <div className={field.size ? "" : "w-36"}>{field.name}</div>
-                <TextInput
-                  placeholder={field.name}
-                  value={field.value}
-                  onChange={(e) =>
-                    setState(
-                      state.map((f, i) => {
-                        if (i === index) f.value = e.target.value;
-                        return f;
-                      })
-                    )
-                  }
-                  type={field.type}
-                  size={field.size}
-                  tabIndex={index}
-                />
-              </>
-            )}
-          </div>
-        ))}
+        <Inputs state={state} setState={setState} />
       </div>
 
       <div className="flex justify-end items-center mt-6">
