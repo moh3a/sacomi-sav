@@ -4,6 +4,7 @@ import {
   Fragment,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import {
@@ -24,20 +25,20 @@ import LoadingSpinner from "../shared/LoadingSpinner";
 import TextInput from "../shared/TextInput";
 import Autocomplete from "../shared/Autocomplete";
 import Tabs from "../shared/Tabs";
-import Rows from "../shared/Rows";
 import { TEXT_GRADIENT } from "../design";
 import Checkbox from "../shared/Checkbox";
 import DateInput from "../shared/DateInput";
+import Textarea from "../shared/Textarea";
 
 interface CreateProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const CreatePrestation = ({ setIsOpen }: CreateProps) => {
+const CreateDelivery = ({ setIsOpen }: CreateProps) => {
   const [loading, setLoading] = useState(false);
-  // NEW ENTRY ID
-  const { current_prestations_id } = useSelector(selectCurrentId);
-  const id = generate_new_id(current_prestations_id);
+  // NEW DELIVERY ID
+  const { current_deliveries_id } = useSelector(selectCurrentId);
+  const id = generate_new_id(current_deliveries_id);
 
   // SELECTED CLIENT TAB: EXISTING OR CREATE NEW
   const [selectedTab, setSelectedTab] = useState(0);
@@ -71,80 +72,43 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
     }
   };
 
-  // ENTER PRESTATION DETAILS
-  const initial_service: Column[] = [
-    {
-      name: "Désignation",
-      field: "designation",
-      value: "",
-      type: "text",
-    },
-    {
-      name: "Quantité",
-      field: "quantity",
-      value: "",
-      size: 4,
-      type: "number",
-    },
-    {
-      name: "HT",
-      field: "price_ht",
-      value: "",
-      type: "number",
-    },
-    {
-      name: "TTC",
-      field: "price_ttc",
-      value: "",
-      type: "number",
-    },
-    {
-      name: "Sous-total",
-      field: "subtotal",
-      value: "",
-      type: "number",
-    },
-  ];
-  const [services, setServices] = useState([initial_service]);
-
   // PRESTATION CREATION STATE
-  const prestation_state: Column[] = [
+  const delivery_state: Column[] = [
     {
-      name: "Payé",
-      field: "is_paid",
+      name: "ID de l'entrée",
+      field: "entry_id",
       value: "",
-      type: "checkbox",
     },
     {
-      name: "A facturer",
-      field: "to_bill",
+      name: "Contenu",
+      field: "content",
       value: "",
-      type: "checkbox",
+      textarea: true,
     },
     {
-      name: "Date d'encaissement",
-      field: "payment_date",
+      name: "Date de livraison",
+      field: "delivery_date_1",
       value: "",
       type: "date",
     },
     {
-      name: "Date de récupération",
-      field: "recovery_date",
+      name: "ID de sortie SAGE",
+      field: "sage_exit_id",
       value: "",
-      type: "date",
     },
     {
-      name: "Facture",
-      field: "invoice",
+      name: "Observations",
+      field: "observations",
       value: "",
+      textarea: true,
     },
   ];
-  const [state, setState] = useState(prestation_state);
+  const [state, setState] = useState(delivery_state);
 
   // FINISH UP AND CREATE
   const notification = useContext(NotificationsContext);
   const clientCreateMutation = trpc.clients.create.useMutation();
-  const prestationCreateMutation = trpc.prestations.create.useMutation();
+  const deliveryCreateMutation = trpc.deliveries.create.useMutation();
   const createHandler = async (event: FormEvent) => {
     event.preventDefault();
     setLoading(true);
@@ -163,27 +127,19 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
     } else if (selectedTab === 1 && newClient.name) {
       client_name = newClient.name;
     }
-    let created_services = services.map((service) => {
-      let s: any = {};
-      service.forEach((value) => {
-        if (value.value) s[value.field] = value.value;
-      });
-      return s;
-    });
 
-    let created_prestation: any = {};
+    let created_delivery: any = {};
     state.forEach((field) => {
-      if (field.value) created_prestation[field.field] = field.value;
+      if (field.value) created_delivery[field.field] = field.value;
     });
 
-    if (id && client_name && created_services[0].designation) {
-      console.log(id, client_name, created_services, created_prestation);
-      await prestationCreateMutation.mutateAsync(
+    if (id && client_name) {
+      console.log(id, client_name, created_delivery);
+      await deliveryCreateMutation.mutateAsync(
         {
-          prestation_id: id,
+          delivery_id: id,
           client_name: client_name,
-          services: created_services,
-          ...created_prestation,
+          ...created_delivery,
         },
         {
           onSettled(data, error) {
@@ -206,11 +162,11 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
       <h2
         className={`uppercase text-xl font-bold text-center ${TEXT_GRADIENT} `}
       >
-        Créer | Prestation
+        Créer | Bon de livraison
       </h2>
 
       <div className={`text-lg uppercase text-primary `}>
-        ID de la prestation:{" "}
+        ID de la livraison:{" "}
         <span className={`font-bold ${TEXT_GRADIENT} `}>{id}</span>
       </div>
 
@@ -290,13 +246,6 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
         ]}
       />
 
-      <div className={`text-lg uppercase text-primary `}>Services</div>
-      <Rows
-        initial_state={initial_service}
-        state={services}
-        setState={setServices}
-      />
-
       <div className={`text-lg uppercase text-primary `}>Infos</div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
         {state.map((field, index) => (
@@ -335,10 +284,32 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
                 />
               </>
             )}
-            {(!field.type || field.type === "text") && (
+            {(!field.type || field.type === "text") &&
+              !field.autocomplete &&
+              !field.textarea && (
+                <>
+                  <div className={field.size ? "" : "w-36"}>{field.name}</div>
+                  <TextInput
+                    placeholder={field.name}
+                    value={field.value}
+                    onChange={(e) =>
+                      setState(
+                        state.map((f, i) => {
+                          if (i === index) f.value = e.target.value;
+                          return f;
+                        })
+                      )
+                    }
+                    type={field.type}
+                    size={field.size}
+                    tabIndex={index}
+                  />
+                </>
+              )}
+            {field.textarea && (
               <>
                 <div className={field.size ? "" : "w-36"}>{field.name}</div>
-                <TextInput
+                <Textarea
                   placeholder={field.name}
                   value={field.value}
                   onChange={(e) =>
@@ -349,8 +320,6 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
                       })
                     )
                   }
-                  type={field.type}
-                  size={field.size}
                   tabIndex={index}
                 />
               </>
@@ -369,11 +338,11 @@ const CreatePrestation = ({ setIsOpen }: CreateProps) => {
               aria-hidden="true"
             />
           )}
-          Créer la prestation
+          Créer le bon de livraison
         </Button>
       </div>
     </form>
   );
 };
 
-export default CreatePrestation;
+export default CreateDelivery;

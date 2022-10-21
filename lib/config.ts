@@ -416,6 +416,40 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
           user.role || "",
         ];
       }),
+    create_layout: [
+      {
+        group_fields: [
+          { name: "Email", field: "email", value: "", type: "text" },
+          { name: "Nom complet", field: "name", value: "", type: "text" },
+          {
+            name: "Pseudo",
+            field: "username",
+            value: "",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "Email",
+            field: "role",
+            value: "",
+            type: "radio",
+            options: [
+              { name: "Admin", value: "ADMIN" },
+              { name: "Réception", value: "RECEPTION" },
+              { name: "Technicien", value: "TECHNICIAN" },
+            ],
+            required: true,
+          },
+          {
+            name: "Mot de passe",
+            field: "password",
+            value: "",
+            type: "password",
+            required: true,
+          },
+        ],
+      },
+    ],
   },
   // CAISSE
   transactions: {

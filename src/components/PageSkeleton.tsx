@@ -14,6 +14,7 @@ import Create from "./create/Create";
 import CreateEntry from "./create/CreateEntry";
 import CreatePrestation from "./create/CreatePrestation";
 import { Collection, PageArchitecture } from "../types";
+import CreateDelivery from "./create/CreateDelivery";
 
 interface PageSkeletonProps {
   page: PageArchitecture;
@@ -53,6 +54,7 @@ const PageSkeleton = ({
         </h1>
         <div className="flex justify-center">
           {(page.create_layout ||
+            page.collection === "deliveries" ||
             page.collection === "entries" ||
             page.collection === "prestations") && (
             <div className="mx-1">
@@ -94,6 +96,9 @@ const PageSkeleton = ({
         )}
         {page.collection === "prestations" && (
           <CreatePrestation setIsOpen={setOpenCreateModal} />
+        )}
+        {page.collection === "deliveries" && (
+          <CreateDelivery setIsOpen={setOpenCreateModal} />
         )}
       </Modal>
       {page.search_layout && (

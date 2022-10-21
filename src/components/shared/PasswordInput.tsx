@@ -1,5 +1,5 @@
 import { EyeIcon, EyeOffIcon } from "@heroicons/react/outline";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { PASSWORD_INPUT } from "../design";
 
 interface PasswordProps {
@@ -13,6 +13,9 @@ interface PasswordProps {
   onBlur?: () => void;
   tabIndex?: number;
   className?: string;
+  required?: boolean;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onKeyUp?: () => void;
 }
 
 const PasswordInput = ({
@@ -26,6 +29,9 @@ const PasswordInput = ({
   tabIndex,
   id,
   name,
+  onChange,
+  onKeyUp,
+  required,
 }: PasswordProps) => {
   const [hidden, setHidden] = useState(true);
   return (
@@ -33,11 +39,19 @@ const PasswordInput = ({
       <input
         id={id}
         name={name}
+        required={required}
         type={hidden ? "password" : "text"}
         value={value}
-        onChange={(e) => setValue && setValue(e.target.value)}
+        onChange={(e) =>
+          setValue
+            ? setValue(e.target.value)
+            : onChange
+            ? onChange(e)
+            : console.log(e)
+        }
         onBlur={onBlur}
         onFocus={onFocus}
+        onKeyUp={onKeyUp}
         readOnly={readOnly}
         placeholder={placeholder}
         className={className ? className : PASSWORD_INPUT}

@@ -1,3 +1,4 @@
+import { genSaltSync, hashSync } from "bcrypt";
 import { z } from "zod";
 import { ERROR_MESSAGES, ITEMS_PER_PAGE } from "../../../lib/config";
 import { t } from "../trpc";
@@ -44,13 +45,16 @@ export const userRouter = t.router({
         email: z.string().nullish(),
         fullName: z.string().nullish(),
         password: z.string(),
-        picture: z.string(),
+        image: z.string().nullish(),
         role: z.enum(["ADMIN", "RECEPTION", "TECHNICIAN"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          input.image = `https://avatars.dicebear.com/api/bottts/${input.username}.svg`;
+          const salt = genSaltSync();
+          input.password = hashSync(input.password, salt);
           const member = await ctx.prisma.user.create({ data: input });
           return {
             member,

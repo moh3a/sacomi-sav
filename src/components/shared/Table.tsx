@@ -24,12 +24,13 @@ const Table = ({
   setIsOpen,
   link,
 }: TableProps) => {
-  const [imageFieldIndex, setImageFieldIndex] = useState<number | undefined>();
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const [imageFieldIndex, setImageFieldIndex] = useState<number | undefined>();
   useEffect(() => {
-    setImageFieldIndex(titles.findIndex((t) => t.isImage === true));
+    const index = titles.findIndex((t) => t.isImage === true);
+    setImageFieldIndex(index + 1);
   }, [titles]);
 
   const trim = (str: string) => {
@@ -80,11 +81,13 @@ const Table = ({
                         return (
                           <td key={i} className="p-3 text-center truncate">
                             {i === (imageFieldIndex as number) ? (
-                              <img
-                                src={col as string}
-                                alt={"User avatar"}
-                                className="cursor-pointer w-8 h-8 rounded-full"
-                              />
+                              <div className="flex justify-center">
+                                <img
+                                  src={col as string}
+                                  alt={"User avatar"}
+                                  className="cursor-pointer w-8 h-8 rounded-full"
+                                />
+                              </div>
                             ) : col === true ? (
                               <CheckCircleIcon className="text-success w-5 h-5 inline" />
                             ) : col === false ? (

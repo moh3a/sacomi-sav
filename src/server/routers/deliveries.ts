@@ -86,6 +86,7 @@ export const deliveryRouter = t.router({
             select: { id: true },
           });
           if (client) {
+            input.delivery_date = new Date().toISOString().substring(0, 10);
             delete input.client_name;
             const delivery = await ctx.prisma.delivery.create({
               data: { ...input, clientId: client.id },
