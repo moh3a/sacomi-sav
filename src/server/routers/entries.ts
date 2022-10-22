@@ -87,13 +87,13 @@ export const entryRouter = t.router({
         global: z.string().nullish(),
         observations: z.string().nullish(),
         client_name: z.string().nullish(),
-        products: z.any(),
+        rows: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
-          let products = JSON.parse(JSON.stringify(input.products));
+          let products = JSON.parse(JSON.stringify(input.rows));
           const client = await ctx.prisma.client.findUnique({
             where: { name: input.client_name! },
             select: { id: true },
@@ -104,7 +104,7 @@ export const entryRouter = t.router({
             if (!input.entry_time)
               input.entry_time = new Date().toISOString().substring(11, 16);
             delete input.client_name;
-            delete input.products;
+            delete input.rows;
             const entry = await ctx.prisma.entry.create({
               data: { ...input, clientId: client.id },
             });

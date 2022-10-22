@@ -53,6 +53,9 @@ export interface PageArchitecture {
   create_layout?: {
     group_title?: string;
     group_fields: Column[];
+    findOrCreateClient?: boolean;
+    rows?: boolean;
+    row_fields?: Column[][];
   }[];
 }
 

@@ -11,11 +11,8 @@ import Modal from "./shared/Modal";
 import Button from "./shared/Button";
 import Search from "./Search";
 import Create from "./create/Create";
-import CreateEntry from "./create/CreateEntry";
-import CreatePrestation from "./create/CreatePrestation";
-import { Collection, PageArchitecture } from "../types";
-import CreateDelivery from "./create/CreateDelivery";
 import Edit from "./edit/Edit";
+import { Collection, PageArchitecture } from "../types";
 
 interface PageSkeletonProps {
   page: PageArchitecture;
@@ -54,10 +51,7 @@ const PageSkeleton = ({
           </span>
         </h1>
         <div className="flex justify-center">
-          {(page.create_layout ||
-            page.collection === "deliveries" ||
-            page.collection === "entries" ||
-            page.collection === "prestations") && (
+          {page.create_layout && (
             <div className="mx-1">
               <Button
                 onClick={() => setOpenCreateModal(!openCreateModal)}
@@ -83,25 +77,16 @@ const PageSkeleton = ({
           )}
         </div>
       </div>
-      <Modal isOpen={openCreateModal} setIsOpen={setOpenCreateModal}>
-        {page.create_layout && (
+      {page.create_layout && (
+        <Modal isOpen={openCreateModal} setIsOpen={setOpenCreateModal}>
           <Create
             setIsOpen={setOpenCreateModal}
             title={page.title}
             collection={page.collection as Collection["withIds"]}
             layout={page.create_layout}
           />
-        )}
-        {page.collection === "entries" && (
-          <CreateEntry setIsOpen={setOpenCreateModal} />
-        )}
-        {page.collection === "prestations" && (
-          <CreatePrestation setIsOpen={setOpenCreateModal} />
-        )}
-        {page.collection === "deliveries" && (
-          <CreateDelivery setIsOpen={setOpenCreateModal} />
-        )}
-      </Modal>
+        </Modal>
+      )}
       {page.search_layout && (
         <Modal isOpen={openSearchModal} setIsOpen={setOpenSearchModal}>
           <Search

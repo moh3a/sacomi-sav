@@ -104,6 +104,10 @@ export const deliveryRouter = t.router({
             const delivery = await ctx.prisma.delivery.create({
               data: { ...input, clientId: client.id },
             });
+            await ctx.prisma.config.update({
+              where: { id: "config" },
+              data: { current_deliveries_id: delivery.delivery_id },
+            });
             return {
               delivery,
               success: true,

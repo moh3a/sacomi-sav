@@ -9,6 +9,8 @@ import TextInput from "../shared/TextInput";
 interface FindOrCreateClientProps {
   client: any;
   setClient: Dispatch<SetStateAction<any>>;
+  newClient: any;
+  setNewClient: Dispatch<SetStateAction<any>>;
   newClientError: string;
   setNewClientError: Dispatch<SetStateAction<string>>;
   setSelectedTab: Dispatch<SetStateAction<number>>;
@@ -16,16 +18,18 @@ interface FindOrCreateClientProps {
 
 const FindOrCreateClient = ({
   client,
-  newClientError,
   setClient,
+  newClient,
+  setNewClient,
+  newClientError,
   setNewClientError,
   setSelectedTab,
 }: FindOrCreateClientProps) => {
   const checkClientExistsMutations = trpc.clients.checkExists.useMutation();
   const checkClientExists = async () => {
-    if (client.name) {
+    if (newClient.name) {
       await checkClientExistsMutations.mutateAsync(
-        { name: client.name },
+        { name: newClient.name },
         {
           onSettled(data) {
             if (data && data.exists) setNewClientError("Client existe déjà.");
@@ -86,11 +90,11 @@ const FindOrCreateClient = ({
                           <div className="w-36">{field.name}</div>
                           <TextInput
                             placeholder={field.name}
-                            value={client[field.field]}
+                            value={newClient[field.field]}
                             onChange={(e) => {
                               field.field === "name" && setNewClientError("");
-                              setClient({
-                                ...client,
+                              setNewClient({
+                                ...newClient,
                                 [field.field]: e.target.value.toUpperCase(),
                               });
                             }}

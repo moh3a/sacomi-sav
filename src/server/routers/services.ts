@@ -105,13 +105,13 @@ export const prestationRouter = t.router({
         total_amount: z.string().nullish(),
         invoice: z.string().nullish(),
         client_name: z.string().nullish(),
-        services: z.any(),
+        rows: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
-          let services = JSON.parse(JSON.stringify(input.services));
+          let services = JSON.parse(JSON.stringify(input.rows));
 
           const client = await ctx.prisma.client.findUnique({
             where: { name: input.client_name! },
@@ -121,9 +121,13 @@ export const prestationRouter = t.router({
             if (!input.prestation_date)
               input.prestation_date = new Date().toISOString().substring(0, 10);
             delete input.client_name;
-            delete input.services;
+            delete input.rows;
             const prestation = await ctx.prisma.prestation.create({
               data: { ...input, clientId: client.id },
+            });
+            await ctx.prisma.config.update({
+              where: { id: "config" },
+              data: { current_prestations_id: prestation.prestation_id },
             });
 
             let get_details = async () => {

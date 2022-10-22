@@ -22,7 +22,8 @@ export default function RadioInput({
   setSelected,
 }: RadioInputProps) {
   return (
-    <div className="mx-auto w-full max-w-md">
+    <div>
+      {/* <div className="mx-auto w-full max-w-md"> */}
       <RadioGroup value={selected} onChange={setSelected} id={id} name={name}>
         <div className="flex flex-wrap space-x-2">
           {options.map((option) => (

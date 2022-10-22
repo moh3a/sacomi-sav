@@ -93,6 +93,10 @@ export const orderRouter = t.router({
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
           const order = await ctx.prisma.order.create({ data: input });
+          await ctx.prisma.config.update({
+            where: { id: "config" },
+            data: { current_orders_id: order.order_id },
+          });
           return {
             order,
             success: true,
