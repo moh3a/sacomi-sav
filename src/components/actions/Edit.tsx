@@ -12,7 +12,6 @@ import {
   ExternalLinkIcon,
 } from "@heroicons/react/outline";
 import { useDispatch, useSelector } from "react-redux";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
@@ -24,16 +23,13 @@ import { selectSelectedId } from "../../redux/selectedIdSlice";
 import { selectSelectedOne, select_one } from "../../redux/selectedOneSlice";
 import { trpc } from "../../utils/trpc";
 import NotificationsContext from "../../utils/NotificationsContext";
-import { Collection, Column } from "../../types";
+import { Collection, DataLayout } from "../../types";
 
 interface EditProps {
   title: string;
   collection: Collection["name"];
   unit: Collection["unit"];
-  layout: {
-    group_title?: string;
-    group_fields: Column[];
-  }[];
+  layout: DataLayout[];
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 

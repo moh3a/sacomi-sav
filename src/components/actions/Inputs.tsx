@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Column } from "../../types";
+import { Column, DataLayout } from "../../types";
 import Autocomplete from "../shared/Autocomplete";
 import Checkbox from "../shared/Checkbox";
 import DateInput from "../shared/DateInput";
@@ -14,24 +14,8 @@ interface InputsProps {
   row_index?: number;
   group_index: number;
   rows?: boolean;
-  state: {
-    group_title?: string;
-    group_fields: Column[];
-    findOrCreateClient?: boolean;
-    rows?: boolean;
-    row_fields?: Column[][];
-  }[];
-  setState: Dispatch<
-    SetStateAction<
-      {
-        group_title?: string;
-        group_fields: Column[];
-        findOrCreateClient?: boolean;
-        rows?: boolean;
-        row_fields?: Column[][];
-      }[]
-    >
-  >;
+  state: DataLayout[];
+  setState: Dispatch<SetStateAction<DataLayout[]>>;
 }
 
 const Inputs = ({

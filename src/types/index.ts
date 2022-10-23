@@ -1,9 +1,3 @@
-import { HTMLInputTypeAttribute } from "react";
-
-export interface DetailsProps {
-  id: number;
-}
-
 export interface MigrationsConfig {
   order: number;
   file: string;
@@ -46,19 +40,24 @@ export interface PageArchitecture {
     isImage?: boolean;
   }[];
   table_data: (data: any) => any;
-  search_layout?: {
-    group_title?: string;
-    group_fields: Column[];
-  }[];
-  create_layout?: {
-    group_title?: string;
-    group_fields: Column[];
-    findOrCreateClient?: boolean;
-    rows?: boolean;
-    row_fields?: Column[][];
-  }[];
+  search_layout?: SearchLayout[];
+  create_layout?: DataLayout[];
 }
 
+export interface DataLayout {
+  group_title?: string;
+  group_fields: Column[];
+  findOrCreateClient?: boolean;
+  rows?: boolean;
+  row_fields?: Column[][];
+}
+
+export interface SearchLayout {
+  group_title?: string;
+  group_fields: Column[];
+}
+
+import { HTMLInputTypeAttribute } from "react";
 export interface Column {
   name: string;
   field: string;
@@ -78,14 +77,6 @@ export interface Column {
   }[];
 }
 
-export interface IUser {
-  fullName: string;
-  picture: string;
-  username: string;
-  role: "TECHNICIAN" | "RECEPTION" | "ADMIN";
-  password: string;
-}
-
 export interface ISession {
   expires: string;
   user?: {
@@ -93,7 +84,7 @@ export interface ISession {
     image?: string;
     picture?: string;
     name?: string;
-    role?: string;
+    role?: "TECHNICIAN" | "RECEPTION" | "ADMIN";
   };
 }
 
@@ -199,118 +190,3 @@ export const MAP_SAV_DB = {
   // "CLIENT::ETAT CLIENT"		:	'client_status',
   // "CLIENT::REV OU PART"	:		'client_type',
 };
-
-export interface IProduct {
-  product_brand?: string;
-  product_model?: string;
-  product_type?: string;
-}
-
-export interface IClient {
-  address?: string;
-  name?: string;
-  status?: string;
-  observations?: string;
-  contact?: string;
-  type?: string;
-  phone_number?: string;
-  wilaya?: string;
-}
-
-export interface IEntry {
-  warranty?: string;
-  client_name?: string;
-  entry_date?: string;
-  global?: string;
-  entry_time?: string;
-  entry_id?: string;
-  observations?: string;
-}
-
-export interface IJob {
-  job_id?: number;
-  entry_id?: string;
-  entry_date?: string;
-  client_name?: string;
-  client_type?: string;
-  client_status?: string;
-  product_model?: string;
-  product_brand?: string;
-  product_type?: string;
-  prestation_id?: string;
-  awaiting_intervention?: string;
-  warranty?: string;
-  repaired_date?: string;
-  exit_date?: string;
-  designation?: string;
-  diagnostic?: string;
-  status?: string;
-  localisation?: string;
-  technician?: string;
-  entry_subid?: string;
-  serial_number?: string;
-  product_same_model?: string;
-  new_serial_number?: string;
-  used_parts?: string;
-  spare_parts?: string;
-  rma_asus?: string;
-}
-
-export interface IPrestation {
-  prestation_id?: string;
-  prestation_date?: string;
-  client_name?: string;
-  client_type?: string;
-  is_paid?: string;
-  to_bill?: string;
-  recovery_date?: string;
-  payment_date?: string;
-  invoice?: string;
-  observations?: string;
-  prestation_amount?: string;
-}
-
-export interface IPrestationDetails {
-  prestation_id?: string;
-  client_name?: string;
-  client_blocked?: string;
-  client_status?: string;
-  client_observations?: string;
-  client_type?: string;
-  client_phone_number?: string;
-  client_wilaya?: string;
-  is_paid?: string;
-  to_bill?: string;
-  payment_date?: string;
-  payment_method?: string;
-  invoice?: string;
-  prestation_date?: string;
-  designation?: string;
-  price_ht?: string;
-  price_ttc?: string;
-  quantity?: string;
-  subtotal?: string;
-  total_amount?: string;
-  observations?: string;
-}
-
-export interface IDelivery {
-  delivery_id?: string;
-  delivery_date?: string;
-  client_name?: string;
-  entry_id?: string;
-  sage_exit_id?: string;
-  delivery_date_1?: string;
-  observations?: string;
-}
-
-export interface IOrder {
-  order_content?: string;
-  order_date?: string;
-  receipt_date?: string;
-  order_id?: string;
-  sage_entry_id?: string;
-  observations?: string;
-  quantity?: string;
-  payment?: string;
-}

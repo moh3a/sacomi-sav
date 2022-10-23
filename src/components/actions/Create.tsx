@@ -20,18 +20,12 @@ import { selectCurrentId } from "../../redux/currentIdSlice";
 import { trpc } from "../../utils/trpc";
 import { generate_new_id } from "../../utils";
 import NotificationsContext from "../../utils/NotificationsContext";
-import { Collection, Column } from "../../types";
+import { Collection, DataLayout } from "../../types";
 
 interface CreateProps {
   title: string;
   collection: Collection["name"];
-  layout: {
-    group_title?: string;
-    group_fields: Column[];
-    findOrCreateClient?: boolean;
-    rows?: boolean;
-    row_fields?: Column[][];
-  }[];
+  layout: DataLayout[];
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 

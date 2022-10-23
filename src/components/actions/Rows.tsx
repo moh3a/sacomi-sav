@@ -4,27 +4,11 @@ import { PlusCircleIcon } from "@heroicons/react/outline";
 import { ROUNDED } from "../design";
 import Button from "../shared/Button";
 import Inputs from "./Inputs";
-import { Column } from "../../types";
+import { DataLayout } from "../../types";
 
 interface RowsProps {
-  state: {
-    group_title?: string;
-    group_fields: Column[];
-    findOrCreateClient?: boolean;
-    rows?: boolean;
-    row_fields?: Column[][];
-  }[];
-  setState: Dispatch<
-    SetStateAction<
-      {
-        group_title?: string;
-        group_fields: Column[];
-        findOrCreateClient?: boolean;
-        rows?: boolean;
-        row_fields?: Column[][];
-      }[]
-    >
-  >;
+  state: DataLayout[];
+  setState: Dispatch<SetStateAction<DataLayout[]>>;
 }
 
 const Rows = ({ state, setState }: RowsProps) => {

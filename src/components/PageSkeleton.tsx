@@ -9,9 +9,9 @@ import Filters from "./layout/Filters";
 import Table from "./shared/Table";
 import Modal from "./shared/Modal";
 import Button from "./shared/Button";
-import Search from "./Search";
-import Create from "./create/Create";
-import Edit from "./edit/Edit";
+import Search from "./actions/Search";
+import Create from "./actions/Create";
+import Edit from "./actions/Edit";
 import { Collection, PageArchitecture } from "../types";
 
 interface PageSkeletonProps {

@@ -1,20 +1,15 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { SearchIcon } from "@heroicons/react/outline";
 
-import { TEXT_GRADIENT } from "./design";
-import Button from "./shared/Button";
-import TextInput from "./shared/TextInput";
+import { TEXT_GRADIENT } from "../design";
+import Button from "../shared/Button";
+import TextInput from "../shared/TextInput";
 import { useRouter } from "next/router";
+import { SearchLayout } from "../../types";
 
 interface SearchProps {
   title: string;
-  layout: {
-    group_title?: string;
-    group_fields: {
-      name: string;
-      field: string;
-    }[];
-  }[];
+  layout: SearchLayout[];
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 

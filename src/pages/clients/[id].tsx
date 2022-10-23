@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import { SHADOW } from "../../components/design";
-import Edit from "../../components/edit/Edit";
+import Edit from "../../components/actions/Edit";
 import { select_id } from "../../redux/selectedIdSlice";
 
 const Client = () => {
