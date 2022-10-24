@@ -2,7 +2,7 @@
 
 ### Todo
 
-- create the all the models details (entries, deliveries, prestations, transactions, jobs)
+- continue with the edit component
 
 ### Prerequisites
 

@@ -16,6 +16,7 @@ interface InputsProps {
   rows?: boolean;
   state: DataLayout[];
   setState: Dispatch<SetStateAction<DataLayout[]>>;
+  setUniqueError?: Dispatch<SetStateAction<string>>;
 }
 
 const Inputs = ({
@@ -26,6 +27,7 @@ const Inputs = ({
   group_index,
   row_index,
   rows,
+  setUniqueError,
 }: InputsProps) => {
   return (
     <div key={field_index} className={!rows ? "m-2 flex items-center" : ""}>
@@ -86,6 +88,7 @@ const Inputs = ({
                     g.row_fields = g.row_fields?.map((r, ridx) => {
                       if (ridx === row_index) {
                         r.map((f, fidx) => {
+                          if (f.unique) setUniqueError && setUniqueError("");
                           if (f.index) f.value = String(row_index + 1);
                           if (fidx === field_index) {
                             f.value = value[field.field];
@@ -98,6 +101,7 @@ const Inputs = ({
                   } else {
                     g.group_fields = g.group_fields.map((f, fidx) => {
                       if (fidx === field_index) {
+                        if (f.unique) setUniqueError && setUniqueError("");
                         f.value = value[field.field];
                       }
                       return f;
@@ -126,6 +130,7 @@ const Inputs = ({
                     g.row_fields = g.row_fields?.map((r, ridx) => {
                       if (ridx === row_index) {
                         r.map((f, fidx) => {
+                          if (f.unique) setUniqueError && setUniqueError("");
                           if (f.index) f.value = String(row_index + 1);
                           if (fidx === field_index) {
                             f.value = v.value;
@@ -138,6 +143,7 @@ const Inputs = ({
                   } else {
                     g.group_fields = g.group_fields.map((f, fidx) => {
                       if (fidx === field_index) {
+                        if (f.unique) setUniqueError && setUniqueError("");
                         f.value = v.value;
                       }
                       return f;
@@ -163,6 +169,7 @@ const Inputs = ({
                     g.row_fields = g.row_fields?.map((r, ridx) => {
                       if (ridx === row_index) {
                         r.map((f, fidx) => {
+                          if (f.unique) setUniqueError && setUniqueError("");
                           if (f.index) f.value = String(row_index + 1);
                           if (fidx === field_index) {
                             f.value = e.target.value;
@@ -175,6 +182,7 @@ const Inputs = ({
                   } else {
                     g.group_fields = g.group_fields.map((f, fidx) => {
                       if (fidx === field_index) {
+                        if (f.unique) setUniqueError && setUniqueError("");
                         f.value = e.target.value;
                       }
                       return f;
@@ -203,6 +211,7 @@ const Inputs = ({
                     g.row_fields = g.row_fields?.map((r, ridx) => {
                       if (ridx === row_index) {
                         r.map((f, fidx) => {
+                          if (f.unique) setUniqueError && setUniqueError("");
                           if (f.index) f.value = String(row_index + 1);
                           if (fidx === field_index) {
                             f.value = Number(e.target.value);
@@ -215,6 +224,7 @@ const Inputs = ({
                   } else {
                     g.group_fields = g.group_fields.map((f, fidx) => {
                       if (fidx === field_index) {
+                        if (f.unique) setUniqueError && setUniqueError("");
                         f.value = Number(e.target.value);
                       }
                       return f;
@@ -245,6 +255,7 @@ const Inputs = ({
                       g.row_fields = g.row_fields?.map((r, ridx) => {
                         if (ridx === row_index) {
                           r.map((f, fidx) => {
+                            if (f.unique) setUniqueError && setUniqueError("");
                             if (f.index) f.value = String(row_index + 1);
                             if (fidx === field_index) {
                               f.value = e.target.value;
@@ -257,6 +268,7 @@ const Inputs = ({
                     } else {
                       g.group_fields = g.group_fields.map((f, fidx) => {
                         if (fidx === field_index) {
+                          if (f.unique) setUniqueError && setUniqueError("");
                           f.value = e.target.value;
                         }
                         return f;
@@ -286,6 +298,7 @@ const Inputs = ({
                     g.row_fields = g.row_fields?.map((r, ridx) => {
                       if (ridx === row_index) {
                         r.map((f, fidx) => {
+                          if (f.unique) setUniqueError && setUniqueError("");
                           if (f.index) f.value = String(row_index + 1);
                           if (fidx === field_index) {
                             f.value = e.target.value;
@@ -298,6 +311,7 @@ const Inputs = ({
                   } else {
                     g.group_fields = g.group_fields.map((f, fidx) => {
                       if (fidx === field_index) {
+                        if (f.unique) setUniqueError && setUniqueError("");
                         f.value = e.target.value;
                       }
                       return f;

@@ -24,6 +24,7 @@ import { selectSelectedOne, select_one } from "../../redux/selectedOneSlice";
 import { trpc } from "../../utils/trpc";
 import NotificationsContext from "../../utils/NotificationsContext";
 import { Collection, DataLayout } from "../../types";
+import Inputs from "./Inputs";
 
 interface EditProps {
   title: string;
@@ -33,7 +34,7 @@ interface EditProps {
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
-const Edit = ({ collection, unit, title, setIsOpen }: EditProps) => {
+const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
   const { selected_id } = useSelector(selectSelectedId);
   const { selected_one } = useSelector(selectSelectedOne);
   const dispatch = useDispatch();
@@ -52,56 +53,76 @@ const Edit = ({ collection, unit, title, setIsOpen }: EditProps) => {
   // EDIT CLIENT STATE
   const [uniqueField, setUniqueField] = useState("");
   const [edition, setEdition] = useState<any>({});
-  useEffect(() => {
-    let s: any = {};
-    if (PAGE_ARCHITECTURE[collection].create_layout && selected_one) {
-      PAGE_ARCHITECTURE[collection].create_layout?.forEach((group) => {
-        group.group_fields.forEach((field) => {
-          s[field.field] = selected_one[field.field];
-          if (field.unique) setUniqueField(field.field);
-        });
-      });
-      s.id = selected_one.id;
-    }
-    setEdition(s);
-  }, [collection, selected_one]);
+  // useEffect(() => {
+  //   let s: any = {};
+  //   if (PAGE_ARCHITECTURE[collection].create_layout && selected_one) {
+  //     PAGE_ARCHITECTURE[collection].create_layout?.forEach((group) => {
+  //       group.group_fields.forEach((field) => {
+  //         s[field.field] = selected_one[field.field];
+  //         if (field.unique) setUniqueField(field.field);
+  //       });
+  //     });
+  //     s.id = selected_one.id;
+  //   }
+  //   setEdition(s);
+  // }, [collection, selected_one]);
 
   const [uniqueError, setUniqueError] = useState("");
   const checkUniqueMutation = trpc[collection].checkExists.useMutation();
   const updateMutation = trpc[collection].update.useMutation();
   const notification = useContext(NotificationsContext);
 
+  const [state, setState] = useState<(DataLayout | undefined)[]>();
+  useEffect(() => {
+    setState(
+      layout && selected_one
+        ? layout
+            .map((group) => {
+              if (!group.rows) {
+                group.group_fields = group.group_fields.map((field) => {
+                  field.value = selected_one[field.field];
+                  if (field.unique) setUniqueField(field.field);
+                  return field;
+                });
+                return group;
+              } else return undefined;
+            })
+            .filter((e) => typeof e !== "undefined")
+        : []
+    );
+  }, [layout, selected_one]);
+
   const editClient = async () => {
-    let itemExists = false;
-    if (uniqueField && edition[uniqueField] !== selected_one[uniqueField]) {
-      await checkUniqueMutation.mutateAsync(
-        // @ts-ignore
-        { [uniqueField]: edition[uniqueField] },
-        {
-          onSettled(data) {
-            if (data && data.exists) {
-              setUniqueError(data.message);
-              itemExists = true;
-            } else {
-              setUniqueError("");
-              itemExists = false;
-            }
-          },
-        }
-      );
-    }
-    if (!itemExists) {
-      await updateMutation.mutateAsync(edition, {
-        onSettled(data: any, error: any) {
-          if (error) notification?.error(error.message, 5000);
-          if (data) {
-            if (data.success) notification?.success(data.message, 5000);
-            else notification?.error(data.message, 5000);
-          }
-          setIsOpen && setIsOpen(false);
-        },
-      });
-    }
+    // let itemExists = false;
+    // if (uniqueField && edition[uniqueField] !== selected_one[uniqueField]) {
+    //   await checkUniqueMutation.mutateAsync(
+    //     // @ts-ignore
+    //     { [uniqueField]: edition[uniqueField] },
+    //     {
+    //       onSettled(data) {
+    //         if (data && data.exists) {
+    //           setUniqueError(data.message);
+    //           itemExists = true;
+    //         } else {
+    //           setUniqueError("");
+    //           itemExists = false;
+    //         }
+    //       },
+    //     }
+    //   );
+    // }
+    // if (!itemExists) {
+    //   await updateMutation.mutateAsync(edition, {
+    //     onSettled(data: any, error: any) {
+    //       if (error) notification?.error(error.message, 5000);
+    //       if (data) {
+    //         if (data.success) notification?.success(data.message, 5000);
+    //         else notification?.error(data.message, 5000);
+    //       }
+    //       setIsOpen && setIsOpen(false);
+    //     },
+    //   });
+    // }
   };
 
   return (
@@ -125,16 +146,18 @@ const Edit = ({ collection, unit, title, setIsOpen }: EditProps) => {
               </Button>
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
-              {PAGE_ARCHITECTURE[collection].create_layout &&
-                PAGE_ARCHITECTURE[collection].create_layout?.map(
-                  (group, index) => (
-                    <div key={index}>
-                      {group.group_title && (
-                        <div className={`text-lg uppercase text-primary`}>
-                          {group.group_title}
-                        </div>
-                      )}
-                      {group.group_fields.map((field) => (
+              {state &&
+                state.map((group, group_index) => (
+                  <div key={group_index}>
+                    {group && group.group_title && (
+                      <div className={`text-lg uppercase text-primary`}>
+                        {group.group_title}
+                      </div>
+                    )}
+                    {group &&
+                      !group.rows &&
+                      !group.findOrCreateClient &&
+                      group.group_fields.map((field, field_index) => (
                         <Fragment key={field.field}>
                           {field.field === uniqueField && uniqueError && (
                             <div className="font-bold text-red-600">
@@ -145,26 +168,18 @@ const Edit = ({ collection, unit, title, setIsOpen }: EditProps) => {
                               {uniqueError}
                             </div>
                           )}
-                          <div className="my-4 mx-2 flex items-center">
-                            <div className="w-36">{field.name}</div>
-                            <TextInput
-                              placeholder={field.name}
-                              value={edition[field.field]}
-                              onChange={(e) => {
-                                field.field === uniqueField &&
-                                  setUniqueError("");
-                                setEdition({
-                                  ...edition,
-                                  [field.field]: e.target.value.toUpperCase(),
-                                });
-                              }}
-                            />
-                          </div>
+                          <Inputs
+                            field={field}
+                            field_index={field_index}
+                            group_index={group_index}
+                            state={state as DataLayout[]}
+                            setState={setState as any}
+                            setUniqueError={setUniqueError}
+                          />
                         </Fragment>
                       ))}
-                    </div>
-                  )
-                )}
+                  </div>
+                ))}
             </div>
             <div className="flex justify-end items-center">
               <Button type="button" variant="solid" onClick={editClient}>
