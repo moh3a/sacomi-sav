@@ -37,6 +37,13 @@ export const transactionRouter = t.router({
       if (ctx.session) {
         const transaction = await ctx.prisma.transaction.findUnique({
           where: { id: input.id },
+          include: {
+            prestation: {
+              include: {
+                client: true,
+              },
+            },
+          },
         });
         return { transaction };
       } else return { transaction: null };
@@ -47,6 +54,13 @@ export const transactionRouter = t.router({
       if (ctx.session) {
         const transactions = await ctx.prisma.transaction.findMany({
           where: { type: "EXPENSE" },
+          include: {
+            prestation: {
+              include: {
+                client: true,
+              },
+            },
+          },
           take: 20,
         });
         return { transactions };
@@ -137,9 +151,52 @@ export const transactionRouter = t.router({
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          let prestationId: string | undefined = undefined;
+          if (input.prestation_id)
+            prestationId =
+              (
+                await ctx.prisma.prestation.findUnique({
+                  where: { prestation_id: input.prestation_id.toUpperCase() },
+                  select: { id: true },
+                })
+              )?.id ?? undefined;
+
+          delete input.prestation_id;
           const transaction = await ctx.prisma.transaction.findUnique({
             where: { id: input.id },
           });
+          if (transaction) {
+            if (transaction.type === "INCOME") {
+              await ctx.prisma.config.update({
+                where: { id: "config" },
+                data: { current_balance: { decrement: transaction.amount } },
+              });
+            } else if (transaction.type === "EXPENSE") {
+              await ctx.prisma.config.update({
+                where: { id: "config" },
+                data: { current_balance: { increment: transaction.amount } },
+              });
+            }
+          }
+
+          const newtransaction = await ctx.prisma.transaction.update({
+            where: { id: input.id },
+            data: { ...input, prestationId },
+          });
+          if (newtransaction) {
+            if (newtransaction.type === "INCOME") {
+              await ctx.prisma.config.update({
+                where: { id: "config" },
+                data: { current_balance: { increment: newtransaction.amount } },
+              });
+            } else if (newtransaction.type === "EXPENSE") {
+              await ctx.prisma.config.update({
+                where: { id: "config" },
+                data: { current_balance: { decrement: newtransaction.amount } },
+              });
+            }
+          }
+
           return {
             transaction,
             success: true,

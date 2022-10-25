@@ -695,7 +695,13 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       {
         group_title: "Infos",
         group_fields: [
-          { name: "ID de la Prestation", field: "prestation_id", value: "" },
+          {
+            name: "ID de la Prestation",
+            field: "prestation_id",
+            value: "",
+            collection: "prestations",
+            unit: "prestation",
+          },
           { name: "Titre", field: "title", value: "" },
         ],
       },

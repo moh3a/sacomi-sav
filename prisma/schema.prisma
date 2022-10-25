@@ -221,6 +221,7 @@ model Transaction {
   id           String          @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
   date         DateTime        @default(now()) @db.Date
+  updatedAt    DateTime?       @updatedAt @db.Date
   type         TransactionType
   title        String?
   prestationId String?

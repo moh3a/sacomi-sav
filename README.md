@@ -3,7 +3,6 @@
 ### Todo
 
 - config: create layout for updating jobs without option to actually create
-- server: transaction update route
 
 ### Prerequisites
 

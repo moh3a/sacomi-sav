@@ -83,9 +83,10 @@ const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
                 group.row_fields = rowsData.map((row: any) => {
                   let fields = JSON.parse(JSON.stringify(group.group_fields));
                   let data = fields.map((field: Column) => {
-                    field.value = field.unit
-                      ? row[field.unit][field.field]
-                      : row[field.field];
+                    field.value =
+                      field.unit && row[field.unit]
+                        ? row[field.unit][field.field]
+                        : row[field.field];
                     return field;
                   });
                   return data;
@@ -93,7 +94,10 @@ const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
                 return group;
               } else if (!group.rows) {
                 group.group_fields = group.group_fields.map((field) => {
-                  field.value = selected_one[field.field];
+                  field.value =
+                    field.unit && selected_one[field.unit]
+                      ? selected_one[field.unit][field.field]
+                      : selected_one[field.field];
                   if (field.unique) setUniqueField(field.field);
                   return field;
                 });
