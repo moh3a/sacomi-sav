@@ -106,6 +106,24 @@ export const jobRouter = t.router({
         return { jobs };
       } else return { jobs: null };
     }),
+  byRelationId: t.procedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (ctx.session) {
+        const rows = await ctx.prisma.job.findMany({
+          where: {
+            entryId: input.id,
+          },
+          include: {
+            client: true,
+            entry: true,
+            product: true,
+          },
+          take: 20,
+        });
+        return { rows };
+      } else return { rows: null };
+    }),
   checkExists: t.procedure
     .input(z.object({ job_id: z.number() }))
     .mutation(async ({ ctx, input }) => {

@@ -184,20 +184,80 @@ export const entryRouter = t.router({
         warranty: z.string().nullish(),
         global: z.string().nullish(),
         observations: z.string().nullish(),
+        client_name: z.string().nullish(),
+        rows: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
-          const entry = await ctx.prisma.entry.update({
-            where: { id: input.id },
-            data: input,
+          let products = JSON.parse(JSON.stringify(input.rows));
+          const client = await ctx.prisma.client.findUnique({
+            where: { name: input.client_name ?? "" },
+            select: { id: true },
           });
-          return {
-            entry,
-            success: true,
-            message: `Entrée modifiée avec succès.`,
-          };
+          if (client) {
+            delete input.rows;
+            delete input.client_name;
+            const entry = await ctx.prisma.entry.update({
+              where: { id: input.id },
+              data: { ...input, clientId: client.id },
+            });
+
+            let update_jobs = async () => {
+              if (products) {
+                for (let product of products) {
+                  if (product.product_model) {
+                    const p = await ctx.prisma.product.findUnique({
+                      where: { product_model: product.product_model },
+                      select: { id: true },
+                    });
+                    const config = await ctx.prisma.config.update({
+                      where: { id: "config" },
+                      data: {
+                        current_jobs_id: {
+                          increment: 1,
+                        },
+                      },
+                      select: { current_jobs_id: true },
+                    });
+                    delete product.product_model;
+                    if (p && config) {
+                      await ctx.prisma.job.upsert({
+                        where: { id: product.id },
+                        update: {
+                          clientId: client.id,
+                          productId: p.id,
+                          entryId: entry.id,
+                          ...product,
+                        },
+                        create: {
+                          client: {
+                            connect: { id: client.id },
+                          },
+                          product: {
+                            connect: { id: p.id },
+                          },
+                          entry: {
+                            connect: { id: entry.id },
+                          },
+                          job_id: config.current_jobs_id,
+                          ...product,
+                        },
+                      });
+                    }
+                  }
+                }
+              }
+            };
+            await update_jobs();
+
+            return {
+              entry,
+              success: true,
+              message: `Entrée modifiée avec succès.`,
+            };
+          }
         } else
           return {
             entry: null,

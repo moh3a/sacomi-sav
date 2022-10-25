@@ -5,6 +5,7 @@ import { entryRouter } from "./entries";
 import { orderRouter } from "./orders";
 import { productRouter } from "./products";
 import { prestationRouter } from "./services";
+import { prestationDetailsRouter } from "./serviceDetails";
 import { jobRouter } from "./jobs";
 import { transactionRouter } from "./transactions";
 import { userRouter } from "./users";
@@ -22,6 +23,7 @@ export const appRouter = t.router({
   orders: orderRouter,
   products: productRouter,
   prestations: prestationRouter,
+  prestationDetails: prestationDetailsRouter,
   jobs: jobRouter,
   transactions: transactionRouter,
   users: userRouter,

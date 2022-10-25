@@ -59,7 +59,7 @@ const PageSkeleton = ({
                 className="flex justify-center"
                 radius="50%"
               >
-                <PlusIcon className="h-6 w-6 m-1" />
+                <PlusIcon className="h-6 w-6 m-1 z-0" />
               </Button>
             </div>
           )}
@@ -71,7 +71,7 @@ const PageSkeleton = ({
                 className="flex justify-center"
                 radius="50%"
               >
-                <SearchIcon className="h-6 w-6 m-1" />
+                <SearchIcon className="h-6 w-6 m-1 z-0" />
               </Button>
             </div>
           )}
@@ -121,13 +121,15 @@ const PageSkeleton = ({
       )} */}
 
       <Modal isOpen={openDetailsModal} setIsOpen={setOpenDetailsModal}>
-        <Edit
-          setIsOpen={setOpenCreateModal}
-          title={page.title}
-          collection={page.collection as Collection["withIds"]}
-          unit={page.unit as Collection["unit"]}
-          layout={page.create_layout!}
-        />
+        {page.create_layout && (
+          <Edit
+            setIsOpen={setOpenCreateModal}
+            title={page.title}
+            collection={page.collection as Collection["withIds"]}
+            unit={page.unit as Collection["unit"]}
+            layout={page.create_layout}
+          />
+        )}
       </Modal>
     </>
   );

@@ -143,20 +143,27 @@ export const deliveryRouter = t.router({
         sage_exit_id: z.string().nullish(),
         delivery_date_1: z.string().nullish(),
         observations: z.string().nullish(),
+        client_name: z.string().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
-          const delivery = await ctx.prisma.delivery.update({
-            where: { id: input.id },
-            data: input,
+          const client = await ctx.prisma.client.findUnique({
+            where: { name: input.client_name ?? "" },
+            select: { id: true },
           });
-          return {
-            delivery,
-            success: true,
-            message: `Livraison modifiée avec succès.`,
-          };
+          if (client) {
+            const delivery = await ctx.prisma.delivery.update({
+              where: { id: input.id },
+              data: { ...input, clientId: client.id },
+            });
+            return {
+              delivery,
+              success: true,
+              message: `Livraison modifiée avec succès.`,
+            };
+          }
         } else {
           return {
             delivery: null,

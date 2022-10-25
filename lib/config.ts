@@ -59,6 +59,7 @@ const BASIC_ENTRY_PRODUCTS: Column[] = [
     name: "Modèle du produit",
     field: "product_model",
     collection: "products",
+    unit: "product",
     value: "",
     autocomplete: true,
   },
@@ -168,9 +169,10 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       { group_title: "Client", findOrCreateClient: true, group_fields: [] },
       {
         group_title: "Entrées",
-        rows: true,
         group_fields: BASIC_ENTRY_PRODUCTS,
         row_fields: [BASIC_ENTRY_PRODUCTS],
+        rows: true,
+        rows_collection: "jobs",
       },
     ],
   },
@@ -483,9 +485,10 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       { group_title: "Client", findOrCreateClient: true, group_fields: [] },
       {
         group_title: "Services",
-        rows: true,
         group_fields: BASIC_PRESTATION_SERVICES,
         row_fields: [BASIC_PRESTATION_SERVICES],
+        rows: true,
+        rows_collection: "prestationDetails",
       },
       {
         group_title: "Infos",
@@ -631,7 +634,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             unique: true,
           },
           {
-            name: "Email",
+            name: "Rôle",
             field: "role",
             value: "",
             type: "radio",
@@ -719,5 +722,15 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ],
       },
     ],
+  },
+  prestationDetails: {
+    // ! should not be needed for now
+    title: "",
+    collection: "prestationDetails",
+    table_titles: [{ name: "Date", field: "date" }],
+    table_data: (data: any) =>
+      data.map((data: any) => {
+        return [data];
+      }),
   },
 };

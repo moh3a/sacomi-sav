@@ -74,7 +74,7 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
     let rows: any[] = [];
     let client_name = "";
     let input: any = {};
-    state.map(async (group) => {
+    state.forEach(async (group) => {
       if (group.rows && group.row_fields) {
         group.row_fields.forEach((row) => {
           let r: any = {};
@@ -97,7 +97,7 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
         else if (selectedTab === 1 && newClient.name)
           client_name = newClient.name;
       } else {
-        group.group_fields.map((field) => {
+        group.group_fields.forEach((field) => {
           if (field.value) input[field.field] = field.value;
         });
       }

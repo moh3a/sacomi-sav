@@ -182,21 +182,55 @@ export const prestationRouter = t.router({
         payment_date: z.string().nullish(),
         total_amount: z.string().nullish(),
         invoice: z.string().nullish(),
+        client_name: z.string().nullish(),
+        rows: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
-          const prestation = await ctx.prisma.prestation.update({
-            where: { id: input.id },
-            data: input,
+          let services = JSON.parse(JSON.stringify(input.rows));
+          const client = await ctx.prisma.client.findUnique({
+            where: { name: input.client_name ?? "" },
+            select: { id: true },
           });
+          if (client) {
+            delete input.rows;
+            delete input.client_name;
+            const prestation = await ctx.prisma.prestation.update({
+              where: { id: input.id },
+              data: { ...input, clientId: client.id },
+            });
 
-          return {
-            prestation,
-            success: true,
-            message: `Prestation modifiée avec succès.`,
-          };
+            let update_details = async () => {
+              if (prestation && services) {
+                for (const service of services) {
+                  if (service.designation) {
+                    await ctx.prisma.prestationDetails.upsert({
+                      where: { id: service.id },
+                      update: {
+                        prestationId: prestation.id,
+                        ...service,
+                      },
+                      create: {
+                        prestation: {
+                          connect: { id: prestation.id },
+                        },
+                        ...service,
+                      },
+                    });
+                  }
+                }
+              }
+            };
+            await update_details();
+
+            return {
+              prestation,
+              success: true,
+              message: `Prestation modifiée avec succès.`,
+            };
+          }
         } else {
           return {
             prestation: null,
