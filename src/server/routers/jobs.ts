@@ -223,6 +223,8 @@ export const jobRouter = t.router({
         technician: z.string().nullish(),
         entry_subid: z.string().nullish(),
         product_same_model: z.string().nullish(),
+        name: z.string().nullish(),
+        client_name: z.string().nullish(),
         entry_id: z.string().nullish(),
         product_model: z.string().nullish(),
       })
@@ -230,15 +232,65 @@ export const jobRouter = t.router({
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
-          const job = await ctx.prisma.job.update({
-            where: { id: input.id },
-            data: input,
+          const name = input.name || input.client_name;
+          const entry_id = input.entry_id ?? "";
+          const product_model = input.product_model ?? "";
+          delete input.client_name;
+          delete input.name;
+          delete input.entry_id;
+          delete input.product_model;
+          const client = await ctx.prisma.client.findUnique({
+            where: { name: name ?? "" },
+            select: { id: true },
           });
-          return {
-            job,
-            success: true,
-            message: `Intervention modifiéé avec succès.`,
-          };
+          const product = await ctx.prisma.product.findUnique({
+            where: { product_model },
+            select: { id: true },
+          });
+          if (client) {
+            const entry = await ctx.prisma.entry.update({
+              where: { entry_id },
+              data: {
+                client: {
+                  connect: {
+                    id: client.id,
+                  },
+                },
+              },
+            });
+            if (entry && product) {
+              await ctx.prisma.job.updateMany({
+                where: {
+                  entryId: entry.id,
+                },
+                data: {
+                  clientId: client.id,
+                },
+              });
+              const job = await ctx.prisma.job.update({
+                where: { id: input.id },
+                data: {
+                  product: {
+                    connect: {
+                      id: product.id,
+                    },
+                  },
+                  ...input,
+                },
+              });
+              return {
+                job,
+                success: true,
+                message: `Intervention modifiéé avec succès.`,
+              };
+            } else {
+              return {
+                job: null,
+                success: false,
+                message: "Problème avec le client ou le modèle du produit.",
+              };
+            }
+          }
         } else {
           return {
             job: null,

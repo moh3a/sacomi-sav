@@ -154,6 +154,7 @@ export const deliveryRouter = t.router({
             select: { id: true },
           });
           if (client) {
+            delete input.client_name;
             const delivery = await ctx.prisma.delivery.update({
               where: { id: input.id },
               data: { ...input, clientId: client.id },

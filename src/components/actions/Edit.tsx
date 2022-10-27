@@ -31,11 +31,19 @@ interface EditProps {
   title: string;
   collection: Collection["name"];
   unit: Collection["unit"];
+  url: string;
   layout: DataLayout[];
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
-const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
+const Edit = ({
+  collection,
+  unit,
+  url,
+  title,
+  setIsOpen,
+  layout,
+}: EditProps) => {
   const [loading, setLoading] = useState(false);
   const { selected_id } = useSelector(selectSelectedId);
   const { selected_one } = useSelector(selectSelectedOne);
@@ -83,10 +91,11 @@ const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
                 group.row_fields = rowsData.map((row: any) => {
                   let fields = JSON.parse(JSON.stringify(group.group_fields));
                   let data = fields.map((field: Column) => {
-                    field.value =
-                      field.unit && row[field.unit]
-                        ? row[field.unit][field.field]
-                        : row[field.field];
+                    if (field.unit && row[field.unit])
+                      field.value = row[field.unit][field.field];
+                    else if (field.type === "number")
+                      field.value = Number(row[field.field]) ?? 0;
+                    else field.value = row[field.field] ?? "";
                     return field;
                   });
                   return data;
@@ -94,11 +103,12 @@ const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
                 return group;
               } else if (!group.rows) {
                 group.group_fields = group.group_fields.map((field) => {
-                  field.value =
-                    field.unit && selected_one[field.unit]
-                      ? selected_one[field.unit][field.field]
-                      : selected_one[field.field];
                   if (field.unique) setUniqueField(field.field);
+                  if (field.unit && selected_one[field.unit])
+                    field.value = selected_one[field.unit][field.field];
+                  else if (field.type === "number")
+                    field.value = Number(selected_one[field.field]) ?? 0;
+                  else field.value = selected_one[field.field] ?? "";
                   return field;
                 });
                 return group;
@@ -178,6 +188,8 @@ const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
     }
     if (client_name) input = { ...input, client_name };
     if (rows.length > 0) input = { ...input, rows };
+    if (collection === "jobs")
+      input = { ...input, job_id: selected_one.job_id };
     input = { ...input, id: selected_id };
     if (!itemExists) {
       await updateMutation.mutateAsync(input, {
@@ -206,7 +218,7 @@ const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
               Modifier | {title}{" "}
               <Button
                 type="button"
-                onClick={() => router.push(`/${collection}/${selected_id}`)}
+                onClick={() => router.push(`${url}/${selected_id}`)}
               >
                 <ExternalLinkIcon
                   className="h-6 w-6 text-primary inline"
@@ -234,6 +246,7 @@ const Edit = ({ collection, unit, title, setIsOpen, layout }: EditProps) => {
                   )}
                   {group && group.rows && (
                     <Rows
+                      action="edit"
                       state={state as DataLayout[]}
                       setState={setState as any}
                     />

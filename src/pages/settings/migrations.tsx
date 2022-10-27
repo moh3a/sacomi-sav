@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { CloudUploadIcon } from "@heroicons/react/outline";
 import axios from "axios";
+import { useEffectOnce } from "../../utils/useEffectOnce";
 
 import { MigrationsConfig } from "../../types";
 import { Uploader } from "../../components/Uploader";
@@ -103,7 +104,6 @@ const SeedScreen = () => {
 };
 
 import Layout from "../../components/layout/Layout";
-import { useEffectOnce } from "../../utils/useEffectOnce";
 SeedScreen.getLayout = function getLayout(page: any) {
   return <Layout>{page}</Layout>;
 };

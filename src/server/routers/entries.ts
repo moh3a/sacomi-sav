@@ -223,28 +223,27 @@ export const entryRouter = t.router({
                     });
                     delete product.product_model;
                     if (p && config) {
-                      await ctx.prisma.job.upsert({
-                        where: { id: product.id },
-                        update: {
-                          clientId: client.id,
-                          productId: p.id,
-                          entryId: entry.id,
-                          ...product,
-                        },
-                        create: {
-                          client: {
-                            connect: { id: client.id },
+                      if (product.id) {
+                        await ctx.prisma.job.update({
+                          where: { id: product.id },
+                          data: {
+                            clientId: client.id,
+                            productId: p.id,
+                            entryId: entry.id,
+                            ...product,
                           },
-                          product: {
-                            connect: { id: p.id },
+                        });
+                      } else {
+                        await ctx.prisma.job.create({
+                          data: {
+                            clientId: client.id,
+                            productId: p.id,
+                            entryId: entry.id,
+                            job_id: config.current_jobs_id,
+                            ...product,
                           },
-                          entry: {
-                            connect: { id: entry.id },
-                          },
-                          job_id: config.current_jobs_id,
-                          ...product,
-                        },
-                      });
+                        });
+                      }
                     }
                   }
                 }

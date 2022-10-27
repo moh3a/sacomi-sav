@@ -58,6 +58,7 @@ handler
     } catch (error) {
       migrations_config = migrations_config.map((migration) => {
         migration.uploaded = false;
+        migration.canInsert = false;
         return migration;
       });
     }

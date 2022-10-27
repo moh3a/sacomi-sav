@@ -10,7 +10,7 @@ const Toast = () => {
     <>
       {notification?.notification !== NotificationStatus.None && (
         <div
-          className={`absolute top-32 right-10 z-90 w-72 font-bold text-black dark:text-white bg-white dark:bg-black bg-opacity-50 dark:bg-opacity-25 rounded-xl mb-3 ml-3 shadow-md ${
+          className={`absolute bottom-10 left-10 z-50 w-72 font-bold text-black dark:text-white bg-white dark:bg-black bg-opacity-50 dark:bg-opacity-25 rounded-xl mb-3 ml-3 shadow-md ${
             notification?.notification === NotificationStatus.Success
               ? "shadow-success/50"
               : notification?.notification === NotificationStatus.Warning

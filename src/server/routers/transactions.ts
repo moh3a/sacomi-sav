@@ -11,10 +11,17 @@ export const transactionRouter = t.router({
     )
     .query(async ({ ctx, input }) => {
       if (ctx.session) {
+        const date = new Date().toISOString().substring(0, 8);
         let filters: any = {};
         const count = await ctx.prisma.client.count();
         const transactions = await ctx.prisma.transaction.findMany({
-          where: Object.keys(filters).length > 0 ? filters : undefined,
+          where: {
+            date: {
+              lte: new Date(date + "31"),
+              gte: new Date(date + "01"),
+            },
+          },
+          // where: Object.keys(filters).length > 0 ? filters : undefined,
           include: {
             prestation: {
               include: {

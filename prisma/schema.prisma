@@ -198,11 +198,11 @@ model PrestationDetails {
   invoice         String?
   prestation_date String?
   designation     String?
-  price_ht        String?
-  price_ttc       String?
-  quantity        String?
-  subtotal        String?
-  total_amount    String?
+  price_ht        String? // ! should be int
+  price_ttc       String? // ! should be int
+  quantity        String? // ! should be int
+  subtotal        String? // ! should be int
+  total_amount    String? // ! should be int
   observations    String?
 }
 

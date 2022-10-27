@@ -11,7 +11,8 @@ const NotFound = () => {
         <div className="text-6xl font-extrabold select-none">
           <span className="bg-clip-text text-transparent bg-gradient-to-r dark:from-rose-100 dark:to-teal-100 from-neutral-900 to-slate-900 ">
             404 | Not Found
-          </span>
+          </span>{" "}
+          😵
         </div>
       </div>
     </>

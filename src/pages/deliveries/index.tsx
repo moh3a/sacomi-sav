@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 
-import { trpc } from "../utils/trpc";
-import { PAGE_ARCHITECTURE } from "../../lib/config";
-import PageSkeleton from "../components/PageSkeleton";
-import DetailsDelivery from "../components/details/DetailsDelivery";
+import { trpc } from "../../utils/trpc";
+import { PAGE_ARCHITECTURE } from "../../../lib/config";
+import PageSkeleton from "../../components/PageSkeleton";
+import DetailsDelivery from "../../components/details/DetailsDelivery";
 import {
   selectSelectedAll,
   select_deliveries,
-} from "../redux/selectedAllSlice";
+} from "../../redux/selectedAllSlice";
 
 const Deliveries = () => {
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const Deliveries = () => {
   );
 };
 
-import Layout from "../components/layout/Layout";
+import Layout from "../../components/layout/Layout";
 Deliveries.getLayout = function getLayout(page: any) {
   return <Layout>{page}</Layout>;
 };

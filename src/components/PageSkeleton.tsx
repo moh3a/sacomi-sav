@@ -50,8 +50,8 @@ const PageSkeleton = ({
             {page.title}
           </span>
         </h1>
-        <div className="flex justify-center">
-          {page.create_layout && (
+        <div className="flex justify-center z-10">
+          {page.create_layout && page.collection !== "jobs" && (
             <div className="mx-1">
               <Button
                 onClick={() => setOpenCreateModal(!openCreateModal)}
@@ -59,7 +59,7 @@ const PageSkeleton = ({
                 className="flex justify-center"
                 radius="50%"
               >
-                <PlusIcon className="h-6 w-6 m-1 z-0" />
+                <PlusIcon className="h-6 w-6 m-1 z-10" />
               </Button>
             </div>
           )}
@@ -71,13 +71,13 @@ const PageSkeleton = ({
                 className="flex justify-center"
                 radius="50%"
               >
-                <SearchIcon className="h-6 w-6 m-1 z-0" />
+                <SearchIcon className="h-6 w-6 m-1" />
               </Button>
             </div>
           )}
         </div>
       </div>
-      {page.create_layout && (
+      {page.create_layout && page.collection !== "jobs" && (
         <Modal isOpen={openCreateModal} setIsOpen={setOpenCreateModal}>
           <Create
             setIsOpen={setOpenCreateModal}
@@ -127,6 +127,7 @@ const PageSkeleton = ({
             title={page.title}
             collection={page.collection as Collection["withIds"]}
             unit={page.unit as Collection["unit"]}
+            url={page.url ?? ""}
             layout={page.create_layout}
           />
         )}

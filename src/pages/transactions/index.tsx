@@ -9,14 +9,14 @@ import {
 import {
   selectSelectedAll,
   select_transactions,
-} from "../redux/selectedAllSlice";
-import { PAGE_ARCHITECTURE } from "../../lib/config";
-import PageSkeleton from "../components/PageSkeleton";
-import { TEXT_GRADIENT } from "../components/design";
-import DetailsTransaction from "../components/details/DetailsTransaction";
-import { trpc } from "../utils/trpc";
-import { get_month } from "../utils";
-import { selectCurrentId } from "../redux/currentIdSlice";
+} from "../../redux/selectedAllSlice";
+import { PAGE_ARCHITECTURE } from "../../../lib/config";
+import PageSkeleton from "../../components/PageSkeleton";
+import { TEXT_GRADIENT } from "../../components/design";
+import DetailsTransaction from "../../components/details/DetailsTransaction";
+import { trpc } from "../../utils/trpc";
+import { get_month } from "../../utils";
+import { selectCurrentId } from "../../redux/currentIdSlice";
 
 const Movements = () => {
   const dispatch = useDispatch();
@@ -67,7 +67,7 @@ const Movements = () => {
   );
 };
 
-import Layout from "../components/layout/Layout";
+import Layout from "../../components/layout/Layout";
 Movements.getLayout = function getLayout(page: any) {
   return <Layout>{page}</Layout>;
 };

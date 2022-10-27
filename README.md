@@ -2,7 +2,7 @@
 
 ### Todo
 
-- config: create layout for updating jobs without option to actually create
+- add realtime collaboration
 
 ### Prerequisites
 

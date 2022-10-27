@@ -36,6 +36,7 @@ export interface PageArchitecture {
   title: string;
   collection?: Collection["name"];
   unit?: Collection["unit"];
+  url?: string;
   table_titles: {
     name: string;
     field: string;
@@ -73,6 +74,7 @@ export interface Column {
   type?: HTMLInputTypeAttribute;
   autocomplete?: boolean;
   textarea?: boolean;
+  readonly?: boolean;
   size?: number;
   index?: boolean;
   options?: {

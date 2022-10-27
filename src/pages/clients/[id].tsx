@@ -12,20 +12,11 @@ const Client = () => {
   const { id } = router.query;
 
   if (id && typeof id === "string") dispatch(select_id({ id }));
-  // trpc.clients.byId.useQuery(
-  //   { id },
-  //   {
-  //     onSettled(data, error) {
-  //       dispatch(select_client(data?.client));
-  //     },
-  //   }
-  // );
 
-  // <div className="mx-auto lg:w-5/6">
   return (
     <div className="overflow-x-auto">
       <div
-        className={`lg:h-[calc(100vh-240px)] lg:overflow-auto min-w-xl max-w-screen-2xl flex items-center justify-center font-sans text-xs`}
+        className={`lg:overflow-auto min-w-xl max-w-screen-2xl flex items-center justify-center font-sans`}
       >
         <div className={`w-full lg:w-5/6`}>
           <div
@@ -36,6 +27,7 @@ const Client = () => {
               unit="client"
               layout={PAGE_ARCHITECTURE.clients.create_layout!}
               title="Clients"
+              url={PAGE_ARCHITECTURE.clients.url ?? ""}
             />
           </div>
         </div>

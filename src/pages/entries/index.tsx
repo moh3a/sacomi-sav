@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 
-import { trpc } from "../utils/trpc";
-import { PAGE_ARCHITECTURE } from "../../lib/config";
-import PageSkeleton from "../components/PageSkeleton";
-import DetailsEntry from "../components/details/DetailsEntry";
-import { selectSelectedAll, select_entries } from "../redux/selectedAllSlice";
+import { trpc } from "../../utils/trpc";
+import { PAGE_ARCHITECTURE } from "../../../lib/config";
+import PageSkeleton from "../../components/PageSkeleton";
+import DetailsEntry from "../../components/details/DetailsEntry";
+import {
+  selectSelectedAll,
+  select_entries,
+} from "../../redux/selectedAllSlice";
 
 const Entries = () => {
   const dispatch = useDispatch();
@@ -44,7 +47,7 @@ const Entries = () => {
   );
 };
 
-import Layout from "../components/layout/Layout";
+import Layout from "../../components/layout/Layout";
 Entries.getLayout = function getLayout(page: any) {
   return <Layout>{page}</Layout>;
 };

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { trpc } from "../utils/trpc";
+import { trpc } from "../../utils/trpc";
 
-import { PAGE_ARCHITECTURE } from "../../lib/config";
-import PageSkeleton from "../components/PageSkeleton";
+import { PAGE_ARCHITECTURE } from "../../../lib/config";
+import PageSkeleton from "../../components/PageSkeleton";
 
 const Staff = () => {
   const router = useRouter();
@@ -32,7 +32,7 @@ const Staff = () => {
   );
 };
 
-import Layout from "../components/layout/Layout";
+import Layout from "../../components/layout/Layout";
 Staff.getLayout = function getLayout(page: any) {
   return <Layout>{page}</Layout>;
 };

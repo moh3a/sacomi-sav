@@ -6,7 +6,7 @@ interface BannerProps {
 const Banner = ({ type, message }: BannerProps) => {
   return (
     <div
-      className={`w-full z-100 my-3 text-sm text-left text-white ${
+      className={`w-full z-40 my-3 text-sm text-left text-white ${
         type === "success"
           ? "bg-success"
           : type === "warning"
