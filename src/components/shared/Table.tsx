@@ -6,9 +6,11 @@ import { useDispatch } from "react-redux";
 
 import { select_id } from "../../redux/selectedIdSlice";
 import { SHADOW } from "../design";
+import { TableTitle } from "../../types";
+import Badge from "./Badge";
 
 interface TableProps {
-  titles: { name: string; field?: string; isImage?: boolean }[];
+  titles: TableTitle[];
   data: any[][];
   compact?: boolean;
   scrollable?: boolean;
@@ -33,6 +35,12 @@ const Table = ({
     setImageFieldIndex(index + 1);
   }, [titles]);
 
+  const [badgeFieldIndex, setBadgeFieldIndex] = useState<number | undefined>();
+  useEffect(() => {
+    const index = titles.findIndex((t) => t.isBadge === true);
+    setBadgeFieldIndex(index + 1);
+  }, [titles]);
+
   const trim = (str: string) => {
     const length = 20;
     return str && str.length > 20 ? str.substring(0, length - 3) + "..." : str;
@@ -55,7 +63,7 @@ const Table = ({
       >
         <div className={`w-full ${compact && "lg:w-5/6"}`}>
           <div
-            className={`bg-opacity-75 bg-white dark:bg-black dark:bg-opacity-25 rounded-xl my-6 ${SHADOW} `}
+            className={`bg-opacity-75 bg-white dark:bg-black dark:bg-opacity-25 rounded-xl my-2 ${SHADOW} `}
           >
             <table className="min-w-max w-full table-auto">
               <thead>
@@ -87,6 +95,10 @@ const Table = ({
                                   alt={"User avatar"}
                                   className="cursor-pointer w-8 h-8 rounded-full"
                                 />
+                              </div>
+                            ) : i === (badgeFieldIndex as number) && col ? (
+                              <div className="flex justify-center">
+                                <Badge text={col} />
                               </div>
                             ) : col === true ? (
                               <CheckCircleIcon className="text-success w-5 h-5 inline" />

@@ -3,6 +3,7 @@ import { Column, DataLayout } from "../../types";
 import Autocomplete from "../shared/Autocomplete";
 import Checkbox from "../shared/Checkbox";
 import DateInput from "../shared/DateInput";
+import Dropdown from "../shared/Dropdown";
 import NumberInput from "../shared/NumberInput";
 import RadioInput from "../shared/RadioInput";
 import Textarea from "../shared/Textarea";
@@ -74,6 +75,44 @@ const Inputs = ({
           {field.name}
           <span className="text-danger">{field.required && "*"}</span>
         </div>
+      )}
+      {field.dropdown && field.options && (
+        <Dropdown
+          options={field.options}
+          selected={field.value}
+          setSelected={(value) => {
+            setState(
+              state.map((g, gidx) => {
+                if (gidx === group_index) {
+                  if (g.rows) {
+                    g.row_fields = g.row_fields?.map((r, ridx) => {
+                      if (ridx === row_index) {
+                        r.map((f, fidx) => {
+                          if (f.unique) setUniqueError && setUniqueError("");
+                          if (f.index) f.value = String(row_index + 1);
+                          if (fidx === field_index) {
+                            f.value = value.value;
+                          }
+                          return f;
+                        });
+                      }
+                      return r;
+                    });
+                  } else {
+                    g.group_fields = g.group_fields.map((f, fidx) => {
+                      if (fidx === field_index) {
+                        if (f.unique) setUniqueError && setUniqueError("");
+                        f.value = value.value;
+                      }
+                      return f;
+                    });
+                  }
+                }
+                return g;
+              })
+            );
+          }}
+        />
       )}
       {field.autocomplete && field.collection && (
         <Autocomplete
@@ -244,7 +283,8 @@ const Inputs = ({
       )}
       {(!field.type || field.type === "text") &&
         !field.autocomplete &&
-        !field.textarea && (
+        !field.textarea &&
+        !field.dropdown && (
           <TextInput
             required={field.required}
             placeholder={field.name}

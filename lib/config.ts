@@ -571,7 +571,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       { name: "Désignation", field: "job_designation" },
       { name: "Diagnostique", field: "job_diagnostics" },
       { name: "Technicien", field: "job_technician" },
-      { name: "Etat", field: "job_status" },
+      { name: "Etat", field: "job_status", isBadge: true },
       { name: "Date de sortie", field: "job_exit_date" },
     ],
     table_data: (data: any) =>
@@ -623,7 +623,11 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
           { name: "Numéro de série", field: "serial_number", value: "" },
           { name: "Diagnostique", field: "diagnostics", value: "" },
           { name: "Technicien", field: "technician", value: "" },
-          { name: "Etat", field: "status", value: "" },
+          {
+            name: "Etat",
+            field: "status",
+            value: "",
+          },
           { name: "Date de sortie", field: "exit_date", value: "" },
         ],
       },
@@ -685,7 +689,21 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         group_fields: [
           { name: "Numéro de série", field: "serial_number", value: "" },
           { name: "Technicien", field: "technician", value: "" },
-          { name: "Etat", field: "status", value: "" },
+          {
+            name: "Etat",
+            field: "status",
+            value: "",
+            dropdown: true,
+            options: [
+              { name: "EN ATTENTE", value: "EN ATTENTE" },
+              { name: "REPARE", value: "REPARE" },
+              { name: "DEVIS", value: "DEVIS" },
+              { name: "A CHANGER", value: "A CHANGER" },
+              { name: "ECHANGE", value: "ECHANGE" },
+              { name: "ATTENTE DE PIECES", value: "ATTENTE DE PIECES" },
+              { name: "RETOUR AU CLIENT", value: "RETOUR AU CLIENT" },
+            ],
+          },
           {
             name: "Date de sortie",
             field: "exit_date",
@@ -694,7 +712,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
           },
           {
             name: "Diagnostique",
-            field: "diagnostics",
+            field: "diagnostic",
             value: "",
             textarea: true,
           },
