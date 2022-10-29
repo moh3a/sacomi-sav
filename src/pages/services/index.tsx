@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import DetailsPrestation from "../../components/details/DetailsPrestation";
 import {
   selectSelectedAll,
   select_prestations,
@@ -57,7 +56,6 @@ const Prestations = () => {
       current_page={Number(p) || 0}
       total_items={totalItems}
       table_compact={true}
-      details_component={<DetailsPrestation />}
     />
   );
 };

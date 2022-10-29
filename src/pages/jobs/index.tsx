@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import DetailsJob from "../../components/details/DetailsJob";
 import { selectSelectedAll, select_jobs } from "../../redux/selectedAllSlice";
 
 const Jobs = () => {
@@ -66,7 +65,6 @@ const Jobs = () => {
       current_page={Number(p) || 0}
       total_items={totalItems}
       table_scrollable={true}
-      details_component={<DetailsJob />}
     />
   );
 };

@@ -18,7 +18,9 @@ export const clientRouter = t.router({
           filters = { ...filters, name: { contains: input.name || "" } };
         if (input.type)
           filters = { ...filters, type: { contains: input.type || "" } };
-        const count = await ctx.prisma.client.count();
+        const count = await ctx.prisma.client.count({
+          where: Object.keys(filters).length > 0 ? filters : undefined,
+        });
         const clients = await ctx.prisma.client.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           skip: input.p * ITEMS_PER_PAGE,

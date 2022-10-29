@@ -58,8 +58,10 @@ const Pagination = ({ current, totalUnits, unitsPerPage }: PaginationProps) => {
         </PageNumber>
         <p className="text-sm  mx-2">
           Page {current}, montre{" "}
-          <span className="font-medium">{unitsPerPage}</span> de{" "}
-          <span className="font-medium">{totalUnits}</span> en total.
+          <span className="font-medium">
+            {unitsPerPage < totalUnits ? unitsPerPage : totalUnits}
+          </span>{" "}
+          de <span className="font-medium">{totalUnits}</span> en total.
         </p>
         <PageNumber
           href={router.asPath.split("?")[0]}

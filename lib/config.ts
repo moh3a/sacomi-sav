@@ -668,6 +668,14 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             autocomplete: true,
             required: true,
           },
+          {
+            name: "Numéro du téléphone",
+            field: "phone_number",
+            value: "",
+            collection: "clients",
+            unit: "client",
+            readonly: true,
+          },
         ],
       },
       {

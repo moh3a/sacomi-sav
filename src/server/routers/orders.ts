@@ -30,7 +30,9 @@ export const orderRouter = t.router({
             ...filters,
             order_content: { contains: input.order_content || "" },
           };
-        const count = await ctx.prisma.order.count();
+        const count = await ctx.prisma.order.count({
+          where: Object.keys(filters).length > 0 ? filters : undefined,
+        });
         const orders = await ctx.prisma.order.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           orderBy: { id: "desc" },

@@ -30,7 +30,9 @@ export const productRouter = t.router({
             ...filters,
             product_type: { contains: input.product_type || "" },
           };
-        const count = await ctx.prisma.product.count();
+        const count = await ctx.prisma.product.count({
+          where: Object.keys(filters).length > 0 ? filters : undefined,
+        });
         const products = await ctx.prisma.product.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           skip: input.p * ITEMS_PER_PAGE,

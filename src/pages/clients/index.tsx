@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import DetailsClient from "../../components/details/DetailsClient";
 import {
   selectSelectedAll,
   select_clients,
@@ -37,7 +36,6 @@ const Clients = () => {
       current_page={Number(p) || 0}
       total_items={totalItems}
       table_compact={true}
-      details_component={<DetailsClient />}
     />
   );
 };

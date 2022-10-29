@@ -2,10 +2,8 @@
 
 ### Todo
 
-- input - everything in uppercase
-- caisse - per month
-- fix pagination total items
 - edit - if edit in different collection => open new tab
+- caisse - per month
 - work on stock
 - add realtime collaboration
 
@@ -27,7 +25,7 @@ The machine that will run this app should have installed:
   - `yarn build`;
 - Then start the production server:
   - `yarn start` for localhost, or `yarn start:local` for the local network;
-- App uses MySQL by default, to change the datasource, go to `prisma/schema.prisma` and change the provider along with the URI in the .env file;
+- App uses Postgres by default, to change the datasource, go to `prisma/schema.prisma` and change the provider along with the URI in the .env file;
 
 ### Issues
 

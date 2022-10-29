@@ -30,7 +30,9 @@ export const deliveryRouter = t.router({
             ...filters,
             client: { name: { contains: input.name || "" } },
           };
-        const count = await ctx.prisma.delivery.count();
+        const count = await ctx.prisma.delivery.count({
+          where: Object.keys(filters).length > 0 ? filters : undefined,
+        });
         const deliveries = await ctx.prisma.delivery.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           include: { client: true },

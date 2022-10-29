@@ -12,7 +12,9 @@ export const prestationDetailsRouter = t.router({
     .query(async ({ ctx, input }) => {
       if (ctx.session) {
         let filters: any = {};
-        const count: number = await ctx.prisma.prestationDetails.count();
+        const count: number = await ctx.prisma.prestationDetails.count({
+          where: Object.keys(filters).length > 0 ? filters : undefined,
+        });
         const prestationDetails = await ctx.prisma.prestationDetails.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           include: { prestation: true },

@@ -42,7 +42,9 @@ export const prestationRouter = t.router({
             ...filters,
             client: { name: { contains: input.name || "" } },
           };
-        const count: number = await ctx.prisma.prestation.count();
+        const count: number = await ctx.prisma.prestation.count({
+          where: Object.keys(filters).length > 0 ? filters : undefined,
+        });
         const prestations = await ctx.prisma.prestation.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           include: { client: true, _count: true },

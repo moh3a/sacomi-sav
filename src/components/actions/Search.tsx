@@ -49,7 +49,6 @@ const Search = ({ title, layout, setIsOpen }: SearchProps) => {
         Recherche | {title}
       </h2>
 
-      {/* grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
         {layout.map((group, index) => (
           <div key={index}>
@@ -65,7 +64,10 @@ const Search = ({ title, layout, setIsOpen }: SearchProps) => {
                   placeholder={field.name}
                   value={state[field.field]}
                   onChange={(e) =>
-                    setState({ ...state, [field.field]: e.target.value })
+                    setState({
+                      ...state,
+                      [field.field]: e.target.value.toUpperCase(),
+                    })
                   }
                 />
               </div>
@@ -73,7 +75,6 @@ const Search = ({ title, layout, setIsOpen }: SearchProps) => {
           </div>
         ))}
       </div>
-      {/* end grid */}
 
       <div className="flex justify-end items-center">
         <Button type="submit" variant="solid">

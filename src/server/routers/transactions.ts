@@ -13,7 +13,14 @@ export const transactionRouter = t.router({
       if (ctx.session) {
         const date = new Date().toISOString().substring(0, 8);
         let filters: any = {};
-        const count = await ctx.prisma.client.count();
+        const count = await ctx.prisma.transaction.count({
+          where: {
+            date: {
+              lte: new Date(date + "31"),
+              gte: new Date(date + "01"),
+            },
+          },
+        });
         const transactions = await ctx.prisma.transaction.findMany({
           where: {
             date: {

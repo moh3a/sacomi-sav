@@ -343,7 +343,7 @@ const Inputs = ({
                             if (f.unique) setUniqueError && setUniqueError("");
                             if (f.index) f.value = String(row_index + 1);
                             if (fidx === field_index) {
-                              f.value = e.target.value;
+                              f.value = e.target.value.toUpperCase();
                             }
                             return f;
                           });
@@ -354,7 +354,7 @@ const Inputs = ({
                       g.group_fields = g.group_fields.map((f, fidx) => {
                         if (fidx === field_index) {
                           if (f.unique) setUniqueError && setUniqueError("");
-                          f.value = e.target.value;
+                          f.value = e.target.value.toUpperCase();
                         }
                         return f;
                       });

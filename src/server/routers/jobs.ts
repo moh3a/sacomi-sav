@@ -16,8 +16,6 @@ export const jobRouter = t.router({
         status: z.string().nullish(),
         exit_date: z.string().nullish(),
         product_model: z.string().nullish(),
-        // product_type: z.string().nullish(),
-        // product_brand: z.string().nullish(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -70,7 +68,9 @@ export const jobRouter = t.router({
               product_model: { contains: input.product_model || "" },
             },
           };
-        const count: number = await ctx.prisma.job.count();
+        const count: number = await ctx.prisma.job.count({
+          where: Object.keys(filters).length > 0 ? filters : undefined,
+        });
         const jobs = await ctx.prisma.job.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           include: { client: true, entry: true, product: true },

@@ -22,7 +22,6 @@ interface PageSkeletonProps {
   link?: string;
   table_compact?: boolean;
   table_scrollable?: boolean;
-  details_component?: ReactNode;
 }
 
 const PageSkeleton = ({
@@ -33,7 +32,6 @@ const PageSkeleton = ({
   table_compact,
   table_scrollable,
   link,
-  details_component,
 }: PageSkeletonProps) => {
   const [openDetailsModal, setOpenDetailsModal] = useState(false);
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -114,16 +112,11 @@ const PageSkeleton = ({
           />
         </>
       )}
-      {/* {!link && details_component && (
-        <Modal isOpen={openDetailsModal} setIsOpen={setOpenDetailsModal}>
-          {details_component}
-        </Modal>
-      )} */}
 
       <Modal isOpen={openDetailsModal} setIsOpen={setOpenDetailsModal}>
         {page.create_layout && (
           <Edit
-            setIsOpen={setOpenCreateModal}
+            setIsOpen={setOpenDetailsModal}
             title={page.title}
             collection={page.collection as Collection["withIds"]}
             unit={page.unit as Collection["unit"]}

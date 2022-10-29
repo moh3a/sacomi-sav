@@ -35,7 +35,10 @@ export const entryRouter = t.router({
           skip: input.p * ITEMS_PER_PAGE,
           take: ITEMS_PER_PAGE,
         });
-        const count: number = await ctx.prisma.entry.count();
+        const count: number = await ctx.prisma.entry.count({
+          where:
+            Object.keys(entry_filters).length > 0 ? entry_filters : undefined,
+        });
         return { entries, count };
       } else {
         return { entries: [], count: 0 };
