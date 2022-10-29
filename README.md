@@ -2,6 +2,11 @@
 
 ### Todo
 
+- input - everything in uppercase
+- caisse - per month
+- fix pagination total items
+- edit - if edit in different collection => open new tab
+- work on stock
 - add realtime collaboration
 
 ### Prerequisites
