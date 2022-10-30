@@ -98,7 +98,7 @@ export const entryRouter = t.router({
         if (ctx.session.user?.role === "ADMIN") {
           let products = JSON.parse(JSON.stringify(input.rows));
           const client = await ctx.prisma.client.findUnique({
-            where: { name: input.client_name! },
+            where: { name: input.client_name ?? "" },
             select: { id: true },
           });
           if (client) {

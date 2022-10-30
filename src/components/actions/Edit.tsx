@@ -229,20 +229,38 @@ const Edit = ({
 
             {state &&
               state.map((group, group_index) => (
-                <div key={group_index}>
+                <div key={group_index} className="mb-6">
                   {group && group.group_title && (
-                    <div className={`text-lg uppercase text-primary`}>
+                    <div
+                      className={`border-b border-primaryLight dark:border-primaryDark text-lg uppercase text-primary`}
+                    >
                       {group.group_title}
                     </div>
                   )}
                   {group && group.findOrCreateClient && (
-                    <Autocomplete
-                      placeholder="Nom du client"
-                      displayValue="name"
-                      collection="clients"
-                      selected={client}
-                      setSelected={setClient}
-                    />
+                    <>
+                      <Autocomplete
+                        placeholder="Nom du client"
+                        displayValue="name"
+                        collection="clients"
+                        selected={client}
+                        setSelected={setClient}
+                      />
+                      {client && (
+                        <a
+                          href={`/clients/${client.id}`}
+                          target={"_blank"}
+                          rel="noreferrer"
+                          className="text-xs"
+                        >
+                          Modifié {client.name}{" "}
+                          <ExternalLinkIcon
+                            className="h-4 w-4 text-primary inline"
+                            aria-hidden="true"
+                          />
+                        </a>
+                      )}
+                    </>
                   )}
                   {group && group.rows && (
                     <Rows
@@ -266,14 +284,32 @@ const Edit = ({
                               {uniqueError}
                             </div>
                           )}
-                          <Inputs
-                            field={field}
-                            field_index={field_index}
-                            group_index={group_index}
-                            state={state as DataLayout[]}
-                            setState={setState as any}
-                            setUniqueError={setUniqueError}
-                          />
+                          <div>
+                            <Inputs
+                              field={field}
+                              field_index={field_index}
+                              group_index={group_index}
+                              state={state as DataLayout[]}
+                              setState={setState as any}
+                              setUniqueError={setUniqueError}
+                            />
+                            {field.collection && field.unique && field.value && (
+                              <a
+                                href={`/${field.collection}?${
+                                  field.field
+                                }=${String(field.value).replace(" ", "+")}`}
+                                target={"_blank"}
+                                rel="noreferrer"
+                                className="text-xs"
+                              >
+                                Modifié {field.value}{" "}
+                                <ExternalLinkIcon
+                                  className="h-4 w-4 text-primary inline"
+                                  aria-hidden="true"
+                                />
+                              </a>
+                            )}
+                          </div>
                         </Fragment>
                       ))}
                   </div>

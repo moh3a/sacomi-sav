@@ -97,6 +97,11 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
               rows.push(r);
             });
           } else if (group.findOrCreateClient) {
+            if (selectedTab === 0 && client?.name) {
+              client_name = client.name;
+            } else if (selectedTab === 1 && newClient.name) {
+              client_name = newClient.name;
+            }
             if (selectedTab !== 0 && newClient.name && !newClientError) {
               await clientCreateMutation.mutateAsync(newClient, {
                 onSettled(data) {
@@ -106,9 +111,6 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
                 },
               });
             }
-            if (selectedTab === 0 && client?.name) client_name = client?.name;
-            else if (selectedTab === 1 && newClient.name)
-              client_name = newClient.name;
           } else {
             group.group_fields.forEach((field) => {
               if (field.value) input[field.field] = field.value;
@@ -162,7 +164,7 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
 
       {state &&
         state.map((group, group_index) => (
-          <div key={group_index}>
+          <div key={group_index} className="mb-6">
             {group && group.group_title && (
               <div className={`text-lg uppercase text-primary`}>
                 {group.group_title}

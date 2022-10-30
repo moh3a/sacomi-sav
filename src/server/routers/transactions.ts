@@ -7,28 +7,24 @@ export const transactionRouter = t.router({
     .input(
       z.object({
         p: z.number(),
+        date: z.string().nullish(),
       })
     )
     .query(async ({ ctx, input }) => {
       if (ctx.session) {
-        const date = new Date().toISOString().substring(0, 8);
-        let filters: any = {};
-        const count = await ctx.prisma.transaction.count({
-          where: {
-            date: {
-              lte: new Date(date + "31"),
-              gte: new Date(date + "01"),
-            },
-          },
-        });
+        const autodate = new Date().toISOString().substring(0, 8);
+        input.date = input.date ?? undefined;
         const transactions = await ctx.prisma.transaction.findMany({
           where: {
             date: {
-              lte: new Date(date + "31"),
-              gte: new Date(date + "01"),
+              lte: input.date
+                ? new Date(input.date + "-31")
+                : new Date(autodate + "31"),
+              gte: input.date
+                ? new Date(input.date + "-01")
+                : new Date(autodate + "01"),
             },
           },
-          // where: Object.keys(filters).length > 0 ? filters : undefined,
           include: {
             prestation: {
               include: {
@@ -39,6 +35,18 @@ export const transactionRouter = t.router({
           orderBy: { id: "desc" },
           skip: input.p * ITEMS_PER_PAGE,
           take: ITEMS_PER_PAGE,
+        });
+        const count = await ctx.prisma.transaction.count({
+          where: {
+            date: {
+              lte: input.date
+                ? new Date(input.date + "-31")
+                : new Date(autodate + "31"),
+              gte: input.date
+                ? new Date(input.date + "-01")
+                : new Date(autodate + "01"),
+            },
+          },
         });
         return { transactions, count };
       } else {

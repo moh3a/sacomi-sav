@@ -644,6 +644,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             unit: "entry",
             readonly: true,
             required: true,
+            unique: true,
           },
           {
             name: "Date d'entrée",
@@ -667,6 +668,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             unit: "client",
             autocomplete: true,
             required: true,
+            unique: true,
           },
           {
             name: "Numéro du téléphone",
@@ -689,6 +691,15 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             collection: "products",
             unit: "product",
             required: true,
+            unique: true,
+          },
+          {
+            name: "Marque du produit",
+            field: "product_brand",
+            value: "",
+            collection: "products",
+            unit: "product",
+            readonly: true,
           },
         ],
       },
@@ -788,7 +799,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
   },
   // CAISSE
   transactions: {
-    title: "Caisse",
+    title: "Transactions",
     collection: "transactions",
     unit: "transaction",
     url: "/transactions",
@@ -832,6 +843,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             value: "",
             collection: "prestations",
             unit: "prestation",
+            unique: true,
           },
           { name: "Titre", field: "title", value: "" },
         ],

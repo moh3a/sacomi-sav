@@ -2,8 +2,6 @@
 
 ### Todo
 
-- edit - if edit in different collection => open new tab
-- caisse - per month
 - work on stock
 - add realtime collaboration
 
