@@ -1,16 +1,16 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect } from "react";
-import { useDispatch } from "react-redux";
 
+import { useCurrentIdStore } from "../../utils/store";
 import { trpc } from "../../utils/trpc";
-import { getIds } from "../../redux/currentIdSlice";
 import Toast from "../shared/Toast";
 import Navbar from "./Navbar";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const { status } = useSession();
+  const { setCurrentId } = useCurrentIdStore();
   useEffect(() => {
     if (router.asPath.includes("/auth") && status === "authenticated")
       router.replace("/");
@@ -19,10 +19,11 @@ const Layout = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router.asPath]);
 
-  const dispatch = useDispatch();
   trpc.config.all.useQuery(undefined, {
     onSettled(data) {
-      if (data && data.config) dispatch(getIds(data.config));
+      if (data && data.config) {
+        setCurrentId(data.config);
+      }
     },
   });
 

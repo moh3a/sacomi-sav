@@ -11,7 +11,6 @@ import {
   SaveIcon,
   ExternalLinkIcon,
 } from "@heroicons/react/outline";
-import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { Client } from "@prisma/client";
 
@@ -20,12 +19,11 @@ import Button from "../shared/Button";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import Inputs from "./Inputs";
 import Rows from "./Rows";
-import { selectSelectedId } from "../../redux/selectedIdSlice";
-import { selectSelectedOne, select_one } from "../../redux/selectedOneSlice";
 import { trpc } from "../../utils/trpc";
 import NotificationsContext from "../../utils/NotificationsContext";
 import { Collection, Column, DataLayout } from "../../types";
 import Autocomplete from "../shared/Autocomplete";
+import { useSelectedIdStore, useSelectedOneStore } from "../../utils/store";
 
 interface EditProps {
   title: string;
@@ -45,9 +43,8 @@ const Edit = ({
   layout,
 }: EditProps) => {
   const [loading, setLoading] = useState(false);
-  const { selected_id } = useSelector(selectSelectedId);
-  const { selected_one } = useSelector(selectSelectedOne);
-  const dispatch = useDispatch();
+  const { selected_id } = useSelectedIdStore();
+  const { selected_one, set_selected_one } = useSelectedOneStore();
   const router = useRouter();
 
   trpc[collection].byId.useQuery(
@@ -55,7 +52,7 @@ const Edit = ({
     {
       onSettled(data, error) {
         // @ts-ignore
-        dispatch(select_one(data[unit as any]));
+        set_selected_one(data[unit]);
       },
     }
   );

@@ -2,12 +2,11 @@
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
-import { useDispatch } from "react-redux";
 
-import { select_id } from "../../redux/selectedIdSlice";
 import { SHADOW } from "../design";
 import { TableTitle } from "../../types";
 import Badge from "./Badge";
+import { useSelectedIdStore } from "../../utils/store";
 
 interface TableProps {
   titles: TableTitle[];
@@ -27,7 +26,7 @@ const Table = ({
   link,
 }: TableProps) => {
   const router = useRouter();
-  const dispatch = useDispatch();
+  const { set_selected_id } = useSelectedIdStore();
 
   const [imageFieldIndex, setImageFieldIndex] = useState<number | undefined>();
   useEffect(() => {
@@ -49,7 +48,7 @@ const Table = ({
   const rowClickHandler = (row: any[]) => {
     if (link) router.push(link + "/" + row[0]);
     else if (row[0]) {
-      dispatch(select_id({ id: row[0] }));
+      set_selected_id(row[0]);
       setIsOpen && setIsOpen(true);
     }
   };

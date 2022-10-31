@@ -16,7 +16,7 @@ import { Collection, PageArchitecture } from "../types";
 
 interface PageSkeletonProps {
   page: PageArchitecture;
-  data?: any[][];
+  data?: any;
   current_page: number;
   total_items: number;
   link?: string;

@@ -37,7 +37,7 @@ export const ERROR_MESSAGES = {
 export const PAGES = [
   { name: "Interventions", url: "/jobs" },
   { name: "Entrées", url: "/entries" },
-  { name: "Prestations", url: "/services" },
+  { name: "Prestations", url: "/prestations" },
   { name: "Caisse", url: "/transactions" },
   { name: "Livraisons", url: "/deliveries" },
   { name: "Commandes", url: "/orders" },
@@ -450,7 +450,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     title: "Prestations",
     collection: "prestations",
     unit: "prestation",
-    url: "/services",
+    url: "/prestations",
     table_titles: [
       { name: "Date", field: "prestation_date" },
       { name: "ID", field: "prestation_id" },
@@ -744,7 +744,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     title: "Personnel SAV",
     collection: "users",
     unit: "user",
-    url: "staff",
+    url: "/staff",
     table_titles: [
       { name: "Avatar", field: "picture", isImage: true },
       { name: "Pseudo", field: "username" },

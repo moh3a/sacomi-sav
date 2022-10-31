@@ -1,17 +1,19 @@
+import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import { SHADOW } from "../../components/design";
 import Edit from "../../components/actions/Edit";
-import { select_id } from "../../redux/selectedIdSlice";
+import { useSelectedIdStore } from "../../utils/store";
 
 const Service = () => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
+  const { set_selected_id } = useSelectedIdStore();
 
-  if (id && typeof id === "string") dispatch(select_id({ id }));
+  useEffect(() => {
+    if (id && typeof id === "string") set_selected_id(id);
+  }, [id, set_selected_id]);
 
   return (
     <div className="overflow-x-auto">

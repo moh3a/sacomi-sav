@@ -1,26 +1,22 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/outline";
 
-import {
-  selectSelectedAll,
-  select_transactions,
-} from "../../redux/selectedAllSlice";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
 import { TEXT_GRADIENT } from "../../components/design";
 import { trpc } from "../../utils/trpc";
 import { get_month } from "../../utils";
-import { selectCurrentId } from "../../redux/currentIdSlice";
+import { useCurrentIdStore, useSelectedAllStore } from "../../utils/store";
 
 const Movements = () => {
-  const dispatch = useDispatch();
-  const { selected_transactions } = useSelector(selectSelectedAll);
-  const { current_balance } = useSelector(selectCurrentId);
+  const { selected_transactions, set_selected_transactions } =
+    useSelectedAllStore();
+  const { current_balance } = useCurrentIdStore();
+
   const router = useRouter();
   const { p, date }: { p?: string; date?: string } = router.query;
   const current_month = Number(new Date().toISOString().substring(5, 7));
@@ -42,9 +38,11 @@ const Movements = () => {
   trpc.transactions.all.useQuery(
     { p: Number(p) || 0, date },
     {
-      onSettled(data, error) {
-        setTotalItems(data?.count || 0);
-        dispatch(select_transactions(data?.transactions));
+      onSettled(data) {
+        if (data && data.transactions) {
+          setTotalItems(data?.count || 0);
+          set_selected_transactions(data.transactions);
+        }
       },
     }
   );

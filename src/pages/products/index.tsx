@@ -1,18 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
 
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import {
-  selectSelectedAll,
-  select_products,
-} from "../../redux/selectedAllSlice";
+import { useSelectedAllStore } from "../../utils/store";
 
 const Products = () => {
-  const dispatch = useDispatch();
-  const { selected_products } = useSelector(selectSelectedAll);
+  const { selected_products, set_selected_products } = useSelectedAllStore();
   const router = useRouter();
   const {
     p,
@@ -32,8 +27,10 @@ const Products = () => {
     { p: Number(p) || 0, product_brand, product_model, product_type },
     {
       onSettled(data, error) {
-        setTotalItems(data?.count || 0);
-        dispatch(select_products(data?.products));
+        if (data && data.products) {
+          setTotalItems(data?.count || 0);
+          set_selected_products(data.products);
+        }
       },
     }
   );

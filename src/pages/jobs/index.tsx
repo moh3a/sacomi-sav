@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
 
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import { selectSelectedAll, select_jobs } from "../../redux/selectedAllSlice";
+import { useSelectedAllStore } from "../../utils/store";
 
 const Jobs = () => {
-  const dispatch = useDispatch();
-  const { selected_jobs } = useSelector(selectSelectedAll);
+  const { selected_jobs, set_selected_jobs } = useSelectedAllStore();
   const router = useRouter();
   const {
     p,
@@ -51,9 +49,11 @@ const Jobs = () => {
       technician,
     },
     {
-      onSettled(data, error) {
-        setTotalItems(data?.count || 0);
-        dispatch(select_jobs(data?.jobs));
+      onSettled(data) {
+        if (data && data.jobs) {
+          setTotalItems(data?.count || 0);
+          set_selected_jobs(data.jobs);
+        }
       },
     }
   );

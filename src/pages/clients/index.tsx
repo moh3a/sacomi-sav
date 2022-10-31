@@ -1,18 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
 
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import {
-  selectSelectedAll,
-  select_clients,
-} from "../../redux/selectedAllSlice";
+import { useSelectedAllStore } from "../../utils/store";
 
 const Clients = () => {
-  const dispatch = useDispatch();
-  const { selected_clients } = useSelector(selectSelectedAll);
+  const { selected_clients, set_selected_clients } = useSelectedAllStore();
   const router = useRouter();
   const { p, name, type }: { p?: string; name?: string; type?: string } =
     router.query;
@@ -23,8 +18,10 @@ const Clients = () => {
     { p: Number(p) || 0, name, type },
     {
       onSettled(data, error) {
-        setTotalItems(data?.count || 0);
-        dispatch(select_clients(data?.clients));
+        if (data && data.clients) {
+          setTotalItems(data?.count || 0);
+          set_selected_clients(data.clients);
+        }
       },
     }
   );

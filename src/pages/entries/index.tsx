@@ -1,18 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
 
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import {
-  selectSelectedAll,
-  select_entries,
-} from "../../redux/selectedAllSlice";
 
 const Entries = () => {
-  const dispatch = useDispatch();
-  const { selected_entries } = useSelector(selectSelectedAll);
+  const { set_selected_entries, selected_entries } = useSelectedAllStore();
   const router = useRouter();
   const {
     name,
@@ -28,8 +22,10 @@ const Entries = () => {
     { p: Number(p) || 0, name, entry_date, entry_id },
     {
       onSettled(data, error) {
-        setTotalItems(data?.count || 0);
-        dispatch(select_entries(data?.entries));
+        if (data && data.entries) {
+          setTotalItems(data?.count || 0);
+          set_selected_entries(data.entries);
+        }
       },
     }
   );
@@ -46,6 +42,7 @@ const Entries = () => {
 };
 
 import Layout from "../../components/layout/Layout";
+import { useSelectedAllStore } from "../../utils/store";
 Entries.getLayout = function getLayout(page: any) {
   return <Layout>{page}</Layout>;
 };
