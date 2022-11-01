@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import { PlusIcon, SearchIcon } from "@heroicons/react/outline";
 
@@ -100,6 +100,7 @@ const PageSkeleton = ({
           <Table
             setIsOpen={setOpenDetailsModal}
             titles={page.table_titles}
+            collection={page.collection}
             data={page.table_data(data)}
             link={link}
             compact={table_compact}

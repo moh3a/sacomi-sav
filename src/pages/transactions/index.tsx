@@ -10,11 +10,10 @@ import PageSkeleton from "../../components/PageSkeleton";
 import { TEXT_GRADIENT } from "../../components/design";
 import { trpc } from "../../utils/trpc";
 import { get_month } from "../../utils";
-import { useCurrentIdStore, useSelectedAllStore } from "../../utils/store";
+import { useCurrentIdStore, useSelectedStore } from "../../utils/store";
 
 const Movements = () => {
-  const { selected_transactions, set_selected_transactions } =
-    useSelectedAllStore();
+  const { selected, set_selected_cursor } = useSelectedStore();
   const { current_balance } = useCurrentIdStore();
 
   const router = useRouter();
@@ -41,7 +40,10 @@ const Movements = () => {
       onSettled(data) {
         if (data && data.transactions) {
           setTotalItems(data?.count || 0);
-          set_selected_transactions(data.transactions);
+          set_selected_cursor({
+            collection: "transactions",
+            cursor: data.transactions,
+          });
         }
       },
     }
@@ -100,7 +102,7 @@ const Movements = () => {
       </div>
       <PageSkeleton
         page={PAGE_ARCHITECTURE.transactions}
-        data={selected_transactions}
+        data={selected.transactions?.cursor}
         current_page={Number(p) || 0}
         total_items={totalItems}
         table_compact={true}

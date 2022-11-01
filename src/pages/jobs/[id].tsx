@@ -4,15 +4,16 @@ import { useRouter } from "next/router";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import { SHADOW } from "../../components/design";
 import Edit from "../../components/actions/Edit";
-import { useSelectedIdStore } from "../../utils/store";
+import { useSelectedStore } from "../../utils/store";
 
 const Job = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { set_selected_id } = useSelectedIdStore();
+  const { set_selected_id } = useSelectedStore();
 
   useEffect(() => {
-    if (id && typeof id === "string") set_selected_id(id);
+    if (id && typeof id === "string")
+      set_selected_id({ collection: "jobs", id });
   }, [id, set_selected_id]);
 
   return (

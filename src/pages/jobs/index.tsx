@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import { useSelectedAllStore } from "../../utils/store";
+import { useSelectedStore } from "../../utils/store";
 
 const Jobs = () => {
-  const { selected_jobs, set_selected_jobs } = useSelectedAllStore();
+  const { selected, set_selected_cursor } = useSelectedStore();
   const router = useRouter();
   const {
     p,
@@ -52,7 +52,7 @@ const Jobs = () => {
       onSettled(data) {
         if (data && data.jobs) {
           setTotalItems(data?.count || 0);
-          set_selected_jobs(data.jobs);
+          set_selected_cursor({ collection: "jobs", cursor: data.jobs });
         }
       },
     }
@@ -61,7 +61,7 @@ const Jobs = () => {
   return (
     <PageSkeleton
       page={PAGE_ARCHITECTURE.jobs}
-      data={selected_jobs}
+      data={selected.jobs?.cursor}
       current_page={Number(p) || 0}
       total_items={totalItems}
       table_scrollable={true}

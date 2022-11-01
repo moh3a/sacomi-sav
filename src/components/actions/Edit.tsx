@@ -15,11 +15,7 @@ import Rows from "./Rows";
 import { trpc } from "../../utils/trpc";
 import { Collection, Column, DataLayout } from "../../types";
 import Autocomplete from "../shared/Autocomplete";
-import {
-  useNotificationStore,
-  useSelectedIdStore,
-  useSelectedOneStore,
-} from "../../utils/store";
+import { useNotificationStore, useSelectedStore } from "../../utils/store";
 
 interface EditProps {
   title: string;
@@ -39,16 +35,16 @@ const Edit = ({
   layout,
 }: EditProps) => {
   const [loading, setLoading] = useState(false);
-  const { selected_id } = useSelectedIdStore();
-  const { selected_one, set_selected_one } = useSelectedOneStore();
+  const { selected, set_selected_one } = useSelectedStore();
   const router = useRouter();
 
   trpc[collection].byId.useQuery(
-    { id: selected_id },
+    // @ts-ignore
+    { id: selected[collection]?.id ?? "oops" },
     {
       onSettled(data, error) {
         // @ts-ignore
-        set_selected_one(data[unit]);
+        set_selected_one({ collection, one: data[unit] });
       },
     }
   );
@@ -60,7 +56,8 @@ const Edit = ({
     layout.find((e) => e.rows_collection)?.rows_collection ?? "jobs"
   ].byRelationId.useQuery(
     {
-      id: selected_id,
+      // @ts-ignore
+      id: selected[collection]?.id,
     },
     {
       onSettled(data) {
@@ -72,7 +69,7 @@ const Edit = ({
   const [state, setState] = useState<(DataLayout | undefined)[]>();
   useEffect(() => {
     setState(
-      layout && selected_one
+      layout && selected[collection]?.one
         ? layout
             .map((group) => {
               if (
@@ -97,11 +94,14 @@ const Edit = ({
               } else if (!group.rows) {
                 group.group_fields = group.group_fields.map((field) => {
                   if (field.unique) setUniqueField(field.field);
-                  if (field.unit && selected_one[field.unit])
-                    field.value = selected_one[field.unit][field.field];
+                  if (field.unit && selected[collection]?.one[field.unit])
+                    field.value =
+                      selected[collection]?.one[field.unit][field.field];
                   else if (field.type === "number")
-                    field.value = Number(selected_one[field.field]) ?? 0;
-                  else field.value = selected_one[field.field] ?? "";
+                    field.value =
+                      Number(selected[collection]?.one[field.field]) ?? 0;
+                  else
+                    field.value = selected[collection]?.one[field.field] ?? "";
                   return field;
                 });
                 return group;
@@ -110,11 +110,12 @@ const Edit = ({
             .filter((e) => typeof e !== "undefined")
         : []
     );
-  }, [layout, selected_one, rowsData]);
+  }, [collection, layout, rowsData, selected]);
 
   useEffect(() => {
-    if (selected_one && selected_one.client) setClient(selected_one.client);
-  }, [selected_one]);
+    if (selected[collection]?.one && selected[collection]?.one.client)
+      setClient(selected[collection]?.one.client);
+  }, [collection, selected]);
 
   const [uniqueField, setUniqueField] = useState("");
   const [uniqueError, setUniqueError] = useState("");
@@ -133,7 +134,7 @@ const Edit = ({
     if (
       uniqueField &&
       uniqueValue &&
-      uniqueValue !== selected_one[uniqueField]
+      uniqueValue !== selected[collection]?.one[uniqueField]
     ) {
       await checkUniqueMutation.mutateAsync(
         // @ts-ignore
@@ -182,8 +183,8 @@ const Edit = ({
     if (client_name) input = { ...input, client_name };
     if (rows.length > 0) input = { ...input, rows };
     if (collection === "jobs")
-      input = { ...input, job_id: selected_one.job_id };
-    input = { ...input, id: selected_id };
+      input = { ...input, job_id: selected[collection]?.one.job_id };
+    input = { ...input, id: selected[collection]?.id };
     if (!itemExists) {
       await updateMutation.mutateAsync(input, {
         onSettled(data: any, error: any) {
@@ -202,7 +203,7 @@ const Edit = ({
 
   return (
     <div>
-      {selected_one ? (
+      {selected[collection]?.one ? (
         <div className="lg:flex">
           <div className="my-4 mx-2 lg:flex-1">
             <h2
@@ -211,7 +212,9 @@ const Edit = ({
               Modifier | {title}{" "}
               <Button
                 type="button"
-                onClick={() => router.push(`${url}/${selected_id}`)}
+                onClick={() =>
+                  router.push(`${url}/${selected[collection]?.id}`)
+                }
               >
                 <ExternalLinkIcon
                   className="h-6 w-6 text-primary inline"

@@ -4,9 +4,13 @@ import { useRouter } from "next/router";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
 import { SHADOW } from "../design";
-import { TableTitle } from "../../types";
+import { Collection, TableTitle } from "../../types";
 import Badge from "./Badge";
-import { useSelectedIdStore } from "../../utils/store";
+import {
+  ActionType,
+  useRealtimeStore,
+  useSelectedStore,
+} from "../../utils/store";
 
 interface TableProps {
   titles: TableTitle[];
@@ -15,6 +19,7 @@ interface TableProps {
   scrollable?: boolean;
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   link?: string;
+  collection?: Collection["name"];
 }
 
 const Table = ({
@@ -24,9 +29,24 @@ const Table = ({
   scrollable,
   setIsOpen,
   link,
+  collection,
 }: TableProps) => {
   const router = useRouter();
-  const { set_selected_id } = useSelectedIdStore();
+  const { set_selected_id } = useSelectedStore();
+
+  const { actions, send_action } = useRealtimeStore();
+  const [locked, setLocked] = useState<number[]>([]);
+  useEffect(() => {
+    if (actions && actions.length > 0) {
+      setLocked(
+        data
+          .map((row, row_index) =>
+            actions.find((action) => action.id === row[0]) ? row_index : -1
+          )
+          .filter((e) => e !== -1)
+      );
+    }
+  }, [actions, data]);
 
   const [imageFieldIndex, setImageFieldIndex] = useState<number | undefined>();
   useEffect(() => {
@@ -45,11 +65,18 @@ const Table = ({
     return str && str.length > 20 ? str.substring(0, length - 3) + "..." : str;
   };
 
-  const rowClickHandler = (row: any[]) => {
+  const rowClickHandler = (row: any[], row_index: number) => {
     if (link) router.push(link + "/" + row[0]);
     else if (row[0]) {
-      set_selected_id(row[0]);
-      setIsOpen && setIsOpen(true);
+      if (locked.findIndex((e) => e === row_index) === -1 && collection) {
+        setIsOpen && setIsOpen(true);
+        set_selected_id({ collection, id: row[0] });
+        send_action({
+          id: row[0],
+          type: ActionType.LOCK,
+          collection,
+        });
+      }
     }
   };
 
@@ -77,17 +104,24 @@ const Table = ({
               </thead>
 
               <tbody className="font-light">
-                {data.map((row, index) => (
+                {data.map((row, row_index) => (
                   <tr
-                    key={index}
-                    className="border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark max-w-xs cursor-pointer"
-                    onClick={() => rowClickHandler(row)}
+                    key={row_index}
+                    className={` ${
+                      locked.findIndex((e) => e === row_index) === -1
+                        ? "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
+                        : "bg-gray-300 dark:bg-secondaryDark cursor-not-allowed"
+                    } max-w-xs`}
+                    onClick={() => rowClickHandler(row, row_index)}
                   >
-                    {row.map((col, i) => {
-                      if (i !== 0) {
+                    {row.map((col, col_index) => {
+                      if (col_index !== 0) {
                         return (
-                          <td key={i} className="p-3 text-center truncate">
-                            {i === (imageFieldIndex as number) ? (
+                          <td
+                            key={col_index}
+                            className="p-3 text-center truncate"
+                          >
+                            {col_index === (imageFieldIndex as number) ? (
                               <div className="flex justify-center">
                                 <img
                                   src={col as string}
@@ -95,7 +129,8 @@ const Table = ({
                                   className="cursor-pointer w-8 h-8 rounded-full"
                                 />
                               </div>
-                            ) : i === (badgeFieldIndex as number) && col ? (
+                            ) : col_index === (badgeFieldIndex as number) &&
+                              col ? (
                               <div className="flex justify-center">
                                 <Badge text={col} />
                               </div>

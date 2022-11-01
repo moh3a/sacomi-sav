@@ -2,8 +2,9 @@
 
 ### Todo
 
-- work realtime collaboration
+- work realtime collaboration (remove lock on modal close)
 - work on stock
+- add tasks
 
 ### Prerequisites
 

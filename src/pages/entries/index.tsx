@@ -4,9 +4,10 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
+import { useSelectedStore } from "../../utils/store";
 
 const Entries = () => {
-  const { set_selected_entries, selected_entries } = useSelectedAllStore();
+  const { set_selected_cursor, selected } = useSelectedStore();
   const router = useRouter();
   const {
     name,
@@ -24,7 +25,7 @@ const Entries = () => {
       onSettled(data, error) {
         if (data && data.entries) {
           setTotalItems(data?.count || 0);
-          set_selected_entries(data.entries);
+          set_selected_cursor({ collection: "entries", cursor: data.entries });
         }
       },
     }
@@ -33,7 +34,7 @@ const Entries = () => {
   return (
     <PageSkeleton
       page={PAGE_ARCHITECTURE.entries}
-      data={selected_entries}
+      data={selected.entries?.cursor}
       current_page={Number(p) || 0}
       total_items={totalItems}
       table_compact={true}
@@ -42,7 +43,6 @@ const Entries = () => {
 };
 
 import Layout from "../../components/layout/Layout";
-import { useSelectedAllStore } from "../../utils/store";
 Entries.getLayout = function getLayout(page: any) {
   return <Layout>{page}</Layout>;
 };

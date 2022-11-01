@@ -4,11 +4,10 @@ import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import { PAGE_ARCHITECTURE } from "../../../lib/config";
 import PageSkeleton from "../../components/PageSkeleton";
-import { useSelectedAllStore } from "../../utils/store";
+import { useSelectedStore } from "../../utils/store";
 
 const Prestations = () => {
-  const { selected_prestations, set_selected_prestations } =
-    useSelectedAllStore();
+  const { selected, set_selected_cursor } = useSelectedStore();
   const router = useRouter();
   const {
     p,
@@ -41,7 +40,10 @@ const Prestations = () => {
       onSettled(data, error) {
         if (data && data.prestations) {
           setTotalItems(data?.count || 0);
-          set_selected_prestations(data.prestations);
+          set_selected_cursor({
+            collection: "prestations",
+            cursor: data.prestations,
+          });
         }
       },
     }
@@ -50,7 +52,7 @@ const Prestations = () => {
   return (
     <PageSkeleton
       page={PAGE_ARCHITECTURE.prestations}
-      data={selected_prestations}
+      data={selected.prestations?.cursor}
       current_page={Number(p) || 0}
       total_items={totalItems}
       table_compact={true}
