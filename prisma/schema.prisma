@@ -45,6 +45,7 @@ model Product {
   product_brand String?
   product_type  String?
   Jobs          Job[]
+  Parts         Part[]
 
   @@index([product_model])
 }
@@ -144,6 +145,23 @@ model Delivery {
   @@index([delivery_id])
 }
 
+// model Delivery {
+//   id             String    @id @default(cuid()) // ? postgres
+//   // id           Int       @id @default(autoincrement()) // ! mysql
+//   delivery_id    String    @unique
+//   delivery_date  String?
+//   clientId       String
+//   client         Client    @relation(fields: [clientId], references: [id])
+//   entry_id       String?
+//   sage_exit_id   String?
+//   date_delivered String?
+//   observations   String?
+//   createdAt      DateTime? @default(now())
+//   updatedAt      DateTime? @updatedAt
+
+//   @@index([delivery_id])
+// }
+
 model Order {
   id            String    @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
@@ -233,4 +251,29 @@ enum TransactionType {
   INCOME
   EXPENSE
   CHEQUE
+}
+
+model Part {
+  id          String  @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
+  productId   String
+  product     Product @relation(fields: [productId], references: [id])
+  name        String
+  description String?
+  image       String?
+  price       Int     @default(0)
+
+  Stock Stock[]
+}
+
+model Stock {
+  id        String    @id @default(cuid()) // ? postgres
+  // id           Int       @id @default(autoincrement()) // ! mysql
+  date      DateTime  @default(now()) @db.Date
+  updatedAt DateTime? @updatedAt @db.Date
+  partId    String
+  part      Part      @relation(fields: [partId], references: [id])
+  quantity  Int       @default(0)
+  ok        Int       @default(0)
+  hs        Int       @default(0)
 }

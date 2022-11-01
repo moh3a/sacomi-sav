@@ -2,8 +2,8 @@
 
 ### Todo
 
+- work realtime collaboration
 - work on stock
-- add realtime collaboration
 
 ### Prerequisites
 

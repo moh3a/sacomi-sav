@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
 import { LogoutIcon, UserCircleIcon } from "@heroicons/react/outline";
+import { useRealtimeStore } from "../../utils/store";
 
 const Account = () => {
   const { data: session } = useSession();
+  const { connected } = useRealtimeStore();
 
   if (!session) {
     return (
@@ -23,11 +25,25 @@ const Account = () => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button as={Fragment}>
-        <img
-          src={session.user?.image as string}
-          alt={session.user?.name as string}
-          className="cursor-pointer w-10 h-10 rounded-full"
-        />
+        <div>
+          <span className="absolute -bottom-3 flex h-3 w-3">
+            {connected && (
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full  bg-success opacity-75`}
+              />
+            )}
+            <span
+              className={`relative inline-flex rounded-full h-3 w-3 ${
+                connected ? "bg-success" : "bg-danger"
+              }`}
+            />
+          </span>
+          <img
+            src={session.user?.image as string}
+            alt={session.user?.name as string}
+            className="cursor-pointer w-10 h-10 rounded-full"
+          />
+        </div>
       </Menu.Button>
 
       <Transition

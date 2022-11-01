@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  Fragment,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
 import {
   ExclamationCircleIcon,
   SaveIcon,
@@ -20,10 +13,13 @@ import LoadingSpinner from "../shared/LoadingSpinner";
 import Inputs from "./Inputs";
 import Rows from "./Rows";
 import { trpc } from "../../utils/trpc";
-import NotificationsContext from "../../utils/NotificationsContext";
 import { Collection, Column, DataLayout } from "../../types";
 import Autocomplete from "../shared/Autocomplete";
-import { useSelectedIdStore, useSelectedOneStore } from "../../utils/store";
+import {
+  useNotificationStore,
+  useSelectedIdStore,
+  useSelectedOneStore,
+} from "../../utils/store";
 
 interface EditProps {
   title: string;
@@ -124,7 +120,7 @@ const Edit = ({
   const [uniqueError, setUniqueError] = useState("");
   const checkUniqueMutation = trpc[collection].checkExists.useMutation();
   const updateMutation = trpc[collection].update.useMutation();
-  const notification = useContext(NotificationsContext);
+  const notification = useNotificationStore();
   const editClient = async () => {
     setLoading(true);
     let itemExists = false;
@@ -191,10 +187,10 @@ const Edit = ({
     if (!itemExists) {
       await updateMutation.mutateAsync(input, {
         onSettled(data: any, error: any) {
-          if (error) notification?.error(error.message, 5000);
+          if (error) notification.error(error.message, 5000);
           if (data) {
-            if (data.success) notification?.success(data.message, 5000);
-            else notification?.error(data.message, 5000);
+            if (data.success) notification.success(data.message, 5000);
+            else notification.error(data.message, 5000);
           }
           setIsOpen && setIsOpen(false);
           setLoading(false);

@@ -145,3 +145,101 @@ export const useSelectedOneStore = create<SelectedOneStore>((set) => ({
   set_selected_transaction: (data) => set({ selected_transaction: data }),
   set_selected_one: (data) => set({ selected_one: data }),
 }));
+
+/**
+ * REALTIME FUNCTIONNALITY
+ */
+import { io } from "socket.io-client";
+
+interface RealtimeData {
+  connected: boolean;
+  messages: string[];
+}
+
+interface RealtimeStore extends RealtimeData {
+  send_action: (message: string) => void;
+}
+
+export const useRealtimeStore = create<RealtimeStore>((set, get) => {
+  const ws = typeof window !== "undefined" ? io("http://localhost:3001") : null;
+  if (ws) {
+    ws.on("connect", () => {
+      set({ connected: true });
+    })
+      .on("disconnect", () => {
+        set({ connected: false });
+      })
+      .on("reaction", (message) => {
+        set({ connected: true, messages: [...get().messages, message] });
+      });
+  } else set({ connected: false });
+  return {
+    connected: false,
+    messages: [],
+    send_action: (message) => ws?.emit("action", message),
+  };
+});
+
+/**
+ * NOTIFICATIONS
+ */
+export enum NotificationStatus {
+  None,
+  Success,
+  Warning,
+  Error,
+}
+
+interface NotificationData {
+  status: NotificationStatus;
+  text?: string;
+}
+
+interface NotificationStore extends NotificationData {
+  success: (text: string, timeout: number) => void;
+  warning: (text: string, timeout?: number) => void;
+  error: (text: string, timeout?: number) => void;
+  clear: () => void;
+}
+
+export const useNotificationStore = create<NotificationStore>((set, get) => ({
+  status: NotificationStatus.None,
+  text: "",
+  success: (text, timeout) => {
+    set({
+      text,
+      status: NotificationStatus.Success,
+    });
+    setTimeout(() => {
+      set({
+        text: "",
+        status: NotificationStatus.None,
+      });
+    }, timeout || 10000);
+  },
+  warning: (text, timeout) => {
+    set({
+      text,
+      status: NotificationStatus.Warning,
+    });
+    setTimeout(() => {
+      set({
+        text: "",
+        status: NotificationStatus.None,
+      });
+    }, timeout || 10000);
+  },
+  error: (text, timeout) => {
+    set({
+      text,
+      status: NotificationStatus.Error,
+    });
+    setTimeout(() => {
+      set({
+        text: "",
+        status: NotificationStatus.None,
+      });
+    }, timeout || 10000);
+  },
+  clear: () => set({ text: "", status: NotificationStatus.None }),
+}));

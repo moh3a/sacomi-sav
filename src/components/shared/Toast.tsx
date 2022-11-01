@@ -1,21 +1,18 @@
-import { useContext } from "react";
-import NotificationsContext, {
-  NotificationStatus,
-} from "../../utils/NotificationsContext";
+import { useNotificationStore, NotificationStatus } from "../../utils/store";
 
 const Toast = () => {
-  const notification = useContext(NotificationsContext);
+  const { clear, status, text } = useNotificationStore();
 
   return (
     <>
-      {notification?.notification !== NotificationStatus.None && (
+      {status !== NotificationStatus.None && (
         <div
           className={`absolute bottom-10 left-10 z-50 w-72 font-bold text-black dark:text-white bg-white dark:bg-black bg-opacity-50 dark:bg-opacity-25 rounded-xl mb-3 ml-3 shadow-md ${
-            notification?.notification === NotificationStatus.Success
+            status === NotificationStatus.Success
               ? "shadow-success/50"
-              : notification?.notification === NotificationStatus.Warning
+              : status === NotificationStatus.Warning
               ? "shadow-warning/50"
-              : notification?.notification === NotificationStatus.Error
+              : status === NotificationStatus.Error
               ? "shadow-danger/50"
               : "shadow-black/50"
           } `}
@@ -24,21 +21,19 @@ const Toast = () => {
           <div className="flex">
             <div
               className={`rounded-l-xl w-4 ${
-                notification?.notification === NotificationStatus.Success
+                status === NotificationStatus.Success
                   ? "bg-success"
-                  : notification?.notification === NotificationStatus.Warning
+                  : status === NotificationStatus.Warning
                   ? "bg-warning"
-                  : notification?.notification === NotificationStatus.Error
+                  : status === NotificationStatus.Error
                   ? "bg-danger"
                   : "bg-grim"
               } bg-opacity-75 dark:bg-opacity-25 `}
             ></div>
-            <span className="overflow-hidden p-4">
-              {notification?.notificationText}
-            </span>
+            <span className="overflow-hidden p-4">{text}</span>
             <div className="ml-auto p-4">
               <button
-                onClick={() => notification?.clear()}
+                onClick={() => clear()}
                 type="button"
                 className="inline-flex flex-shrink-0 justify-center items-center h-4 w-4 rounded-md text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-gray-600 transition-all text-sm dark:focus:ring-offset-gray-900 dark:focus:ring-gray-800"
               >

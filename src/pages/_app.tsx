@@ -8,7 +8,6 @@ import { ThemeProvider } from "next-themes";
 import type { AppType } from "next/dist/shared/lib/utils";
 import { trpc } from "../utils/trpc";
 import { APP_TITLE } from "../../lib/config";
-import { NotificationsProvider } from "../utils/NotificationsContext";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -23,9 +22,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </Head>
       <ThemeProvider attribute="class">
         <SessionProvider session={session}>
-            <NotificationsProvider>
-              {getLayout(<Component {...pageProps} />)}
-            </NotificationsProvider>
+          {getLayout(<Component {...pageProps} />)}
         </SessionProvider>
       </ThemeProvider>
       <noscript>Enable javascript to run this web app.</noscript>

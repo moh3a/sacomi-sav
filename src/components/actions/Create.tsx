@@ -2,7 +2,6 @@ import {
   Dispatch,
   FormEvent,
   SetStateAction,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -18,9 +17,8 @@ import Inputs from "./Inputs";
 import Rows from "./Rows";
 import { trpc } from "../../utils/trpc";
 import { generate_new_id } from "../../utils";
-import NotificationsContext from "../../utils/NotificationsContext";
 import { Collection, DataLayout } from "../../types";
-import { useCurrentIdStore } from "../../utils/store";
+import { useCurrentIdStore, useNotificationStore } from "../../utils/store";
 
 interface CreateProps {
   title: string;
@@ -32,7 +30,7 @@ interface CreateProps {
 const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
   const [loading, setLoading] = useState(false);
   const currentId = useCurrentIdStore();
-  const notification = useContext(NotificationsContext);
+  const { success, error } = useNotificationStore();
   const mutation = collection && trpc[collection].create.useMutation();
 
   // SELECTED CLIENT TAB: EXISTING OR CREATE NEW
@@ -122,11 +120,12 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
     if (client_name) input = { ...input, client_name };
     if (rows.length > 0) input = { ...input, rows };
     await mutation.mutateAsync(input, {
-      onSettled(data, error) {
-        if (error) notification?.error(error.message, 5000);
+      onSettled(data, err) {
+        if (err) error(err.message, 5000);
         if (data) {
           if (data.success) {
-            notification?.success(data.message, 5000);
+            success(data.message, 5000);
+            success(data.message, 5000);
             setState(
               layout
                 .map((group) => {
@@ -146,7 +145,7 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
                 .flat()
                 .filter((e) => typeof e !== "undefined")
             );
-          } else notification?.error(data.message, 5000);
+          } else error(data.message, 5000);
           setIsOpen && setIsOpen(false);
         }
         setLoading(false);
