@@ -2,7 +2,8 @@
 
 ### Todo
 
-- work realtime collaboration (remove lock on modal close)
+- work realtime collaboration (to revalidate data only)
+- add locked and locker to data
 - work on stock
 - add tasks
 

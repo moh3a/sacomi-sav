@@ -94,27 +94,10 @@ export const useSelectedStore = create<SelectedStore>((set, get) => ({
  */
 import { io } from "socket.io-client";
 import { Collection } from "../types";
-export enum ActionType {
-  LOCK,
-  UPDATE,
-  NONE,
-}
 
-interface ActionData {
-  type: ActionType;
-  collection: Collection["name"];
-  id?: string;
-}
-
-interface RealtimeData {
+interface RealtimeStore {
   connected: boolean;
-  actions: ActionData[];
-}
-
-interface RealtimeStore extends RealtimeData {
-  send_action: (action: ActionData) => void;
-  remove_action: (id: string) => void;
-  clear_actions: () => void;
+  revalidated_collection?: Collection["name"];
 }
 
 export const useRealtimeStore = create<RealtimeStore>((set, get) => {
@@ -126,20 +109,16 @@ export const useRealtimeStore = create<RealtimeStore>((set, get) => {
       .on("disconnect", () => {
         set({ connected: false });
       })
-      .on("reaction", (action) => {
+      .on("reaction", (collection: Collection["name"]) => {
         set({
           connected: true,
-          actions: get().actions ? [...get().actions, action] : [action],
+          revalidated_collection: collection,
         });
       });
   } else set({ connected: false });
   return {
     connected: false,
-    actions: [],
-    send_action: (action) => ws?.emit("action", action),
-    remove_action: (id) =>
-      set({ actions: get().actions.filter((e) => e.id !== id) }),
-    clear_actions: () => set({ actions: [] }),
+    revalidated_collection: undefined,
   };
 });
 

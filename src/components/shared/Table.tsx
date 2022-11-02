@@ -6,11 +6,7 @@ import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 import { SHADOW } from "../design";
 import { Collection, TableTitle } from "../../types";
 import Badge from "./Badge";
-import {
-  ActionType,
-  useRealtimeStore,
-  useSelectedStore,
-} from "../../utils/store";
+import { useSelectedStore } from "../../utils/store";
 
 interface TableProps {
   titles: TableTitle[];
@@ -34,19 +30,19 @@ const Table = ({
   const router = useRouter();
   const { set_selected_id } = useSelectedStore();
 
-  const { actions, send_action } = useRealtimeStore();
-  const [locked, setLocked] = useState<number[]>([]);
-  useEffect(() => {
-    if (actions && actions.length > 0) {
-      setLocked(
-        data
-          .map((row, row_index) =>
-            actions.find((action) => action.id === row[0]) ? row_index : -1
-          )
-          .filter((e) => e !== -1)
-      );
-    }
-  }, [actions, data]);
+  // const { actions, send_action } = useRealtimeStore();
+  // const [locked, setLocked] = useState<number[]>([]);
+  // useEffect(() => {
+  //   if (actions && actions.length > 0) {
+  //     setLocked(
+  //       data
+  //         .map((row, row_index) =>
+  //           actions.find((action) => action.id === row[0]) ? row_index : -1
+  //         )
+  //         .filter((e) => e !== -1)
+  //     );
+  //   }
+  // }, [actions, data]);
 
   const [imageFieldIndex, setImageFieldIndex] = useState<number | undefined>();
   useEffect(() => {
@@ -68,15 +64,17 @@ const Table = ({
   const rowClickHandler = (row: any[], row_index: number) => {
     if (link) router.push(link + "/" + row[0]);
     else if (row[0]) {
-      if (locked.findIndex((e) => e === row_index) === -1 && collection) {
-        setIsOpen && setIsOpen(true);
-        set_selected_id({ collection, id: row[0] });
-        send_action({
-          id: row[0],
-          type: ActionType.LOCK,
-          collection,
-        });
-      }
+      // if (locked.findIndex((e) => e === row_index) === -1 && collection) {
+      //   setIsOpen && setIsOpen(true);
+      //   set_selected_id({ collection, id: row[0] });
+      //   send_action({
+      //     id: row[0],
+      //     type: ActionType.LOCK,
+      //     collection,
+      //   });
+      // }
+      setIsOpen && setIsOpen(true);
+      if (collection) set_selected_id({ collection, id: row[0] });
     }
   };
 
@@ -107,11 +105,12 @@ const Table = ({
                 {data.map((row, row_index) => (
                   <tr
                     key={row_index}
-                    className={` ${
-                      locked.findIndex((e) => e === row_index) === -1
-                        ? "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
-                        : "bg-gray-300 dark:bg-secondaryDark cursor-not-allowed"
-                    } max-w-xs`}
+                    // className={` ${
+                    //   locked.findIndex((e) => e === row_index) === -1
+                    //     ? "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
+                    //     : "bg-gray-300 dark:bg-secondaryDark cursor-not-allowed"
+                    // } max-w-xs`}
+                    className={`border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer max-w-xs`}
                     onClick={() => rowClickHandler(row, row_index)}
                   >
                     {row.map((col, col_index) => {

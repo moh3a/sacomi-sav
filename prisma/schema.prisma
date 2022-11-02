@@ -88,6 +88,8 @@ model Entry {
   clientId     String
   client       Client    @relation(fields: [clientId], references: [id])
   Jobs         Job[]
+  locked       Boolean   @default(false)
+  locker       String?
 
   @@index([entry_id, entry_date])
 }
@@ -124,6 +126,8 @@ model Job {
   used_parts            String?
   spare_parts           String?
   rma_asus              String?
+  locked                Boolean @default(false)
+  locker                String?
 
   @@index([job_id])
 }
@@ -141,6 +145,8 @@ model Delivery {
   observations    String?
   createdAt       DateTime? @default(now())
   updatedAt       DateTime? @updatedAt
+  locked          Boolean   @default(false)
+  locker          String?
 
   @@index([delivery_id])
 }
@@ -158,6 +164,8 @@ model Delivery {
 //   observations   String?
 //   createdAt      DateTime? @default(now())
 //   updatedAt      DateTime? @updatedAt
+// locked  Boolean @default(false)
+// locker  String?
 
 //   @@index([delivery_id])
 // }
@@ -177,6 +185,8 @@ model Order {
   payment       String?
   createdAt     DateTime? @default(now())
   updatedAt     DateTime? @updatedAt
+  locked        Boolean   @default(false)
+  locker        String?
 
   @@index([order_id])
 }
@@ -200,6 +210,8 @@ model Prestation {
   updatedAt         DateTime?           @updatedAt
   PrestationDetails PrestationDetails[]
   Transactions      Transaction[]
+  locked            Boolean             @default(false)
+  locker            String?
 
   @@index([prestation_id])
 }
@@ -245,6 +257,8 @@ model Transaction {
   prestationId String?
   prestation   Prestation?     @relation(fields: [prestationId], references: [id])
   amount       Int
+  locked       Boolean         @default(false)
+  locker       String?
 }
 
 enum TransactionType {
