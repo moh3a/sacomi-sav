@@ -4,8 +4,7 @@ import nc from "next-connect";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { FileMakerXML } from "../../../types/sav-xml-data";
-import { parse_fm_data } from "../../../utils/filemaker";
-import reorder_file_paths from "../../../utils/filemaker/reorder";
+import { WriteData } from "../../../utils/filemaker";
 import { ERROR_MESSAGES } from "../../../../lib/config";
 
 const parser = new Parser();
@@ -27,20 +26,25 @@ const handler = nc({
 
 handler.post(async (req, res) => {
   const { filePaths }: { filePaths: string[] } = req.body;
-  const newFilePaths = reorder_file_paths(filePaths);
 
-  newFilePaths.forEach(async (filePath) => {
+  filePaths.forEach(async (filePath) => {
     let data = readFileSync(filePath, { encoding: "utf8" });
     if (data) {
       try {
         const result: FileMakerXML = await parser.parseStringPromise(data);
         if (result.FMPXMLRESULT.PRODUCT[0]["$"].NAME === "FileMaker") {
-          await parse_fm_data({
+          await WriteData({
             res,
             fm_data: result,
             save: "file",
             filePath,
           });
+          // await parse_fm_data({
+          //   res,
+          //   fm_data: result,
+          //   save: "file",
+          //   filePath,
+          // });
         } else {
           res.status(200).json({
             success: false,

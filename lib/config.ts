@@ -11,7 +11,6 @@ import {
   User,
 } from "@prisma/client";
 import { Collection, Column, PageArchitecture } from "../src/types";
-import { formatFMDate, formatFMTime } from "../src/utils/filemaker/utils";
 
 export const ENTREPRISE_NAME = "Sacomi";
 export const SERVICE_NAME = "Service après-vente";
@@ -136,11 +135,11 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             entry.id,
-            formatFMDate(entry.entry_date) || "",
+            entry.entry_date || "",
             entry.entry_id || "",
             entry.client?.name || "",
             entry.client?.phone_number || "",
-            formatFMTime(entry.entry_time) || "",
+            entry.entry_time || "",
           ];
         }
       ),
@@ -312,11 +311,11 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             delivery.id,
-            formatFMDate(delivery.delivery_date) || "",
+            delivery.delivery_date || "",
             delivery.delivery_id || "",
             delivery.client?.name || "",
             delivery.entry_id || "",
-            formatFMDate(delivery.delivery_date_1) || "",
+            delivery.date_delivered || "",
             delivery.sage_exit_id || "",
           ];
         }
@@ -401,11 +400,11 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         return [
           order.id,
           order.order_id || "",
-          formatFMDate(order.order_date) || "",
+          order.order_date || "",
           order.order_content || "",
           order.quantity || "",
           order.payment || "",
-          formatFMDate(order.receipt_date) || "",
+          order.receipt_date || "",
         ];
       }),
     search_layout: [
@@ -472,15 +471,14 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             prestation.id,
-            formatFMDate(prestation.prestation_date) || "",
+            prestation.prestation_date || "",
             prestation.prestation_id || "",
             prestation.client?.name || "",
-            prestation.total_amount,
             prestation.is_paid || "",
-            formatFMDate(prestation.payment_date) || "",
+            prestation.payment_date || "",
             prestation.to_bill || "",
             prestation.invoice || "",
-            formatFMDate(prestation.recovery_date) || "",
+            prestation.recovery_date || "",
           ];
         }
       ),
@@ -585,17 +583,17 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             job.id,
-            formatFMDate(job.entry?.entry_date) || "",
+            job.entry?.entry_date || "",
             job.entry?.entry_id || "",
             job.client?.name || "",
             job.product?.product_brand || "",
             job.product?.product_model || "",
             job.serial_number || "",
             job.designation || "",
-            job.diagnostic || "",
+            job.diagnostics || "",
             job.technician || "",
             job.status || "",
-            formatFMDate(job.exit_date) || "",
+            job.exit_date || "",
           ];
         }
       ),

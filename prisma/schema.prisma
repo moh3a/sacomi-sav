@@ -10,11 +10,6 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
-//
-//
-//
-//
-// NEXT-AUTH MODELS HERE
 model User {
   id       String  @id @default(cuid())
   username String  @unique
@@ -33,11 +28,6 @@ enum Role {
   ADMIN
 }
 
-//
-//
-//
-//
-// SAV MODELS HERE
 model Product {
   id            String  @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
@@ -81,8 +71,6 @@ model Entry {
   // observations String?   @db.MediumText // ! mysql
   entry_date   String?
   entry_time   String?
-  warranty     String?
-  global       String?
   createdAt    DateTime? @default(now())
   updatedAt    DateTime? @updatedAt
   clientId     String
@@ -111,8 +99,8 @@ model Job {
   exit_date             String?
   designation           String? @db.Text // ? postgres 
   // designation           String? @db.MediumText // ! mysql
-  diagnostic            String? @db.Text // ? postgres 
-  // diagnostic            String? @db.MediumText // ! mysql
+  diagnostics           String? @db.Text // ? postgres 
+  // diagnostics            String? @db.MediumText // ! mysql
   status                String? @db.Text // ? postgres 
   // status                String? @db.MediumText // ! mysql
   serial_number         String? @db.Text // ? postgres 
@@ -133,42 +121,23 @@ model Job {
 }
 
 model Delivery {
-  id              String    @id @default(cuid()) // ? postgres
+  id             String    @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
-  delivery_id     String    @unique
-  delivery_date   String?
-  clientId        String
-  client          Client    @relation(fields: [clientId], references: [id])
-  entry_id        String?
-  sage_exit_id    String?
-  delivery_date_1 String?
-  observations    String?
-  createdAt       DateTime? @default(now())
-  updatedAt       DateTime? @updatedAt
-  locked          Boolean   @default(false)
-  locker          String?
+  delivery_id    String    @unique
+  delivery_date  String?
+  clientId       String
+  client         Client    @relation(fields: [clientId], references: [id])
+  entry_id       String?
+  sage_exit_id   String?
+  date_delivered String?
+  observations   String?
+  createdAt      DateTime? @default(now())
+  updatedAt      DateTime? @updatedAt
+  locked         Boolean   @default(false)
+  locker         String?
 
   @@index([delivery_id])
 }
-
-// model Delivery {
-//   id             String    @id @default(cuid()) // ? postgres
-//   // id           Int       @id @default(autoincrement()) // ! mysql
-//   delivery_id    String    @unique
-//   delivery_date  String?
-//   clientId       String
-//   client         Client    @relation(fields: [clientId], references: [id])
-//   entry_id       String?
-//   sage_exit_id   String?
-//   date_delivered String?
-//   observations   String?
-//   createdAt      DateTime? @default(now())
-//   updatedAt      DateTime? @updatedAt
-// locked  Boolean @default(false)
-// locker  String?
-
-//   @@index([delivery_id])
-// }
 
 model Order {
   id            String    @id @default(cuid()) // ? postgres
@@ -204,7 +173,6 @@ model Prestation {
   to_bill           String?
   recovery_date     String?
   payment_date      String?
-  total_amount      String?
   invoice           String?
   createdAt         DateTime?           @default(now())
   updatedAt         DateTime?           @updatedAt
@@ -217,23 +185,16 @@ model Prestation {
 }
 
 model PrestationDetails {
-  id              String     @id @default(cuid()) // ? postgres
+  id           String     @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
-  prestationId    String
-  prestation      Prestation @relation(fields: [prestationId], references: [id])
-  is_paid         String?
-  to_bill         String?
-  payment_date    String?
-  payment_method  String?
-  invoice         String?
-  prestation_date String?
-  designation     String?
-  price_ht        String? // ! should be int
-  price_ttc       String? // ! should be int
-  quantity        String? // ! should be int
-  subtotal        String? // ! should be int
-  total_amount    String? // ! should be int
-  observations    String?
+  prestationId String
+  prestation   Prestation @relation(fields: [prestationId], references: [id])
+  designation  String?
+  price_ht     Int?
+  price_ttc    Int?
+  quantity     Int?
+  subtotal     Int?
+  total_amount Int?
 }
 
 model Config {

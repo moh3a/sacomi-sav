@@ -121,7 +121,8 @@ export const MAP_SAV_DB = {
   WILAYA: "wilaya",
 
   // bons de livraison
-  "DATE DE LIVRAISON": "delivery_date_1",
+  "DATE DE LIVRAISON": "date_delivered",
+  "CONTENU LIVRAISON": "delivery_content",
   "DATE LIVRAISON": "delivery_date",
   "NUMERO BL": "delivery_id",
   "NUMERO DU BON DE RETOUR": "entry_id",
@@ -180,7 +181,7 @@ export const MAP_SAV_DB = {
   Daterepare: "repaired_date",
   Datremiseclient: "exit_date",
   Désignation: "designation",
-  diagnostiq: "diagnostic",
+  diagnostiq: "diagnostics",
   Etat_suit_INTERV: "status",
   LOCALISATION: "localisation",
   Marque: "product_brand",
