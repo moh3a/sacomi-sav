@@ -1,10 +1,12 @@
-require("dotenv").config();
-const { readFile, writeFile } = require("fs");
-const { join } = require("path");
-const { getIpAddress } = require("./ip_address");
+import { config } from "dotenv";
+config();
+import { readFile, writeFile } from "fs";
+import { join } from "path";
+import getIpAddress from "./ip_address";
 
-const filename = join(__dirname, "../../.env");
-const ip_address = getIpAddress();
+const filename = join(__dirname, "../.env");
+const ip_address =
+  process.env.WORK_ENV === "local" ? getIpAddress() : "localhost";
 const newHostValue = `HOST=${ip_address}`;
 const newNAValue = `NEXTAUTH_URL=http://${ip_address}:3000`;
 

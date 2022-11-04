@@ -1,6 +1,7 @@
 public/uploads
 # prisma migrations
 prisma/migrations
+dist
 
 # dependencies
 /node_modules

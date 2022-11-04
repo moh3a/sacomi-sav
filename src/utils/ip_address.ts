@@ -1,9 +1,10 @@
-const networks = require("os").networkInterfaces();
+import { networkInterfaces } from "os";
+const networks = networkInterfaces();
 
-exports.getIpAddress = () => {
+const getIpAddress = () => {
   for (const key of Object.keys(networks)) {
     if (key === "Wi-Fi") {
-      for (const network of networks[key]) {
+      for (const network of networks[key]!) {
         const family4Value = typeof network.family === "string" ? "IPv4" : 4;
         if (network.family === family4Value && !network.internal) {
           return network.address;
@@ -12,3 +13,5 @@ exports.getIpAddress = () => {
     }
   }
 };
+
+export default getIpAddress;
