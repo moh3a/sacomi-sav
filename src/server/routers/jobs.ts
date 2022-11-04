@@ -143,8 +143,8 @@ export const jobRouter = t.router({
         job_id: z.number(),
         awaiting_intervention: z.string().nullish(),
         warranty: z.string().nullish(),
-        repaired_date: z.string().nullish(),
-        exit_date: z.string().nullish(),
+        repaired_date: z.any(),
+        exit_date: z.any(),
         designation: z.string().nullish(),
         diagnostic: z.string().nullish(),
         status: z.string().nullish(),
@@ -172,6 +172,8 @@ export const jobRouter = t.router({
           if (entry && product) {
             delete input.product_model;
             delete input.entry_id;
+            input.repaired_date = new Date(input.repaired_date) ?? undefined;
+            input.exit_date = new Date(input.exit_date) ?? undefined;
             const job = await ctx.prisma.job.create({
               data: {
                 ...input,
@@ -212,8 +214,8 @@ export const jobRouter = t.router({
         job_id: z.number(),
         awaiting_intervention: z.string().nullish(),
         warranty: z.string().nullish(),
-        repaired_date: z.string().nullish(),
-        exit_date: z.string().nullish(),
+        repaired_date: z.any(),
+        exit_date: z.any(),
         designation: z.string().nullish(),
         diagnostic: z.string().nullish(),
         status: z.string().nullish(),
@@ -239,6 +241,8 @@ export const jobRouter = t.router({
           delete input.name;
           delete input.entry_id;
           delete input.product_model;
+          input.repaired_date = new Date(input.repaired_date) ?? undefined;
+          input.exit_date = new Date(input.exit_date) ?? undefined;
           const client = await ctx.prisma.client.findUnique({
             where: { name: name ?? "" },
             select: { id: true },

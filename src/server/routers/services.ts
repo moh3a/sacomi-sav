@@ -99,12 +99,11 @@ export const prestationRouter = t.router({
     .input(
       z.object({
         prestation_id: z.string(),
-        prestation_date: z.string().nullish(),
-        is_paid: z.string().nullish(),
-        to_bill: z.string().nullish(),
-        recovery_date: z.string().nullish(),
-        payment_date: z.string().nullish(),
-        total_amount: z.string().nullish(),
+        prestation_date: z.any(),
+        is_paid: z.boolean(),
+        to_bill: z.boolean(),
+        recovery_date: z.any(),
+        payment_date: z.any(),
         invoice: z.string().nullish(),
         client_name: z.string().nullish(),
         rows: z.any(),
@@ -124,6 +123,11 @@ export const prestationRouter = t.router({
               input.prestation_date = new Date().toISOString().substring(0, 10);
             delete input.client_name;
             delete input.rows;
+            input.prestation_date =
+              new Date(input.prestation_date) ?? new Date();
+            input.recovery_date = new Date(input.recovery_date) ?? undefined;
+            input.payment_date = new Date(input.payment_date) ?? undefined;
+
             const prestation = await ctx.prisma.prestation.create({
               data: { ...input, clientId: client.id },
             });
@@ -180,12 +184,11 @@ export const prestationRouter = t.router({
       z.object({
         id: z.string(),
         prestation_id: z.string(),
-        prestation_date: z.string().nullish(),
-        is_paid: z.string().nullish(),
-        to_bill: z.string().nullish(),
-        recovery_date: z.string().nullish(),
-        payment_date: z.string().nullish(),
-        total_amount: z.string().nullish(),
+        prestation_date: z.any(),
+        is_paid: z.boolean(),
+        to_bill: z.boolean(),
+        recovery_date: z.any(),
+        payment_date: z.any(),
         invoice: z.string().nullish(),
         client_name: z.string().nullish(),
         rows: z.any(),
@@ -202,6 +205,10 @@ export const prestationRouter = t.router({
           if (client) {
             delete input.rows;
             delete input.client_name;
+            input.prestation_date =
+              new Date(input.prestation_date) ?? undefined;
+            input.recovery_date = new Date(input.recovery_date) ?? undefined;
+            input.payment_date = new Date(input.payment_date) ?? undefined;
             const prestation = await ctx.prisma.prestation.update({
               where: { id: input.id },
               data: { ...input, clientId: client.id },

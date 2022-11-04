@@ -84,11 +84,8 @@ export const entryRouter = t.router({
     .input(
       z.object({
         entry_id: z.string(),
-        entry_date: z.string().nullish(),
+        entry_date: z.any(),
         entry_time: z.string().nullish(),
-        warranty: z.string().nullish(),
-        global: z.string().nullish(),
-        observations: z.string().nullish(),
         client_name: z.string().nullish(),
         rows: z.any(),
       })
@@ -102,8 +99,9 @@ export const entryRouter = t.router({
             select: { id: true },
           });
           if (client) {
-            if (!input.entry_date)
-              input.entry_date = new Date().toISOString().substring(0, 10);
+            input.entry_date = input.entry_date
+              ? new Date(input.entry_date)
+              : new Date();
             if (!input.entry_time)
               input.entry_time = new Date().toISOString().substring(11, 16);
             delete input.client_name;
@@ -182,11 +180,8 @@ export const entryRouter = t.router({
       z.object({
         id: z.string(),
         entry_id: z.string(),
-        entry_date: z.string().nullish(),
+        entry_date: z.any(),
         entry_time: z.string().nullish(),
-        warranty: z.string().nullish(),
-        global: z.string().nullish(),
-        observations: z.string().nullish(),
         client_name: z.string().nullish(),
         rows: z.any(),
       })
@@ -202,6 +197,7 @@ export const entryRouter = t.router({
           if (client) {
             delete input.rows;
             delete input.client_name;
+            input.entry_date = new Date(input.entry_date) ?? undefined;
             const entry = await ctx.prisma.entry.update({
               where: { id: input.id },
               data: { ...input, clientId: client.id },

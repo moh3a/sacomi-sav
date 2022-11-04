@@ -3,7 +3,6 @@
 ### Todo
 
 - work realtime collaboration (to revalidate data only)
-- add locked and locker to data
 - work on stock
 - add tasks
 

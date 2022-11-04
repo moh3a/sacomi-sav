@@ -82,11 +82,11 @@ export const orderRouter = t.router({
     .input(
       z.object({
         order_id: z.string(),
-        order_date: z.string().nullish(),
+        order_date: z.any(),
         order_content: z.string().nullish(),
-        receipt_date: z.string().nullish(),
+        receipt_date: z.any(),
         sage_entry_id: z.string().nullish(),
-        quantity: z.string().nullish(),
+        quantity: z.number().nullish(),
         payment: z.string().nullish(),
         observations: z.string().nullish(),
       })
@@ -94,6 +94,8 @@ export const orderRouter = t.router({
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          input.order_date = new Date(input.order_date) ?? undefined;
+          input.receipt_date = new Date(input.receipt_date) ?? undefined;
           const order = await ctx.prisma.order.create({ data: input });
           await ctx.prisma.config.update({
             where: { id: "config" },
@@ -123,11 +125,11 @@ export const orderRouter = t.router({
       z.object({
         id: z.string(),
         order_id: z.string(),
-        order_date: z.string().nullish(),
+        order_date: z.any(),
         order_content: z.string().nullish(),
-        receipt_date: z.string().nullish(),
+        receipt_date: z.any(),
         sage_entry_id: z.string().nullish(),
-        quantity: z.string().nullish(),
+        quantity: z.number().nullish(),
         payment: z.string().nullish(),
         observations: z.string().nullish(),
       })
@@ -135,6 +137,8 @@ export const orderRouter = t.router({
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          input.order_date = new Date(input.order_date) ?? undefined;
+          input.receipt_date = new Date(input.receipt_date) ?? undefined;
           const order = await ctx.prisma.order.update({
             where: { id: input.id },
             data: input,

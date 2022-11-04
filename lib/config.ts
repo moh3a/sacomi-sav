@@ -119,11 +119,11 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "entry",
     url: "/entries",
     table_titles: [
-      { name: "Date", field: "entry_date" },
-      { name: "ID", field: "entry_id" },
-      { name: "Client", field: "client_name" },
-      { name: "Numéro de téléphone", field: "client_phone_number" },
-      { name: "Heure", field: "entry_time" },
+      { name: "Date" },
+      { name: "ID" },
+      { name: "Client" },
+      { name: "Numéro de téléphone" },
+      { name: "Heure" },
     ],
     table_data: (data: any) =>
       data.map(
@@ -135,7 +135,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             entry.id,
-            entry.entry_date || "",
+            entry.entry_date?.toISOString().substring(0, 10) || "",
             entry.entry_id || "",
             entry.client?.name || "",
             entry.client?.phone_number || "",
@@ -185,10 +185,10 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "client",
     url: "/clients",
     table_titles: [
-      { name: "Nom", field: "client_name" },
-      { name: "Type", field: "client_type" },
-      { name: "Numéro de téléphone", field: "client_phone_number" },
-      { name: "Etat", field: "client_status" },
+      { name: "Nom" },
+      { name: "Type" },
+      { name: "Numéro de téléphone" },
+      { name: "Etat" },
     ],
     table_data: (data: any) =>
       data.map((client: Client) => {
@@ -249,11 +249,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     collection: "products",
     unit: "product",
     url: "/products",
-    table_titles: [
-      { name: "Type", field: "product_type" },
-      { name: "Marque", field: "product_brand" },
-      { name: "Modèle", field: "product_model" },
-    ],
+    table_titles: [{ name: "Type" }, { name: "Marque" }, { name: "Modèle" }],
     table_data: (data: any) =>
       data.map((product: Product) => {
         return [
@@ -295,12 +291,12 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "delivery",
     url: "/deliveries",
     table_titles: [
-      { name: "Date", field: "bl_date" },
-      { name: "ID", field: "bl_id" },
-      { name: "Client", field: "bl_client_name" },
-      { name: "ID entrée", field: "bl_entry_id" },
-      { name: "Date de livraison", field: "bl_shipping_date" },
-      { name: "Bon de sortie", field: "bl_sacomi_exit_id" },
+      { name: "Date" },
+      { name: "ID" },
+      { name: "Client" },
+      { name: "ID entrée" },
+      { name: "Date de livraison" },
+      { name: "Bon de sortie" },
     ],
     table_data: (data: any) =>
       data.map(
@@ -311,11 +307,11 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             delivery.id,
-            delivery.delivery_date || "",
+            delivery.delivery_date?.toISOString().substring(0, 10) || "",
             delivery.delivery_id || "",
             delivery.client?.name || "",
             delivery.entry_id || "",
-            delivery.date_delivered || "",
+            delivery.date_delivered?.toISOString().substring(0, 10) || "",
             delivery.sage_exit_id || "",
           ];
         }
@@ -388,23 +384,23 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "order",
     url: "/orders",
     table_titles: [
-      { name: "Date", field: "date" },
-      { name: "ID", field: "id" },
-      { name: "Contenu", field: "bl_client_name" },
-      { name: "Quantité", field: "bl_entry_id" },
-      { name: "Paiement", field: "bl_shipping_date" },
-      { name: "Date de reception", field: "bl_sacomi_exit_id" },
+      { name: "Date" },
+      { name: "ID" },
+      { name: "Contenu" },
+      { name: "Quantité" },
+      { name: "Paiement" },
+      { name: "Date de reception" },
     ],
     table_data: (data: any) =>
       data.map((order: Order) => {
         return [
           order.id,
           order.order_id || "",
-          order.order_date || "",
+          order.order_date?.toISOString().substring(0, 10) || "",
           order.order_content || "",
           order.quantity || "",
           order.payment || "",
-          order.receipt_date || "",
+          order.receipt_date?.toISOString().substring(0, 10) || "",
         ];
       }),
     search_layout: [
@@ -451,15 +447,14 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "prestation",
     url: "/prestations",
     table_titles: [
-      { name: "Date", field: "prestation_date" },
-      { name: "ID", field: "prestation_id" },
-      { name: "Client", field: "prestation_client_name" },
-      { name: "Montant", field: "prestation_total_value" },
-      { name: "Payé", field: "prestation_is_paid" },
-      { name: "Encaissement", field: "prestation_payment_date" },
-      { name: "A facturer", field: "prestation_billing" },
-      { name: "Facture", field: "prestation_invoice" },
-      { name: "Date de récupération", field: "prestation_recovery_date" },
+      { name: "Date" },
+      { name: "ID" },
+      { name: "Client" },
+      { name: "Payé" },
+      { name: "Encaissement" },
+      { name: "A facturer" },
+      { name: "Facture" },
+      { name: "Date de récupération" },
     ],
     table_data: (data: any) =>
       data.map(
@@ -471,14 +466,14 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             prestation.id,
-            prestation.prestation_date || "",
+            prestation.prestation_date?.toISOString().substring(0, 10) || "",
             prestation.prestation_id || "",
             prestation.client?.name || "",
             prestation.is_paid || "",
-            prestation.payment_date || "",
+            prestation.payment_date?.toISOString().substring(0, 10) || "",
             prestation.to_bill || "",
             prestation.invoice || "",
-            prestation.recovery_date || "",
+            prestation.recovery_date?.toISOString().substring(0, 10) || "",
           ];
         }
       ),
@@ -560,17 +555,17 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "job",
     url: "/jobs",
     table_titles: [
-      { name: "Date", field: "entry_date" },
-      { name: "ID", field: "entry_id" },
-      { name: "Client", field: "client_name" },
-      { name: "Marque", field: "product_brand" },
-      { name: "Modèle", field: "product_model" },
-      { name: "N de série", field: "product_serial_number" },
-      { name: "Désignation", field: "job_designation" },
-      { name: "Diagnostique", field: "job_diagnostics" },
-      { name: "Technicien", field: "job_technician" },
-      { name: "Etat", field: "job_status", isBadge: true },
-      { name: "Date de sortie", field: "job_exit_date" },
+      { name: "Date" },
+      { name: "ID" },
+      { name: "Client" },
+      { name: "Marque" },
+      { name: "Modèle" },
+      { name: "N de série" },
+      { name: "Désignation" },
+      { name: "Diagnostique" },
+      { name: "Technicien" },
+      { name: "Etat", isBadge: true },
+      { name: "Date de sortie" },
     ],
     table_data: (data: any) =>
       data.map(
@@ -583,7 +578,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             job.id,
-            job.entry?.entry_date || "",
+            job.entry?.entry_date?.toISOString().substring(0, 10) || "",
             job.entry?.entry_id || "",
             job.client?.name || "",
             job.product?.product_brand || "",
@@ -593,7 +588,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             job.diagnostics || "",
             job.technician || "",
             job.status || "",
-            job.exit_date || "",
+            job.exit_date?.toISOString().substring(0, 10) || "",
           ];
         }
       ),
@@ -744,10 +739,10 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "user",
     url: "/staff",
     table_titles: [
-      { name: "Avatar", field: "picture", isImage: true },
-      { name: "Pseudo", field: "username" },
-      { name: "Nom/prénom", field: "fullName" },
-      { name: "Rôle", field: "role" },
+      { name: "Avatar", isImage: true },
+      { name: "Pseudo" },
+      { name: "Nom/prénom" },
+      { name: "Rôle" },
     ],
     table_data: (data: any) =>
       data.map((user: User) => {
@@ -802,13 +797,13 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     unit: "transaction",
     url: "/transactions",
     table_titles: [
-      { name: "Date", field: "date" },
-      { name: "ID Prest", field: "prestation_id" },
-      { name: "Client / Titre", field: "client_name" },
-      { name: "Chèque", field: "check" },
-      { name: "Recette", field: "income" },
-      { name: "Dépense", field: "expense" },
-      { name: "Solde [DZD]", field: "balance" },
+      { name: "Date" },
+      { name: "ID Prest" },
+      { name: "Client / Titre" },
+      { name: "Chèque" },
+      { name: "Recette" },
+      { name: "Dépense" },
+      { name: "Solde [DZD]" },
     ],
     table_data: (data: any) =>
       data.map(
@@ -877,7 +872,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
     title: "",
     collection: "prestationDetails",
     url: "/services",
-    table_titles: [{ name: "Date", field: "date" }],
+    table_titles: [{ name: "Date" }],
     table_data: (data: any) =>
       data.map((data: any) => {
         return [data];

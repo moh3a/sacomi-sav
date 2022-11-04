@@ -1,5 +1,7 @@
 export interface MigrationsConfig {
   order: number;
+  collection: Collection["name"];
+  name: string;
   file: string;
   uploaded: boolean;
   canInsert: boolean;
@@ -45,7 +47,6 @@ export interface PageArchitecture {
 
 export interface TableTitle {
   name: string;
-  field?: string;
   isImage?: boolean;
   isBadge?: boolean;
   badgeType?: "success" | "warning" | "danger";

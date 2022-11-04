@@ -85,10 +85,10 @@ export const deliveryRouter = t.router({
     .input(
       z.object({
         delivery_id: z.string(),
-        delivery_date: z.string().nullish(),
+        delivery_date: z.any(),
         entry_id: z.string().nullish(),
         sage_exit_id: z.string().nullish(),
-        delivery_date_1: z.string().nullish(),
+        date_delivered: z.any(),
         observations: z.string().nullish(),
         client_name: z.string().nullish(),
       })
@@ -101,7 +101,11 @@ export const deliveryRouter = t.router({
             select: { id: true },
           });
           if (client) {
-            input.delivery_date = new Date().toISOString().substring(0, 10);
+            input.delivery_date = input.delivery_date
+              ? new Date(input.delivery_date)
+              : new Date();
+            input.date_delivered = new Date(input.date_delivered) ?? undefined;
+
             delete input.client_name;
             const delivery = await ctx.prisma.delivery.create({
               data: { ...input, clientId: client.id },
@@ -140,10 +144,10 @@ export const deliveryRouter = t.router({
       z.object({
         id: z.string(),
         delivery_id: z.string(),
-        delivery_date: z.string().nullish(),
+        delivery_date: z.any(),
         entry_id: z.string().nullish(),
         sage_exit_id: z.string().nullish(),
-        delivery_date_1: z.string().nullish(),
+        date_delivered: z.any(),
         observations: z.string().nullish(),
         client_name: z.string().nullish(),
       })
@@ -157,6 +161,8 @@ export const deliveryRouter = t.router({
           });
           if (client) {
             delete input.client_name;
+            input.date_delivered = new Date(input.date_delivered);
+
             const delivery = await ctx.prisma.delivery.update({
               where: { id: input.id },
               data: { ...input, clientId: client.id },

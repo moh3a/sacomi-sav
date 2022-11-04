@@ -69,7 +69,7 @@ model Entry {
   entry_id     String    @unique
   observations String?   @db.Text // ? postgres 
   // observations String?   @db.MediumText // ! mysql
-  entry_date   String?
+  entry_date   DateTime? @db.Date
   entry_time   String?
   createdAt    DateTime? @default(now())
   updatedAt    DateTime? @updatedAt
@@ -83,29 +83,29 @@ model Entry {
 }
 
 model Job {
-  id                    String  @id @default(cuid()) // ? postgres
+  id                    String    @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
-  job_id                Int     @unique
+  job_id                Int       @unique
   entryId               String
-  entry                 Entry   @relation(fields: [entryId], references: [id])
+  entry                 Entry     @relation(fields: [entryId], references: [id])
   clientId              String
-  client                Client  @relation(fields: [clientId], references: [id])
+  client                Client    @relation(fields: [clientId], references: [id])
   productId             String
-  product               Product @relation(fields: [productId], references: [id])
+  product               Product   @relation(fields: [productId], references: [id])
   prestation_id         String?
   awaiting_intervention String?
   warranty              String?
-  repaired_date         String?
-  exit_date             String?
-  designation           String? @db.Text // ? postgres 
+  repaired_date         DateTime? @db.Date
+  exit_date             DateTime? @db.Date
+  designation           String?   @db.Text // ? postgres 
   // designation           String? @db.MediumText // ! mysql
-  diagnostics           String? @db.Text // ? postgres 
+  diagnostics           String?   @db.Text // ? postgres 
   // diagnostics            String? @db.MediumText // ! mysql
-  status                String? @db.Text // ? postgres 
+  status                String?   @db.Text // ? postgres 
   // status                String? @db.MediumText // ! mysql
-  serial_number         String? @db.Text // ? postgres 
+  serial_number         String?   @db.Text // ? postgres 
   // serial_number         String? @db.MediumText // ! mysql
-  new_serial_number     String? @db.Text // ? postgres 
+  new_serial_number     String?   @db.Text // ? postgres 
   // new_serial_number     String? @db.MediumText // ! mysql
   localisation          String?
   technician            String?
@@ -114,27 +114,28 @@ model Job {
   used_parts            String?
   spare_parts           String?
   rma_asus              String?
-  locked                Boolean @default(false)
+  locked                Boolean   @default(false)
   locker                String?
 
   @@index([job_id])
 }
 
 model Delivery {
-  id             String    @id @default(cuid()) // ? postgres
+  id               String    @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
-  delivery_id    String    @unique
-  delivery_date  String?
-  clientId       String
-  client         Client    @relation(fields: [clientId], references: [id])
-  entry_id       String?
-  sage_exit_id   String?
-  date_delivered String?
-  observations   String?
-  createdAt      DateTime? @default(now())
-  updatedAt      DateTime? @updatedAt
-  locked         Boolean   @default(false)
-  locker         String?
+  delivery_id      String    @unique
+  delivery_date    DateTime? @db.Date
+  clientId         String
+  client           Client    @relation(fields: [clientId], references: [id])
+  delivery_content String?
+  entry_id         String?
+  sage_exit_id     String?
+  date_delivered   DateTime? @db.Date
+  observations     String?
+  createdAt        DateTime? @default(now())
+  updatedAt        DateTime? @updatedAt
+  locked           Boolean   @default(false)
+  locker           String?
 
   @@index([delivery_id])
 }
@@ -147,10 +148,10 @@ model Order {
   // order_content String?   @db.MediumText // ! mysql
   observations  String?   @db.Text // ? postgres 
   // observations  String?   @db.MediumText // ! mysql
-  order_date    String?
-  receipt_date  String?
+  order_date    DateTime? @db.Date
+  receipt_date  DateTime? @db.Date
   sage_entry_id String?
-  quantity      String?
+  quantity      Int?
   payment       String?
   createdAt     DateTime? @default(now())
   updatedAt     DateTime? @updatedAt
@@ -164,15 +165,15 @@ model Prestation {
   id                String              @id @default(cuid()) // ? postgres
   // id           Int       @id @default(autoincrement()) // ! mysql
   prestation_id     String              @unique
-  prestation_date   String?
+  prestation_date   DateTime?           @db.Date
   clientId          String
   client            Client              @relation(fields: [clientId], references: [id])
   observations      String?             @db.Text // ? postgres 
   // observations      String?             @db.MediumText // ! mysql
-  is_paid           String?
-  to_bill           String?
-  recovery_date     String?
-  payment_date      String?
+  is_paid           Boolean             @default(false)
+  to_bill           Boolean             @default(false)
+  recovery_date     DateTime?           @db.Date
+  payment_date      DateTime?           @db.Date
   invoice           String?
   createdAt         DateTime?           @default(now())
   updatedAt         DateTime?           @updatedAt
@@ -190,11 +191,11 @@ model PrestationDetails {
   prestationId String
   prestation   Prestation @relation(fields: [prestationId], references: [id])
   designation  String?
-  price_ht     Int?
-  price_ttc    Int?
+  price_ht     Float?
+  price_ttc    Float?
   quantity     Int?
-  subtotal     Int?
-  total_amount Int?
+  subtotal     Float?
+  total_amount Float?
 }
 
 model Config {

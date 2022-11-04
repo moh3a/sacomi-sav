@@ -27,18 +27,20 @@ export const authOptions: NextAuthOptions = {
             }
             return user;
           } else {
-            throw `/auth?error=user_not_found`;
-            // const salt = genSaltSync();
-            // let password = hashSync(credentials.password, salt);
-            // const newuser = await prisma.user.create({
-            //   data: {
-            //     role: "TECHNICIAN",
-            //     password: password,
-            //     username: credentials.username,
-            //     image: `https://avatars.dicebear.com/api/bottts/${credentials.username}.svg`,
-            //   },
-            // });
-            // return newuser;
+            const count = await prisma.user.count();
+            if (count === 0) {
+              const salt = genSaltSync();
+              let password = hashSync(credentials.password, salt);
+              const newuser = await prisma.user.create({
+                data: {
+                  role: "ADMIN",
+                  password: password,
+                  username: credentials.username,
+                  image: `https://avatars.dicebear.com/api/bottts/${credentials.username}.svg`,
+                },
+              });
+              return newuser;
+            } else throw `/auth?error=user_not_found`;
           }
         } else {
           throw `/auth?error=provide_email_and_password`;

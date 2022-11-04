@@ -1,7 +1,7 @@
 import { UploadIcon } from "@heroicons/react/outline";
 import { ChangeEvent, useRef } from "react";
 
-export interface FileUploadProps {
+interface FileUploadProps {
   acceptedFileTypes?: string;
   allowMultipleFiles?: boolean;
   onChange: (formData: FormData) => void;

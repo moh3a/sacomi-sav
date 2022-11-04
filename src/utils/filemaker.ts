@@ -257,7 +257,7 @@ export const CONVERT_FM_DATA: FMConverter[] = [
       {
         xml_field: "DATE DE LIVRAISON",
         converted_name: "date_delivered",
-        type: "string",
+        type: "date",
       },
       {
         xml_field: "DATE LIVRAISON",
@@ -319,12 +319,12 @@ export const CONVERT_FM_DATA: FMConverter[] = [
   },
 ];
 
-export interface ICollection {
+interface ICollection {
   name: Collection["name"] | string;
   main_field: string;
 }
 
-export interface IParseFMData {
+interface IParseFMData {
   res: NextApiResponse;
   fm_data: FileMakerXML;
   save: "file" | "db";
@@ -511,7 +511,8 @@ export const DataParser = (
       if (index_exist === -1) {
         if (Object.keys(temp).length > 0) {
           if (main_field === "product_model") delete temp.client_name;
-          if (!temp[main_field]) temp[main_field] = geenrate_random_string(7);
+          if (!temp[main_field] && main_field !== "product_model")
+            temp[main_field] = geenrate_random_string(8);
           data.push(temp);
         } else if (temp_arr.length > 0) {
           data.push(...temp_arr);
@@ -530,9 +531,6 @@ export const WriteToFile = (
   writeFile(filePath, JSON.stringify(data), { encoding: "utf8" }, (err) => {
     if (err) console.log(err.message);
     console.log("> Done !");
-    res
-      .status(200)
-      .json({ success: true, message: "Fichier télécharger avec succés." });
   });
 };
 
@@ -559,6 +557,9 @@ export const WriteData = async ({
       if (product_data.length > 0)
         WriteToFile(res, fp.replace("tableau", "produits"), product_data);
       WriteToFile(res, fp, data);
+      res
+        .status(200)
+        .json({ success: true, message: "Fichier télécharger avec succés." });
     }
   } else {
     res.status(200).json({
