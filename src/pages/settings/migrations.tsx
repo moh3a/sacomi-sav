@@ -38,19 +38,17 @@ const SeedScreen = () => {
       const { data } = await axios.post("/api/migrations/insert", {
         migration,
       });
-      if (data) {
+      if (data.success) {
         setLoading(false);
         setMessage({ type: "success", text: data.message });
         fetchUploadedFiles();
-        setTimeout(() => {
-          setMessage({ type: undefined, text: undefined });
-        }, 3000);
+      } else {
+        setLoading(false);
+        setMessage({ type: "error", text: data.message });
+        fetchUploadedFiles();
       }
     } else {
       setMessage({ type: "error", text: "Cannot insert data." });
-      setTimeout(() => {
-        setMessage({ type: undefined, text: undefined });
-      }, 3000);
     }
   };
 

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
 
 import { SHADOW } from "../design";
-import { Collection, TableTitle } from "../../types";
+import { CollectionsNames, TableTitle } from "../../types";
 import Badge from "./Badge";
 import { useSelectedStore } from "../../utils/store";
 
@@ -15,7 +15,7 @@ interface TableProps {
   scrollable?: boolean;
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
   link?: string;
-  collection?: Collection["name"];
+  collection?: CollectionsNames;
 }
 
 const Table = ({

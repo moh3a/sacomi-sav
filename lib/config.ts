@@ -10,7 +10,7 @@ import {
   Transaction,
   User,
 } from "@prisma/client";
-import { Collection, Column, PageArchitecture } from "../src/types";
+import { CollectionsNames, Column, PageArchitecture } from "../src/types";
 
 export const ENTREPRISE_NAME = "Sacomi";
 export const SERVICE_NAME = "Service après-vente";
@@ -109,7 +109,7 @@ const BASIC_PRESTATION_SERVICES: Column[] = [
   },
 ];
 
-type PageEntry<T extends {}> = { [K in Collection["name"]]: T };
+type PageEntry<T extends {}> = { [K in CollectionsNames]: T };
 
 export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
   // ENTREES
@@ -220,7 +220,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             required: true,
           },
           {
-            name: "Revendeur / Particulier",
+            name: "Type du client",
             field: "type",
             value: "",
             type: "radio",

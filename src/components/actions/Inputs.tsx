@@ -35,7 +35,7 @@ const Inputs = ({
     <div key={field_index} className={!rows ? "m-2 flex items-center" : ""}>
       {field.type === "checkbox" && (
         <Checkbox
-          checked={field.value === "OUI" ? true : false}
+          checked={field.value}
           readOnly={field.readonly}
           label={field.name}
           tabIndex={field_index}
@@ -49,7 +49,7 @@ const Inputs = ({
                         r.map((f, fidx) => {
                           if (f.index) f.value = String(row_index + 1);
                           if (fidx === field_index) {
-                            f.value = e.target.checked ? "OUI" : "NON"; // ! to fix in migrations
+                            f.value = e.target.checked;
                           }
                           return f;
                         });
@@ -59,7 +59,7 @@ const Inputs = ({
                   } else {
                     g.group_fields = g.group_fields.map((f, fidx) => {
                       if (fidx === field_index) {
-                        f.value = e.target.checked ? "OUI" : "NON"; // ! to fix in migrations
+                        f.value = e.target.checked;
                       }
                       return f;
                     });

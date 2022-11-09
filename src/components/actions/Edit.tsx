@@ -13,14 +13,19 @@ import LoadingSpinner from "../shared/LoadingSpinner";
 import Inputs from "./Inputs";
 import Rows from "./Rows";
 import { trpc } from "../../utils/trpc";
-import { Collection, Column, DataLayout } from "../../types";
+import {
+  CollectionsBaseUnit,
+  CollectionsNames,
+  Column,
+  DataLayout,
+} from "../../types";
 import Autocomplete from "../shared/Autocomplete";
 import { useNotificationStore, useSelectedStore } from "../../utils/store";
 
 interface EditProps {
   title: string;
-  collection: Collection["name"];
-  unit: Collection["unit"];
+  collection: CollectionsNames;
+  unit: CollectionsBaseUnit;
   url: string;
   layout: DataLayout[];
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
@@ -166,7 +171,8 @@ const Edit = ({
                   rowsData[row_index] && rowsData[row_index].id
                     ? rowsData[row_index].id
                     : undefined;
-                if (field.value) r[field.field] = field.value;
+                if (field.value || field.value === false)
+                  r[field.field] = field.value;
               });
               rows.push(r);
             });
@@ -174,7 +180,8 @@ const Edit = ({
             client_name = client?.name;
           } else {
             group.group_fields.forEach((field) => {
-              if (field.value) input[field.field] = field.value;
+              if (field.value || field.value === false)
+                input[field.field] = field.value;
             });
           }
         }

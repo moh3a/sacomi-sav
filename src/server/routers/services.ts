@@ -140,9 +140,6 @@ export const prestationRouter = t.router({
               if (prestation && services) {
                 for (let service of services) {
                   if (service.designation) {
-                    service = Object.keys(service).map((key) =>
-                      String(service[key])
-                    );
                     await ctx.prisma.prestationDetails.create({
                       data: {
                         prestationId: prestation.id,
@@ -218,9 +215,6 @@ export const prestationRouter = t.router({
               if (prestation && services) {
                 for (let service of services) {
                   if (service.designation) {
-                    Object.keys(service).forEach(
-                      (key) => (service[key] = String(service[key]))
-                    );
                     await ctx.prisma.prestationDetails.upsert({
                       where: { id: service.id },
                       update: {

@@ -2,7 +2,7 @@ import { writeFile } from "fs";
 import { NextApiResponse } from "next";
 
 import { geenrate_random_string, sanitize } from ".";
-import { Collection } from "../types";
+import { CollectionsNames, PrismaCollectionsNames } from "../types";
 import { FileMakerXML } from "../types/sav-xml-data";
 
 interface XMLConverter {
@@ -13,7 +13,8 @@ interface XMLConverter {
 }
 
 interface FMConverter {
-  collection: Collection["name"];
+  collection: CollectionsNames;
+  prisma_model: PrismaCollectionsNames;
   field_to_select: string;
   main_field?: string;
   mapping: XMLConverter[];
@@ -22,6 +23,7 @@ interface FMConverter {
 export const CONVERT_FM_DATA: FMConverter[] = [
   {
     collection: "jobs",
+    prisma_model: "job",
     field_to_select: "Etat_suit_INTERV",
     main_field: "job_id",
     mapping: [
@@ -104,21 +106,6 @@ export const CONVERT_FM_DATA: FMConverter[] = [
       { xml_field: "RMA ASUS", converted_name: "rma_asus", type: "string" },
       { xml_field: "technicien", converted_name: "technician", type: "string" },
       {
-        xml_field: "CLIENT::ETAT CLIENT",
-        converted_name: "client_status",
-        type: "string",
-      },
-      {
-        xml_field: "CLIENT::REV OU PART",
-        converted_name: "client_type",
-        type: "string",
-      },
-      {
-        xml_field: "Entree::Client",
-        converted_name: "client_name",
-        type: "string",
-      },
-      {
         xml_field: "Entree::No_bon",
         converted_name: "entry_id",
         type: "string",
@@ -130,6 +117,7 @@ export const CONVERT_FM_DATA: FMConverter[] = [
   },
   {
     collection: "entries",
+    prisma_model: "entry",
     field_to_select: "Date_entree",
     main_field: "entry_id",
     mapping: [
@@ -146,6 +134,7 @@ export const CONVERT_FM_DATA: FMConverter[] = [
   },
   {
     collection: "prestations",
+    prisma_model: "prestation",
     field_to_select: "REVENDEUR",
     main_field: "prestation_id",
     mapping: [
@@ -179,6 +168,7 @@ export const CONVERT_FM_DATA: FMConverter[] = [
   },
   {
     collection: "prestationDetails",
+    prisma_model: "prestationDetails",
     field_to_select: "DETAIL PREST::QTE",
     main_field: "prestation_id",
     mapping: [
@@ -226,6 +216,7 @@ export const CONVERT_FM_DATA: FMConverter[] = [
   },
   {
     collection: "clients",
+    prisma_model: "client",
     field_to_select: "PERSONNE DE CONTACT",
     main_field: "name",
     mapping: [
@@ -245,6 +236,7 @@ export const CONVERT_FM_DATA: FMConverter[] = [
   },
   {
     collection: "deliveries",
+    prisma_model: "delivery",
     field_to_select: "NUMERO BL",
     main_field: "delivery_id",
     mapping: [
@@ -280,6 +272,7 @@ export const CONVERT_FM_DATA: FMConverter[] = [
   },
   {
     collection: "orders",
+    prisma_model: "order",
     field_to_select: "NUMERO BON DE COMMANDE",
     main_field: "order_id",
     mapping: [
@@ -320,7 +313,8 @@ export const CONVERT_FM_DATA: FMConverter[] = [
 ];
 
 interface ICollection {
-  name: Collection["name"] | string;
+  name: CollectionsNames;
+  prisma_model: PrismaCollectionsNames;
   main_field: string;
 }
 
@@ -375,26 +369,28 @@ export const ParseFMFields = (
   fm_data: FileMakerXML,
   collection: ICollection
 ) => {
-  let selected: FMConverter | undefined;
+  let fields: (XMLConverter | undefined)[] = [];
   fm_data.FMPXMLRESULT.METADATA[0].FIELD.forEach((f) => {
     let desired = CONVERT_FM_DATA.find(
       (model) => model.field_to_select === f["$"].NAME
     );
     if (desired) {
-      selected = desired;
+      fields = fm_data.FMPXMLRESULT.METADATA[0].FIELD.map((f) => {
+        if (desired) {
+          collection.name = desired.collection;
+          collection.prisma_model = desired.prisma_model;
+        }
+        collection.main_field = desired?.main_field ?? "";
+        const key = desired?.mapping.find(
+          (field) => field.xml_field === f["$"].NAME
+        );
+        return key;
+      });
       return;
     }
   });
 
-  if (selected) {
-    const fields = fm_data.FMPXMLRESULT.METADATA[0].FIELD.map((f) => {
-      collection.name = selected?.collection ?? "";
-      collection.main_field = selected?.main_field ?? "";
-      const key = selected?.mapping.find(
-        (field) => field.xml_field === f["$"].NAME
-      );
-      return key;
-    });
+  if (fields.length > 0) {
     console.log(`> Fields parsed...`);
     return fields;
   } else return undefined;
@@ -430,7 +426,7 @@ export const ParseFMColumns = (
 
 export const DataParser = (
   fm_data: FileMakerXML,
-  main_field: string,
+  collection: ICollection,
   fields?: (XMLConverter | undefined)[]
 ) => {
   let data: any[] = [];
@@ -453,13 +449,13 @@ export const DataParser = (
               value.DATA && value.DATA[0]
                 ? SanitizeValue(value.DATA[0], fields[i]?.type ?? "string")
                 : undefined;
-          if (main_field === "job_id") temp.job_id = id;
+          if (collection.main_field === "job_id") temp.job_id = id;
           if (
-            (main_field === "product_model" &&
+            (collection.main_field === "product_model" &&
               (fields[i]?.converted_name === "product_type" ||
                 fields[i]?.converted_name === "product_brand" ||
                 fields[i]?.converted_name === "product_model")) ||
-            main_field !== "product_model"
+            collection.main_field !== "product_model"
           ) {
             assignToObject(
               temp,
@@ -501,18 +497,22 @@ export const DataParser = (
       }
       const index_exist = data.findIndex(
         (v) =>
-          (v[main_field] &&
-            typeof v[main_field] === "string" &&
-            v[main_field] === temp[main_field]) ||
-          (Array.isArray(v[main_field]) &&
-            arrayEquals(v[main_field], temp[main_field]))
+          (v[collection.main_field] &&
+            typeof v[collection.main_field] === "string" &&
+            v[collection.main_field] === temp[collection.main_field]) ||
+          (Array.isArray(v[collection.main_field]) &&
+            arrayEquals(v[collection.main_field], temp[collection.main_field]))
       );
 
       if (index_exist === -1) {
         if (Object.keys(temp).length > 0) {
-          if (main_field === "product_model") delete temp.client_name;
-          if (!temp[main_field] && main_field !== "product_model")
-            temp[main_field] = geenrate_random_string(8);
+          if (collection.main_field === "product_model")
+            delete temp.client_name;
+          if (
+            !temp[collection.main_field] &&
+            collection.main_field !== "product_model"
+          )
+            temp[collection.main_field] = geenrate_random_string(8);
           data.push(temp);
         } else if (temp_arr.length > 0) {
           data.push(...temp_arr);
@@ -540,16 +540,28 @@ export const WriteData = async ({
   save,
   filePath,
 }: IParseFMData) => {
-  let collection: ICollection = { name: "", main_field: "" };
+  let collection: ICollection = {
+    name: "users",
+    prisma_model: "user",
+    main_field: "",
+  };
   const fields = ParseFMFields(fm_data, collection);
 
   if (fields && collection.name) {
     let data: any[] = [];
     let product_data: any[] = [];
 
-    data = DataParser(fm_data, collection.main_field, fields);
+    data = DataParser(fm_data, collection, fields);
     if (collection.name === "jobs") {
-      product_data = DataParser(fm_data, "product_model", fields);
+      product_data = DataParser(
+        fm_data,
+        {
+          name: "products",
+          prisma_model: "product",
+          main_field: "product_model",
+        },
+        fields
+      );
     }
 
     if (save === "file") {
@@ -560,6 +572,17 @@ export const WriteData = async ({
       res
         .status(200)
         .json({ success: true, message: "Fichier télécharger avec succés." });
+    } else if (save === "db") {
+      if (product_data.length > 0)
+        await InsertFMDataToDB(
+          {
+            name: "products",
+            prisma_model: "product",
+            main_field: "product_model",
+          },
+          product_data
+        );
+      await InsertFMDataToDB(collection, data);
     }
   } else {
     res.status(200).json({
@@ -567,4 +590,175 @@ export const WriteData = async ({
       message: `Erreur: Fichier ${filePath} n'est pas valid comme format FileMaker XML.`,
     });
   }
+};
+
+const Products2insert = (data: any[]) => {
+  return data
+    .map((item: any) => {
+      if (item.product_model) {
+        item = {
+          product_model: item.product_model,
+          product_brand: item.product_brand,
+          product_type: item.product_type,
+        };
+        return item;
+      } else return undefined;
+    })
+    .filter((e: any) => typeof e !== "undefined");
+};
+
+const Orders2insert = (data: any[]) => {
+  return data
+    .map((item: any) => {
+      item.order_date = new Date(item.order_date) ?? undefined;
+      item.receipt_date = new Date(item.receipt_date) ?? undefined;
+      return item;
+    })
+    .filter((e: any) => typeof e !== "undefined");
+};
+
+const Entries2insert = async (data: any[]) => {
+  return await Promise.all(
+    data
+      .map(async (item: any) => {
+        if (item.client_name) {
+          const client = await prisma.client.findUnique({
+            where: { name: item.client_name },
+            select: { id: true },
+          });
+          if (client) {
+            delete item.client_name;
+            item.entry_date = new Date(item.entry_date) ?? undefined;
+
+            return { ...item, clientId: client?.id };
+          } else return undefined;
+        } else return undefined;
+      })
+      .filter((e: any) => typeof e !== "undefined")
+  );
+};
+
+const Deliveries2insert = async (data: any[]) => {
+  return await Promise.all(
+    data
+      .map(async (item: any) => {
+        if (item.client_name) {
+          const client = await prisma.client.findUnique({
+            where: { name: item.client_name },
+            select: { id: true },
+          });
+          if (client) {
+            delete item.client_name;
+            item.delivery_date = new Date(item.delivery_date) ?? undefined;
+            item.date_delivered = new Date(item.date_delivered) ?? undefined;
+
+            return { ...item, clientId: client?.id };
+          } else return undefined;
+        } else return undefined;
+      })
+      .filter((e: any) => typeof e !== "undefined")
+  );
+};
+
+const Prestations2insert = async (data: any[]) => {
+  return await Promise.all(
+    data
+      .map(async (item: any) => {
+        if (item.client_name) {
+          const client = await prisma.client.findUnique({
+            where: { name: item.client_name },
+            select: { id: true },
+          });
+          if (client) {
+            delete item.client_name;
+            delete item.client_type;
+            item.prestation_date = new Date(item.prestation_date) ?? undefined;
+            item.recovery_date = new Date(item.recovery_date) ?? undefined;
+            item.payment_date = new Date(item.payment_date) ?? undefined;
+
+            return { ...item, clientId: client?.id };
+          } else return undefined;
+        } else return undefined;
+      })
+      .filter((e: any) => typeof e !== "undefined")
+  );
+};
+
+const PrestationDetails2insert = async (data: any[]) => {
+  return await Promise.all(
+    data
+      .map(async (item: any) => {
+        if (item.prestation_id) {
+          const prestation = await prisma.prestation.findUnique({
+            where: { prestation_id: item.prestation_id },
+            select: { id: true },
+          });
+          if (prestation) {
+            delete item.prestation_id;
+            item.quantity = item.quantity ? parseInt(item.quantity) : undefined;
+            return { prestationId: prestation.id, ...item };
+          } else return undefined;
+        } else return undefined;
+      })
+      .filter((e: any) => typeof e !== "undefined")
+  );
+};
+
+const Jobs2insert = async (data: any[]) => {
+  return await Promise.all(
+    data
+      .map(async (item: any) => {
+        let entry, product;
+        if (item.entry_id)
+          entry = await prisma.entry.findUnique({
+            where: { entry_id: item.entry_id },
+            include: { client: true },
+          });
+        if (item.product_model)
+          product = await prisma.product.findUnique({
+            where: { product_model: item.product_model },
+          });
+        if (entry && product) {
+          delete item.product_model;
+          delete item.product_type;
+          delete item.product_brand;
+          delete item.entry_id;
+          item.entryId = entry?.id;
+          item.clientId = entry?.client.id;
+          item.productId = product?.id;
+          item.repaired_date = item.repaired_date
+            ? new Date(item.repaired_date)
+            : undefined;
+          item.exit_date = item.exit_date
+            ? new Date(item.exit_date)
+            : undefined;
+          return item;
+        } else return undefined;
+      })
+      .filter((e: any) => typeof e !== "undefined")
+  );
+};
+
+import prisma from "../../lib/prisma";
+export const InsertFMDataToDB = async (collection: ICollection, data: any) => {
+  let data2insert: any[] = [];
+  if (collection.name === "clients") data2insert = data;
+  else if (collection.name === "products") data2insert = Products2insert(data);
+  else if (collection.name === "orders") data2insert = Orders2insert(data);
+  else if (collection.name === "entries")
+    data2insert = await Entries2insert(data);
+  else if (collection.name === "deliveries")
+    data2insert = await Deliveries2insert(data);
+  else if (collection.name === "prestations")
+    data2insert = await Prestations2insert(data);
+  else if (collection.name === "prestationDetails")
+    data2insert = await PrestationDetails2insert(data);
+  else if (collection.name === "jobs") data2insert = await Jobs2insert(data);
+  else throw new Error("Cette collection n'existe pas.");
+
+  // @ts-ignore
+  await prisma[collection.prisma_model].createMany({
+    data: data2insert,
+    skipDuplicates: true,
+  });
 };

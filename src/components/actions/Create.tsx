@@ -17,12 +17,12 @@ import Inputs from "./Inputs";
 import Rows from "./Rows";
 import { trpc } from "../../utils/trpc";
 import { generate_new_id } from "../../utils";
-import { Collection, DataLayout } from "../../types";
+import { CollectionsNames, DataLayout } from "../../types";
 import { useCurrentIdStore, useNotificationStore } from "../../utils/store";
 
 interface CreateProps {
   title: string;
-  collection: Collection["name"];
+  collection: CollectionsNames;
   layout: DataLayout[];
   setIsOpen?: Dispatch<SetStateAction<boolean>>;
 }

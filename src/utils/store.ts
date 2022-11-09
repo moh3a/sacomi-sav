@@ -31,10 +31,10 @@ export const useCurrentIdStore = create<CurrentIdState>((set) => ({
 /**
  * SELECTED SLICE
  */
-type SelectedEntry = { [K in Collection["name"]]: SelectedData | undefined };
+type SelectedEntry = { [K in CollectionsNames]: SelectedData | undefined };
 
 interface SelectedData {
-  collection: Collection["name"];
+  collection: CollectionsNames;
   cursor?: any[];
   one?: any;
   id?: String;
@@ -93,11 +93,11 @@ export const useSelectedStore = create<SelectedStore>((set, get) => ({
  * REALTIME FUNCTIONNALITY
  */
 import { io } from "socket.io-client";
-import { Collection } from "../types";
+import { CollectionsNames } from "../types";
 
 interface RealtimeStore {
   connected: boolean;
-  revalidated_collection?: Collection["name"];
+  revalidated_collection?: CollectionsNames;
 }
 
 export const useRealtimeStore = create<RealtimeStore>((set, get) => {
@@ -109,7 +109,7 @@ export const useRealtimeStore = create<RealtimeStore>((set, get) => {
       .on("disconnect", () => {
         set({ connected: false });
       })
-      .on("reaction", (collection: Collection["name"]) => {
+      .on("reaction", (collection: CollectionsNames) => {
         set({
           connected: true,
           revalidated_collection: collection,

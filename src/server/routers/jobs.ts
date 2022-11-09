@@ -22,59 +22,32 @@ export const jobRouter = t.router({
       if (ctx.session) {
         let filters: any = {};
         if (input.serial_number)
-          filters = {
-            ...filters,
-            serial_number: { contains: input.serial_number || "" },
-          };
+          filters.serial_number = { contains: input.serial_number || "" };
         if (input.exit_date)
-          filters = {
-            ...filters,
-            exit_date: { contains: input.exit_date || "" },
-          };
-        if (input.status)
-          filters = {
-            ...filters,
-            status: { contains: input.status || "" },
-          };
+          filters.exit_date = { contains: input.exit_date || "" };
+        if (input.status) filters.status = { contains: input.status || "" };
         if (input.diagnostics)
-          filters = {
-            ...filters,
-            diagnostics: { contains: input.diagnostics || "" },
-          };
+          filters.diagnostics = { contains: input.diagnostics || "" };
         if (input.technician)
-          filters = {
-            ...filters,
-            technician: { contains: input.technician || "" },
-          };
+          filters.technician = { contains: input.technician || "" };
         if (input.name)
-          filters = {
-            ...filters,
-            client: { name: { contains: input.name || "" } },
-          };
+          filters.client = { name: { contains: input.name || "" } };
         if (input.entry_id)
-          filters = {
-            ...filters,
-            entry: { entry_id: { contains: input.entry_id || "" } },
-          };
+          filters.entry = { entry_id: { contains: input.entry_id || "" } };
         if (input.entry_date)
-          filters = {
-            ...filters,
-            entry: { entry_date: { contains: input.entry_date || "" } },
-          };
+          filters.entry = { entry_date: { contains: input.entry_date || "" } };
         if (input.product_model)
-          filters = {
-            ...filters,
-            product: {
-              product_model: { contains: input.product_model || "" },
-            },
+          filters.product = {
+            product_model: { contains: input.product_model || "" },
           };
+
         const count: number = await ctx.prisma.job.count({
           where: Object.keys(filters).length > 0 ? filters : undefined,
         });
         const jobs = await ctx.prisma.job.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           include: { client: true, entry: true, product: true },
-          orderBy: { id: "desc" },
+          orderBy: { job_id: "desc" },
           skip: input.p * ITEMS_PER_PAGE,
           take: ITEMS_PER_PAGE,
         });
@@ -152,7 +125,7 @@ export const jobRouter = t.router({
         new_serial_number: z.string().nullish(),
         localisation: z.string().nullish(),
         technician: z.string().nullish(),
-        entry_subid: z.string().nullish(),
+        entry_subid: z.number().nullish(),
         product_same_model: z.string().nullish(),
         entry_id: z.string().nullish(),
         product_model: z.string().nullish(),
@@ -223,7 +196,7 @@ export const jobRouter = t.router({
         new_serial_number: z.string().nullish(),
         localisation: z.string().nullish(),
         technician: z.string().nullish(),
-        entry_subid: z.string().nullish(),
+        entry_subid: z.number().nullish(),
         product_same_model: z.string().nullish(),
         name: z.string().nullish(),
         client_name: z.string().nullish(),

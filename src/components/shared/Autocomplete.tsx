@@ -11,10 +11,10 @@ import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 
 import { trpc } from "../../utils/trpc";
 import { TEXT_INPUT } from "../design";
-import { Collection } from "../../types";
+import { CollectionsNames } from "../../types";
 
 interface AutocompleteProps {
-  collection: Collection["name"];
+  collection: CollectionsNames;
   displayValue: string;
   placeholder: string;
   value?: string;

@@ -109,7 +109,7 @@ model Job {
   // new_serial_number     String? @db.MediumText // ! mysql
   localisation          String?
   technician            String?
-  entry_subid           String?
+  entry_subid           Int?
   product_same_model    String?
   used_parts            String?
   spare_parts           String?

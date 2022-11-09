@@ -39,12 +39,6 @@ handler.post(async (req, res) => {
             save: "file",
             filePath,
           });
-          // await parse_fm_data({
-          //   res,
-          //   fm_data: result,
-          //   save: "file",
-          //   filePath,
-          // });
         } else {
           res.status(200).json({
             success: false,
