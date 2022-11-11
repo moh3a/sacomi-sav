@@ -55,32 +55,6 @@ export type CollectionsWithGeneratedIds =
 
 export type CollectionsCreatedInRows = "jobs" | "prestationDetails";
 
-// export interface Collection {
-//   name:
-//     | "clients"
-//     | "entries"
-//     | "deliveries"
-//     | "products"
-//     | "jobs"
-//     | "prestations"
-//     | "prestationDetails"
-//     | "users"
-//     | "transactions"
-//     | "orders";
-//   unit:
-//     | "client"
-//     | "entry"
-//     | "delivery"
-//     | "product"
-//     | "job"
-//     | "prestation"
-//     | "user"
-//     | "transaction"
-//     | "order";
-//   withIds: "deliveries" | "entries" | "jobs" | "orders" | "prestations";
-//   rows: "jobs" | "prestationDetails";
-// }
-
 export interface PageArchitecture {
   title: string;
   collection?: CollectionsNames;
@@ -114,7 +88,6 @@ export interface SearchLayout {
 }
 
 import { HTMLInputTypeAttribute } from "react";
-import prisma from "../../lib/prisma";
 export interface Column {
   name: string;
   field: string;

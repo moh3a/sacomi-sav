@@ -1,3 +1,7 @@
+export const timeout = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 export const sanitize = (str: string) => {
   return str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, "").trim();
 };

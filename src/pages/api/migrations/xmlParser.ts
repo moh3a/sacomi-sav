@@ -3,8 +3,7 @@ import { Parser } from "xml2js";
 import nc from "next-connect";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { FileMakerXML } from "../../../types/sav-xml-data";
-import { WriteData } from "../../../utils/filemaker";
+import { WriteData, FileMakerXML } from "../../../utils/filemaker";
 import { ERROR_MESSAGES } from "../../../../lib/config";
 
 const parser = new Parser();
@@ -36,7 +35,7 @@ handler.post(async (req, res) => {
           await WriteData({
             res,
             fm_data: result,
-            save: "file",
+            save: "db",
             filePath,
           });
         } else {
