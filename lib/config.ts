@@ -135,6 +135,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             entry.id,
+            entry.locked,
             entry.entry_date?.toISOString().substring(0, 10) || "",
             entry.entry_id || "",
             entry.client?.name || "",
@@ -194,6 +195,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       data.map((client: Client) => {
         return [
           client.id,
+          client.locked,
           client.name || "",
           client.type || "",
           client.phone_number || "",
@@ -254,6 +256,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       data.map((product: Product) => {
         return [
           product.id,
+          product.locked,
           product.product_type || "",
           product.product_brand || "",
           product.product_model || "",
@@ -307,6 +310,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             delivery.id,
+            delivery.locked,
             delivery.delivery_date?.toISOString().substring(0, 10) || "",
             delivery.delivery_id || "",
             delivery.client?.name || "",
@@ -395,6 +399,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       data.map((order: Order) => {
         return [
           order.id,
+          order.locked,
           order.order_id || "",
           order.order_date?.toISOString().substring(0, 10) || "",
           order.order_content || "",
@@ -466,6 +471,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             prestation.id,
+            prestation.locked,
             prestation.prestation_date?.toISOString().substring(0, 10) || "",
             prestation.prestation_id || "",
             prestation.client?.name || "",
@@ -578,6 +584,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             job.id,
+            job.locked,
             job.entry?.entry_date?.toISOString().substring(0, 10) || "",
             job.entry?.entry_id || "",
             job.client?.name || "",
@@ -748,6 +755,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       data.map((user: User) => {
         return [
           user.id,
+          user.locked,
           user.image || "",
           user.username || "",
           user.name || "",
@@ -814,6 +822,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         ) => {
           return [
             transaction.id,
+            transaction.locked,
             transaction.date.toISOString().substring(0, 10),
             (transaction.prestation && transaction.prestation.prestation_id) ||
               "",

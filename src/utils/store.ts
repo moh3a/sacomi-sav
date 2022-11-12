@@ -98,6 +98,7 @@ import { CollectionsNames } from "../types";
 interface RealtimeStore {
   connected: boolean;
   revalidated_collection?: CollectionsNames;
+  send_action: (action: CollectionsNames) => void;
 }
 
 export const useRealtimeStore = create<RealtimeStore>((set, get) => {
@@ -119,6 +120,7 @@ export const useRealtimeStore = create<RealtimeStore>((set, get) => {
   return {
     connected: false,
     revalidated_collection: undefined,
+    send_action: (collection) => ws?.emit("action", collection),
   };
 });
 

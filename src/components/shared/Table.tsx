@@ -30,20 +30,6 @@ const Table = ({
   const router = useRouter();
   const { set_selected_id } = useSelectedStore();
 
-  // const { actions, send_action } = useRealtimeStore();
-  // const [locked, setLocked] = useState<number[]>([]);
-  // useEffect(() => {
-  //   if (actions && actions.length > 0) {
-  //     setLocked(
-  //       data
-  //         .map((row, row_index) =>
-  //           actions.find((action) => action.id === row[0]) ? row_index : -1
-  //         )
-  //         .filter((e) => e !== -1)
-  //     );
-  //   }
-  // }, [actions, data]);
-
   const [imageFieldIndex, setImageFieldIndex] = useState<number | undefined>();
   useEffect(() => {
     const index = titles.findIndex((t) => t.isImage === true);
@@ -61,18 +47,9 @@ const Table = ({
     return str && str.length > 20 ? str.substring(0, length - 3) + "..." : str;
   };
 
-  const rowClickHandler = (row: any[], row_index: number) => {
+  const rowClickHandler = (row: any[]) => {
     if (link) router.push(link + "/" + row[0]);
-    else if (row[0]) {
-      // if (locked.findIndex((e) => e === row_index) === -1 && collection) {
-      //   setIsOpen && setIsOpen(true);
-      //   set_selected_id({ collection, id: row[0] });
-      //   send_action({
-      //     id: row[0],
-      //     type: ActionType.LOCK,
-      //     collection,
-      //   });
-      // }
+    else if (row[0] && typeof row[1] === "boolean" && row[1] === false) {
       setIsOpen && setIsOpen(true);
       if (collection) set_selected_id({ collection, id: row[0] });
     }
@@ -94,7 +71,7 @@ const Table = ({
                 <tr className="uppercase leading-normal">
                   {titles &&
                     titles.map((title, index) => (
-                      <th className="py-3 px-6 text-center" key={index}>
+                      <th className={`py-3 px-6 text-center`} key={index}>
                         {title.name}
                       </th>
                     ))}
@@ -105,16 +82,20 @@ const Table = ({
                 {data.map((row, row_index) => (
                   <tr
                     key={row_index}
-                    // className={` ${
-                    //   locked.findIndex((e) => e === row_index) === -1
-                    //     ? "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
-                    //     : "bg-gray-300 dark:bg-secondaryDark cursor-not-allowed"
-                    // } max-w-xs`}
-                    className={`border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer max-w-xs`}
-                    onClick={() => rowClickHandler(row, row_index)}
+                    className={` ${
+                      typeof row[1] === "boolean" && row[1] === true
+                        ? "bg-gray-300 dark:bg-secondaryDark cursor-not-allowed"
+                        : "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
+                    } max-w-xs`}
+                    onClick={() => rowClickHandler(row)}
                   >
                     {row.map((col, col_index) => {
-                      if (col_index !== 0) {
+                      if (
+                        col_index === 0 ||
+                        (col_index === 1 && typeof col[1] !== "boolean")
+                      ) {
+                        return;
+                      } else {
                         return (
                           <td
                             key={col_index}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import { PlusIcon, SearchIcon } from "@heroicons/react/outline";
 
@@ -17,6 +17,8 @@ import {
   CollectionsWithGeneratedIds,
   PageArchitecture,
 } from "../types";
+import { useRealtimeStore, useSelectedStore } from "../utils/store";
+import { trpc } from "../utils/trpc";
 
 interface PageSkeletonProps {
   page: PageArchitecture;
@@ -40,6 +42,44 @@ const PageSkeleton = ({
   const [openDetailsModal, setOpenDetailsModal] = useState(false);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openSearchModal, setOpenSearchModal] = useState(false);
+
+  const { selected } = useSelectedStore();
+  const { connected, send_action, revalidated_collection } = useRealtimeStore();
+  const lockMutation = trpc[page.collection].lock.useMutation();
+  const unlockMutation = trpc[page.collection].unlock.useMutation();
+  const utils = trpc.useContext();
+
+  useEffect(() => {
+    if (revalidated_collection && revalidated_collection === page.collection)
+      utils[revalidated_collection].all.invalidate();
+  }, [page.collection, revalidated_collection, utils]);
+
+  useEffect(() => {
+    if (
+      selected[page.collection] &&
+      selected[page.collection]?.id &&
+      selected[page.collection]?.id?.toString()
+    ) {
+      if (openDetailsModal) {
+        lockMutation.mutate({
+          id: selected[page.collection]?.id?.toString() ?? "oops",
+        });
+        // if (connected) send_action(page.collection);
+      } else {
+        unlockMutation.mutate({
+          id: selected[page.collection]?.id?.toString() ?? "oops",
+        });
+        // if (connected) send_action(page.collection);
+      }
+    }
+    return () => {
+      unlockMutation.mutate({
+        id: selected[page.collection]?.id?.toString() ?? "oops",
+      });
+      if (connected) send_action(page.collection);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDetailsModal]);
 
   return (
     <>

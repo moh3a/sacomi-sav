@@ -17,6 +17,8 @@ model User {
   name     String?
   password String
   image    String?
+  locked   Boolean @default(false)
+  locker   String?
   role     Role    @default(TECHNICIAN)
 
   @@index([username])
@@ -34,6 +36,8 @@ model Product {
   product_model String  @unique
   product_brand String?
   product_type  String?
+  locked        Boolean @default(false)
+  locker        String?
   Jobs          Job[]
   Parts         Part[]
 
@@ -55,6 +59,8 @@ model Client {
   status       String?
   type         String?
   wilaya       String?
+  locked       Boolean      @default(false)
+  locker       String?
   Entries      Entry[]
   Jobs         Job[]
   Deliveries   Delivery[]
@@ -196,6 +202,8 @@ model PrestationDetails {
   quantity     Int?
   subtotal     Float?
   total_amount Float?
+  locked       Boolean    @default(false)
+  locker       String?
 }
 
 model Config {

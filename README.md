@@ -2,7 +2,6 @@
 
 ### Todo
 
-- work realtime collaboration (to revalidate data only)
 - work on stock
 - add tasks
 

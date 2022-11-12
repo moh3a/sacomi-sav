@@ -57,7 +57,7 @@ export type CollectionsCreatedInRows = "jobs" | "prestationDetails";
 
 export interface PageArchitecture {
   title: string;
-  collection?: CollectionsNames;
+  collection: CollectionsNames;
   unit?: CollectionsBaseUnit;
   url?: string;
   table_titles: TableTitle[];

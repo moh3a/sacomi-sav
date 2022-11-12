@@ -57,6 +57,26 @@ export const prestationRouter = t.router({
         return { prestations: [], count: 0 };
       }
     }),
+  lock: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        await ctx.prisma.prestation.update({
+          where: { id: input.id },
+          data: { locked: true, locker: ctx.session.user?.name },
+        });
+      }
+    }),
+  unlock: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        await ctx.prisma.prestation.update({
+          where: { id: input.id },
+          data: { locked: false, locker: "" },
+        });
+      }
+    }),
   byId: t.procedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
