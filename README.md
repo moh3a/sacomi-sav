@@ -2,7 +2,6 @@
 
 ### Todo
 
-- inserting large batches of data throws error
 - work realtime collaboration (to revalidate data only)
 - work on stock
 - add tasks

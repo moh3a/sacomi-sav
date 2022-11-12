@@ -15,13 +15,6 @@ export const createContext = async ({
     res,
     prisma,
     session: session as ISession | null,
-    // session: {
-    //   expires: session?.expires,
-    //   user: {
-    //     ...session?.user,
-    //     role: (session?.user as any).role as string | null | undefined,
-    //   },
-    // },
   };
 };
 

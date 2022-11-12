@@ -8,7 +8,7 @@
     "dev:local": "cross-env WORK_ENV=local tsc --project tsconfig.custom.json && node dist/set_env.js  && dotenv -- cross-var next dev -H %HOST%",
     "build": "next build",
     "prerestart": "tsc --project tsconfig.custom.json && node dist/set_env.js",
-    "start": "next start",
+    "start": "cross-env NODE-OPTIONS=--max-old-space-size=4096  next start",
     "start:local": "cross-env WORK_ENV=local tsc --project tsconfig.custom.json && node dist/set_env.js && dotenv -- cross-var next start -H %HOST%",
     "lint": "next lint"
   },

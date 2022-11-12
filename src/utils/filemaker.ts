@@ -150,6 +150,21 @@ export const CONVERT_FM_DATA: FMConverter[] = [
         converted_name: "entry_id",
         type: "string",
       },
+      {
+        xml_field: "Entree::Client",
+        converted_name: "client_name",
+        type: "string",
+      },
+      {
+        xml_field: "CLIENT::ETAT CLIENT",
+        converted_name: "client_status",
+        type: "string",
+      },
+      {
+        xml_field: "CLIENT::REV OU PART",
+        converted_name: "client_type",
+        type: "string",
+      },
       { xml_field: "Type", converted_name: "product_type", type: "string" },
       { xml_field: "Marque", converted_name: "product_brand", type: "string" },
       { xml_field: "MODEL", converted_name: "product_model", type: "string" },
@@ -405,252 +420,6 @@ export const FormatFMTime = (t: string | undefined | null) => {
   }
 };
 
-export const ParseFMFields = (
-  fm_data: FileMakerXML,
-  collection: ICollection
-) => {
-  let fields: (XMLConverter | undefined)[] = [];
-  fm_data.FMPXMLRESULT.METADATA[0].FIELD.forEach((f) => {
-    let desired = CONVERT_FM_DATA.find(
-      (model) => model.field_to_select === f["$"].NAME
-    );
-    if (desired) {
-      fields = fm_data.FMPXMLRESULT.METADATA[0].FIELD.map((f) => {
-        if (desired) {
-          collection.name = desired.collection;
-          collection.prisma_model = desired.prisma_model;
-        }
-        collection.main_field = desired?.main_field ?? "";
-        const key = desired?.mapping.find(
-          (field) => field.xml_field === f["$"].NAME
-        );
-        return key;
-      });
-      return;
-    }
-  });
-
-  if (fields.length > 0) {
-    console.log(`> Fields parsed...`);
-    return fields;
-  } else return undefined;
-};
-
-export const SanitizeValue = (
-  value: any,
-  type: "string" | "number" | "date" | "time" | "boolean"
-) => {
-  if (type === "number") {
-    return Number(value);
-  } else if (type === "date") {
-    return FormatFMDate(sanitize(value).toUpperCase());
-  } else if (type === "time") {
-    return FormatFMTime(sanitize(value).toUpperCase());
-  } else if (type === "boolean") {
-    return sanitize(value).toUpperCase() === "NON" ? false : true;
-  } else return sanitize(value).toUpperCase();
-};
-
-export const ParseFMColumns = (
-  value: { DATA: any[] },
-  type: "string" | "number" | "date" | "time" | "boolean"
-) => {
-  if (value.DATA && value.DATA.length === 1) {
-    return value.DATA[0] ? SanitizeValue(value.DATA[0], type) : undefined;
-  } else if (value.DATA && value.DATA.length > 1) {
-    return value.DATA.map((d) => (d ? SanitizeValue(d, type) : undefined));
-  } else if (!value.DATA || !value.DATA[0]) {
-    return undefined;
-  }
-};
-
-export const DataParser = async (
-  fm_data: FileMakerXML,
-  collection: ICollection,
-  save: "file" | "db",
-  fields?: (XMLConverter | undefined)[]
-) => {
-  let data: any[] = [];
-  if (fields) {
-    // @ts-ignore
-    if (save === "db") await prisma[collection.prisma_model].deleteMany();
-    await Promise.all(
-      fm_data.FMPXMLRESULT.RESULTSET[0].ROW.map(async (row, row_index) => {
-        await timeout(Math.floor(row_index / 10000) * 5000);
-        let max_length = 0;
-        let temp: any = {};
-        let temp_arr: any[] = [];
-        const id = Number(row.$.RECORDID);
-        row.COL.forEach((value) => {
-          max_length =
-            value.DATA && value.DATA.length > max_length
-              ? value.DATA.length
-              : max_length;
-        });
-        if (max_length === 1) {
-          row.COL.map((value, i) => {
-            if (fields[i]?.converted_name === "client_name")
-              temp.client_name =
-                value.DATA && value.DATA[0]
-                  ? SanitizeValue(value.DATA[0], fields[i]?.type ?? "string")
-                  : undefined;
-            if (collection.main_field === "job_id") temp.job_id = id;
-            if (
-              (collection.name === "products" &&
-                (fields[i]?.converted_name === "product_type" ||
-                  fields[i]?.converted_name === "product_brand" ||
-                  fields[i]?.converted_name === "product_model")) ||
-              collection.name !== "products"
-            ) {
-              assignToObject(
-                temp,
-                fields[i]?.converted_name ?? "",
-                ParseFMColumns(value, fields[i]?.type ?? "string")
-              );
-            }
-          });
-        } else {
-          for (let i = 0; i < max_length; i++) {
-            row.COL.forEach((value, index) => {
-              if (value.DATA && value.DATA.length === 1) {
-                assignToObject(
-                  temp,
-                  fields[index]?.converted_name ?? "",
-                  value.DATA[0]
-                    ? SanitizeValue(
-                        value.DATA[0],
-                        fields[index]?.type ?? "string"
-                      )
-                    : undefined
-                );
-              } else if (value.DATA && value.DATA.length > 1) {
-                assignToObject(
-                  temp,
-                  fields[index]?.converted_name ?? "",
-                  value.DATA[i]
-                    ? SanitizeValue(
-                        value.DATA[i],
-                        fields[index]?.type ?? "string"
-                      )
-                    : undefined
-                );
-              }
-            });
-            temp_arr.push(temp);
-            temp = {};
-          }
-        }
-        const index_exist = data.findIndex(
-          (v) =>
-            (v[collection.main_field] &&
-              typeof v[collection.main_field] === "string" &&
-              v[collection.main_field] === temp[collection.main_field]) ||
-            (Array.isArray(v[collection.main_field]) &&
-              arrayEquals(
-                v[collection.main_field],
-                temp[collection.main_field]
-              ))
-        );
-
-        if (index_exist === -1) {
-          if (Object.keys(temp).length > 0) {
-            if (
-              !temp[collection.main_field] &&
-              collection.name !== "products" &&
-              collection.name !== "prestationDetails"
-            )
-              temp[collection.main_field] = geenrate_random_string(8);
-            if (save === "db") {
-              temp = await ParsedOne2insert(collection, temp);
-              // @ts-ignore
-              await prisma[collection.prisma_model].create({ data: temp });
-            } else if (save === "file") data.push(temp);
-          } else if (temp_arr.length > 0) {
-            if (save === "db") {
-              temp_arr = await ParsedMany2insert(collection, temp_arr);
-              // @ts-ignore
-              await prisma[collection.prisma_model].createMany({
-                data: temp_arr,
-                skipDuplicates: true,
-              });
-            } else if (save === "file") data.push(...temp_arr);
-          }
-        }
-      })
-    );
-  }
-  return data;
-};
-
-export const WriteToFile = (filePath: string, data: any[]) => {
-  console.log(`> Writing file to: ${filePath}`);
-  writeFile(filePath, JSON.stringify(data), { encoding: "utf8" }, (err) => {
-    if (err) console.log(err.message);
-    console.log("> Done !");
-  });
-};
-
-export const WriteData = async ({
-  res,
-  fm_data,
-  save,
-  filePath,
-}: IParseFMData) => {
-  let collection: ICollection = {
-    name: "users",
-    prisma_model: "user",
-    main_field: "",
-  };
-  const fields = ParseFMFields(fm_data, collection);
-
-  if (fields && collection.name) {
-    let data: any[] = [];
-    let product_data: any[] = [];
-
-    // if (collection.name === "jobs") {
-    //   product_data = await DataParser(
-    //     fm_data,
-    //     {
-    //       name: "products",
-    //       prisma_model: "product",
-    //       main_field: "product_model",
-    //     },
-    //     save,
-    //     fields
-    //   );
-    // }
-    data = await DataParser(fm_data, collection, save, fields);
-
-    if (save === "file") {
-      const fp = filePath.replace(".xml", ".json");
-      if (product_data.length > 0)
-        WriteToFile(fp.replace("tableau", "produits"), product_data);
-      WriteToFile(fp, data);
-      res
-        .status(200)
-        .json({ success: true, message: "Fichier télécharger avec succés." });
-    }
-    // * SAVING IN DB IS DONE IN function DataParser()
-    // else if (save === "db") {
-    //   if (product_data.length > 0)
-    //     await InsertFMDataToDB(
-    //       {
-    //         name: "products",
-    //         prisma_model: "product",
-    //         main_field: "product_model",
-    //       },
-    //       product_data
-    //     );
-    //   await InsertFMDataToDB(collection, data);
-    // }
-  } else {
-    res.status(200).json({
-      success: false,
-      message: `Erreur: Fichier ${filePath} n'est pas valid comme format FileMaker XML.`,
-    });
-  }
-};
-
 const Client2insert = (data: any) => {
   return data;
 };
@@ -788,11 +557,24 @@ const Job2insert = async (data: any) => {
   const product = await prisma.product.findUnique({
     where: { product_model: data.product_model },
   });
+  // const product = await prisma.product.upsert({
+  //   where: { product_model: data.product_model },
+  //   update: {},
+  //   create: {
+  //     product_model: data.product_model,
+  //     product_type: data.product_type,
+  //     product_brand: data.product_brand,
+  //   },
+  // });
   if (entry && product) {
     delete data.product_model;
     delete data.product_type;
     delete data.product_brand;
     delete data.entry_id;
+    delete data.entry_date;
+    delete data.client_type;
+    delete data.client_status;
+    delete data.client_name;
     data.entryId = entry?.id;
     data.clientId = entry?.client.id;
     data.productId = product?.id;
@@ -806,9 +588,7 @@ const Job2insert = async (data: any) => {
 
 const Jobs2insert = async (data: any[]) => {
   return await Promise.all(
-    data
-      .map(async (item: any) => await Job2insert(item))
-      .filter((e: any) => typeof e !== "undefined")
+    data.map(async (item: any) => await Job2insert(item))
   );
 };
 
@@ -855,4 +635,234 @@ export const InsertFMDataToDB = async (collection: ICollection, data: any) => {
     data: await ParsedMany2insert(collection, data),
     skipDuplicates: true,
   });
+};
+
+export const ParseFMFields = (
+  fm_data: FileMakerXML,
+  collection: ICollection
+) => {
+  let fields: (XMLConverter | undefined)[] = [];
+  fm_data.FMPXMLRESULT.METADATA[0].FIELD.forEach((f) => {
+    let desired = CONVERT_FM_DATA.find(
+      (model) => model.field_to_select === f["$"].NAME
+    );
+    if (desired) {
+      fields = fm_data.FMPXMLRESULT.METADATA[0].FIELD.map((f) => {
+        if (desired) {
+          collection.name = desired.collection;
+          collection.prisma_model = desired.prisma_model;
+        }
+        collection.main_field = desired?.main_field ?? "";
+        const key = desired?.mapping.find(
+          (field) => field.xml_field === f["$"].NAME
+        );
+        return key;
+      });
+      return;
+    }
+  });
+
+  if (fields.length > 0) {
+    console.log(`> Fields parsed...`);
+    return fields;
+  } else return undefined;
+};
+
+export const SanitizeValue = (
+  value: any,
+  type: "string" | "number" | "date" | "time" | "boolean"
+) => {
+  if (type === "number") {
+    return Number(value);
+  } else if (type === "date") {
+    return FormatFMDate(sanitize(value).toUpperCase());
+  } else if (type === "time") {
+    return FormatFMTime(sanitize(value).toUpperCase());
+  } else if (type === "boolean") {
+    return sanitize(value).toUpperCase() === "NON" ? false : true;
+  } else return sanitize(value).toUpperCase();
+};
+
+export const ParseFMColumns = (
+  value: { DATA: any[] },
+  type: "string" | "number" | "date" | "time" | "boolean"
+) => {
+  if (value.DATA && value.DATA.length === 1) {
+    return value.DATA[0] ? SanitizeValue(value.DATA[0], type) : undefined;
+  } else if (value.DATA && value.DATA.length > 1) {
+    return value.DATA.map((d) => (d ? SanitizeValue(d, type) : undefined));
+  } else if (!value.DATA || !value.DATA[0]) {
+    return undefined;
+  }
+};
+
+export const DataParser = async (
+  fm_data: FileMakerXML,
+  collection: ICollection,
+  save: "file" | "db",
+  fields?: (XMLConverter | undefined)[]
+) => {
+  let data: any[] = [];
+  if (fields) {
+    await Promise.all(
+      fm_data.FMPXMLRESULT.RESULTSET[0].ROW.map(async (row) => {
+        await timeout(100);
+        let max_length = 0;
+        let temp: any = {};
+        let temp_arr: any[] = [];
+        const id = Number(row.$.RECORDID);
+        row.COL.forEach((value) => {
+          max_length =
+            value.DATA && value.DATA.length > max_length
+              ? value.DATA.length
+              : max_length;
+        });
+        if (max_length === 1) {
+          row.COL.map((value, i) => {
+            if (fields[i]?.converted_name === "client_name")
+              temp.client_name =
+                value.DATA && value.DATA[0]
+                  ? SanitizeValue(value.DATA[0], fields[i]?.type ?? "string")
+                  : undefined;
+            if (collection.main_field === "job_id") temp.job_id = id;
+            if (
+              (collection.name === "products" &&
+                (fields[i]?.converted_name === "product_type" ||
+                  fields[i]?.converted_name === "product_brand" ||
+                  fields[i]?.converted_name === "product_model")) ||
+              collection.name !== "products"
+            ) {
+              assignToObject(
+                temp,
+                fields[i]?.converted_name ?? "",
+                ParseFMColumns(value, fields[i]?.type ?? "string")
+              );
+            }
+          });
+        } else {
+          for (let i = 0; i < max_length; i++) {
+            row.COL.forEach((value, index) => {
+              if (value.DATA && value.DATA.length === 1) {
+                assignToObject(
+                  temp,
+                  fields[index]?.converted_name ?? "",
+                  value.DATA[0]
+                    ? SanitizeValue(
+                        value.DATA[0],
+                        fields[index]?.type ?? "string"
+                      )
+                    : undefined
+                );
+              } else if (value.DATA && value.DATA.length > 1) {
+                assignToObject(
+                  temp,
+                  fields[index]?.converted_name ?? "",
+                  value.DATA[i]
+                    ? SanitizeValue(
+                        value.DATA[i],
+                        fields[index]?.type ?? "string"
+                      )
+                    : undefined
+                );
+              }
+            });
+            temp_arr.push(temp);
+            temp = {};
+          }
+        }
+        const index_exist = data.findIndex(
+          (v) =>
+            (v[collection.main_field] &&
+              typeof v[collection.main_field] === "string" &&
+              v[collection.main_field] === temp[collection.main_field]) ||
+            (Array.isArray(v[collection.main_field]) &&
+              arrayEquals(
+                v[collection.main_field],
+                temp[collection.main_field]
+              ))
+        );
+
+        if (index_exist === -1) {
+          if (Object.keys(temp).length > 0) {
+            if (
+              !temp[collection.main_field] &&
+              collection.name !== "products" &&
+              collection.name !== "prestationDetails"
+            )
+              temp[collection.main_field] = geenrate_random_string(8);
+            if (save === "db") {
+              // @ts-ignore
+              await prisma[collection.prisma_model].create({
+                data: await ParsedOne2insert(collection, temp),
+              });
+            } else if (save === "file") data.push(temp);
+          } else if (temp_arr.length > 0) {
+            if (save === "db") {
+              // @ts-ignore
+              await prisma[collection.prisma_model].createMany({
+                data: await ParsedMany2insert(collection, temp_arr),
+                skipDuplicates: true,
+              });
+            } else if (save === "file") data.push(...temp_arr);
+          }
+        }
+      })
+    );
+  }
+  return data;
+};
+
+export const WriteToFile = (filePath: string, data: any[]) => {
+  console.log(`> Writing file to: ${filePath}`);
+  writeFile(filePath, JSON.stringify(data), { encoding: "utf8" }, (err) => {
+    if (err) console.log(err.message);
+    console.log("> Done !");
+  });
+};
+
+export const WriteData = async ({
+  res,
+  fm_data,
+  save,
+  filePath,
+}: IParseFMData) => {
+  let collection: ICollection = {
+    name: "users",
+    prisma_model: "user",
+    main_field: "",
+  };
+  const fields = ParseFMFields(fm_data, collection);
+
+  if (fields) {
+    const data = await DataParser(fm_data, collection, save, fields);
+
+    if (save === "file") {
+      let product_data: any[] = [];
+      if (collection.name === "jobs") {
+        product_data = await DataParser(
+          fm_data,
+          {
+            name: "products",
+            prisma_model: "product",
+            main_field: "product_model",
+          },
+          save,
+          fields
+        );
+      }
+
+      const fp = filePath.replace(".xml", ".json");
+      if (product_data.length > 0)
+        WriteToFile(fp.replace("tableau", "produits"), product_data);
+      WriteToFile(fp, data);
+      res
+        .status(200)
+        .json({ success: true, message: "Fichier télécharger avec succés." });
+    }
+  } else {
+    res.status(200).json({
+      success: false,
+      message: `Erreur: Fichier ${filePath} n'est pas valid comme format FileMaker XML.`,
+    });
+  }
 };
