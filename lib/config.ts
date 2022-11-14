@@ -4,9 +4,11 @@ import {
   Entry,
   Job,
   Order,
+  Part,
   Prestation,
   Prisma,
   Product,
+  Stock,
   Transaction,
   User,
 } from "@prisma/client";
@@ -873,6 +875,69 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             required: true,
           },
         ],
+      },
+    ],
+  },
+  stocks: {
+    title: "Stock",
+    collection: "stocks",
+    unit: "stock",
+    url: "/stock",
+    table_titles: [
+      { name: "Modèle" },
+      { name: "Part name" },
+      { name: "Description" },
+      { name: "Quantité" },
+    ],
+    table_data: (data: any) => {
+      data.map((stock: Stock & { part: Part & { product: Product } }) => {
+        return [
+          stock.id,
+          stock.part.product.product_model || "",
+          stock.part.description || "",
+          stock.quantity || 0,
+        ];
+      });
+    },
+    create_layout: [
+      {
+        group_title: "Produit",
+        group_fields: [
+          {
+            name: "Modèle du produit",
+            field: "product_model",
+            collection: "products",
+            unit: "product",
+            value: "",
+            autocomplete: true,
+          },
+        ],
+      },
+      {
+        group_title: "Pièce",
+        group_fields: [
+          { name: "Nom de la pièce", field: "name", value: "", type: "text" },
+          {
+            name: "Description",
+            field: "description",
+            value: "",
+            type: "text",
+          },
+          { name: "Prix", field: "price", value: "", type: "number" },
+        ],
+      },
+      {
+        group_fields: [
+          { name: "Quantité OK", field: "ok", value: "", type: "number" },
+          { name: "Quantité HS", field: "hs", value: "", type: "number" },
+          {
+            name: "Quantité totale",
+            field: "quantity",
+            value: "",
+            type: "number",
+          },
+        ],
+        group_title: "Stock",
       },
     ],
   },

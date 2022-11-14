@@ -59,6 +59,7 @@ export const useSelectedStore = create<SelectedStore>((set, get) => ({
     products: undefined,
     transactions: undefined,
     users: undefined,
+    stocks: undefined,
   },
   set_selected_cursor: (data) =>
     set({

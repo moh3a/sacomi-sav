@@ -33,7 +33,8 @@ export type CollectionsNames =
   | "prestationDetails"
   | "users"
   | "transactions"
-  | "orders";
+  | "orders"
+  | "stocks";
 
 export type CollectionsBaseUnit =
   | "client"
@@ -44,7 +45,8 @@ export type CollectionsBaseUnit =
   | "prestation"
   | "user"
   | "transaction"
-  | "order";
+  | "order"
+  | "stock";
 
 export type CollectionsWithGeneratedIds =
   | "deliveries"

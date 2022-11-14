@@ -10,6 +10,7 @@ import { prestationRouter } from "./services";
 import { prestationDetailsRouter } from "./serviceDetails";
 import { jobRouter } from "./jobs";
 import { transactionRouter } from "./transactions";
+import { stockRouter } from "./stocks";
 import { userRouter } from "./users";
 import { configRouter } from "./config";
 
@@ -65,6 +66,7 @@ export const appRouter = t.router({
   prestationDetails: prestationDetailsRouter,
   jobs: jobRouter,
   transactions: transactionRouter,
+  stocks: stockRouter,
   users: userRouter,
 });
 
