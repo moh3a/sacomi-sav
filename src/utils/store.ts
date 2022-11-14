@@ -92,37 +92,19 @@ export const useSelectedStore = create<SelectedStore>((set, get) => ({
 /**
  * REALTIME FUNCTIONNALITY
  */
-import { io } from "socket.io-client";
 import { CollectionsNames } from "../types";
 
 interface RealtimeStore {
   connected: boolean;
-  revalidated_collection?: CollectionsNames;
-  send_action: (action: CollectionsNames) => void;
+  set_connected: (is: boolean) => void;
 }
 
-export const useRealtimeStore = create<RealtimeStore>((set, get) => {
-  const ws = typeof window !== "undefined" ? io("http://localhost:3001") : null;
-  if (ws) {
-    ws.on("connect", () => {
-      set({ connected: true });
-    })
-      .on("disconnect", () => {
-        set({ connected: false });
-      })
-      .on("reaction", (collection: CollectionsNames) => {
-        set({
-          connected: true,
-          revalidated_collection: collection,
-        });
-      });
-  } else set({ connected: false });
-  return {
-    connected: false,
-    revalidated_collection: undefined,
-    send_action: (collection) => ws?.emit("action", collection),
-  };
-});
+export const useRealtimeStore = create<RealtimeStore>((set, get) => ({
+  connected: false,
+  set_connected(is) {
+    set({ connected: is });
+  },
+}));
 
 /**
  * NOTIFICATIONS

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ERROR_MESSAGES, ITEMS_PER_PAGE } from "../../../lib/config";
 import { t } from "../trpc";
+import { ee } from "./_app";
 
 export const orderRouter = t.router({
   all: t.procedure
@@ -52,6 +53,7 @@ export const orderRouter = t.router({
           where: { id: input.id },
           data: { locked: true, locker: ctx.session.user?.name },
         });
+        ee.emit("action", "orders");
       }
     }),
   unlock: t.procedure
@@ -62,6 +64,7 @@ export const orderRouter = t.router({
           where: { id: input.id },
           data: { locked: false, locker: "" },
         });
+        ee.emit("action", "orders");
       }
     }),
   byId: t.procedure

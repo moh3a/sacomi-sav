@@ -84,7 +84,7 @@ const Table = ({
                     key={row_index}
                     className={` ${
                       typeof row[1] === "boolean" && row[1] === true
-                        ? "bg-gray-300 dark:bg-secondaryDark cursor-not-allowed"
+                        ? "bg-primaryLight dark:bg-primaryDark cursor-not-allowed"
                         : "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
                     } max-w-xs`}
                     onClick={() => rowClickHandler(row)}

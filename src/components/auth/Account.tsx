@@ -5,10 +5,20 @@ import { useSession, signOut } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
 import { LogoutIcon, UserCircleIcon } from "@heroicons/react/outline";
 import { useRealtimeStore } from "../../utils/store";
+import { trpc } from "../../utils/trpc";
 
 const Account = () => {
   const { data: session } = useSession();
-  const { connected } = useRealtimeStore();
+  const { connected, set_connected } = useRealtimeStore();
+
+  trpc.onCheck.useSubscription(undefined, {
+    onData(is) {
+      set_connected(is);
+    },
+    onError() {
+      set_connected(false);
+    },
+  });
 
   if (!session) {
     return (

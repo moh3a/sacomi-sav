@@ -12,6 +12,10 @@ const nextConfig = {
     HOST: process.env.HOST,
     PORT: process.env.PORT,
     WORK_ENV: process.env.WORK_ENV,
+    WS_URL: process.env.WS_URL,
+    APP_URL: `http://${
+      process.env.HOST ?? "localhost" + ":" + process.env.PORT ?? "3000"
+    }`,
   },
 };
 

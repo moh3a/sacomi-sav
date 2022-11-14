@@ -17,7 +17,7 @@ import {
   CollectionsWithGeneratedIds,
   PageArchitecture,
 } from "../types";
-import { useRealtimeStore, useSelectedStore } from "../utils/store";
+import { useSelectedStore } from "../utils/store";
 import { trpc } from "../utils/trpc";
 
 interface PageSkeletonProps {
@@ -44,15 +44,14 @@ const PageSkeleton = ({
   const [openSearchModal, setOpenSearchModal] = useState(false);
 
   const { selected } = useSelectedStore();
-  const { connected, send_action, revalidated_collection } = useRealtimeStore();
   const lockMutation = trpc[page.collection].lock.useMutation();
   const unlockMutation = trpc[page.collection].unlock.useMutation();
   const utils = trpc.useContext();
-
-  useEffect(() => {
-    if (revalidated_collection && revalidated_collection === page.collection)
-      utils[revalidated_collection].all.invalidate();
-  }, [page.collection, revalidated_collection, utils]);
+  trpc.onAction.useSubscription(undefined, {
+    onData(collection) {
+      if (collection === page.collection) utils[collection].all.invalidate();
+    },
+  });
 
   useEffect(() => {
     if (
@@ -64,19 +63,16 @@ const PageSkeleton = ({
         lockMutation.mutate({
           id: selected[page.collection]?.id?.toString() ?? "oops",
         });
-        // if (connected) send_action(page.collection);
       } else {
         unlockMutation.mutate({
           id: selected[page.collection]?.id?.toString() ?? "oops",
         });
-        // if (connected) send_action(page.collection);
       }
     }
     return () => {
       unlockMutation.mutate({
         id: selected[page.collection]?.id?.toString() ?? "oops",
       });
-      if (connected) send_action(page.collection);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDetailsModal]);

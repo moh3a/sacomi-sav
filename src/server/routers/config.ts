@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { t } from "../trpc";
+import { ee } from "./_app";
 
 export const configRouter = t.router({
   all: t.procedure.query(async ({ ctx }) => {
     if (ctx.session) {
       const config = await ctx.prisma.config.findFirst();
+      ee.emit("check", true);
       return { config };
     } else return { config: null };
   }),
