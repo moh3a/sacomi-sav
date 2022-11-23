@@ -17,7 +17,7 @@ model User {
   name     String?
   password String
   image    String?
-  locked   Boolean @default(false)
+  locked   RowLock @default(UNLOCKED)
   locker   String?
   role     Role    @default(TECHNICIAN)
 
@@ -36,7 +36,7 @@ model Product {
   product_model String  @unique
   product_brand String?
   product_type  String?
-  locked        Boolean @default(false)
+  locked        RowLock @default(UNLOCKED)
   locker        String?
   Jobs          Job[]
   Parts         Part[]
@@ -59,7 +59,7 @@ model Client {
   status       String?
   type         String?
   wilaya       String?
-  locked       Boolean      @default(false)
+  locked       RowLock      @default(UNLOCKED)
   locker       String?
   Entries      Entry[]
   Jobs         Job[]
@@ -82,7 +82,7 @@ model Entry {
   clientId     String
   client       Client    @relation(fields: [clientId], references: [id])
   Jobs         Job[]
-  locked       Boolean   @default(false)
+  locked       RowLock   @default(UNLOCKED)
   locker       String?
 
   @@index([entry_id, entry_date])
@@ -120,7 +120,7 @@ model Job {
   used_parts            String?
   spare_parts           String?
   rma_asus              String?
-  locked                Boolean   @default(false)
+  locked                RowLock   @default(UNLOCKED)
   locker                String?
 
   @@index([job_id])
@@ -140,7 +140,7 @@ model Delivery {
   observations     String?
   createdAt        DateTime? @default(now())
   updatedAt        DateTime? @updatedAt
-  locked           Boolean   @default(false)
+  locked           RowLock   @default(UNLOCKED)
   locker           String?
 
   @@index([delivery_id])
@@ -161,7 +161,7 @@ model Order {
   payment       String?
   createdAt     DateTime? @default(now())
   updatedAt     DateTime? @updatedAt
-  locked        Boolean   @default(false)
+  locked        RowLock   @default(UNLOCKED)
   locker        String?
 
   @@index([order_id])
@@ -185,7 +185,7 @@ model Prestation {
   updatedAt         DateTime?           @updatedAt
   PrestationDetails PrestationDetails[]
   Transactions      Transaction[]
-  locked            Boolean             @default(false)
+  locked            RowLock             @default(UNLOCKED)
   locker            String?
 
   @@index([prestation_id])
@@ -202,7 +202,7 @@ model PrestationDetails {
   quantity     Int?
   subtotal     Float?
   total_amount Float?
-  locked       Boolean    @default(false)
+  locked       RowLock    @default(UNLOCKED)
   locker       String?
 }
 
@@ -227,7 +227,7 @@ model Transaction {
   prestationId String?
   prestation   Prestation?     @relation(fields: [prestationId], references: [id])
   amount       Int
-  locked       Boolean         @default(false)
+  locked       RowLock         @default(UNLOCKED)
   locker       String?
 }
 
@@ -235,6 +235,11 @@ enum TransactionType {
   INCOME
   EXPENSE
   CHEQUE
+}
+
+enum RowLock {
+  LOCKED
+  UNLOCKED
 }
 
 model Part {

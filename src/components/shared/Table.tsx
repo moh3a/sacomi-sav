@@ -79,57 +79,58 @@ const Table = ({
               </thead>
 
               <tbody className="font-light">
-                {data.map((row, row_index) => (
-                  <tr
-                    key={row_index}
-                    className={` ${
-                      typeof row[1] === "boolean" && row[1] === true
-                        ? "bg-primaryLight dark:bg-primaryDark cursor-not-allowed"
-                        : "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
-                    } max-w-xs`}
-                    onClick={() => rowClickHandler(row)}
-                  >
-                    {row.map((col, col_index) => {
-                      if (
-                        col_index === 0 ||
-                        (col_index === 1 && typeof col[1] !== "boolean")
-                      ) {
-                        return;
-                      } else {
-                        return (
-                          <td
-                            key={col_index}
-                            className="p-3 text-center truncate"
-                          >
-                            {col_index === (imageFieldIndex as number) ? (
-                              <div className="flex justify-center">
-                                <img
-                                  src={col as string}
-                                  alt={"User avatar"}
-                                  className="cursor-pointer w-8 h-8 rounded-full"
-                                />
-                              </div>
-                            ) : col_index === (badgeFieldIndex as number) &&
-                              col ? (
-                              <div className="flex justify-center">
-                                <Badge text={col} />
-                              </div>
-                            ) : col === true ? (
-                              <CheckCircleIcon className="text-success w-5 h-5 inline" />
-                            ) : col === false ? (
-                              <XCircleIcon className="text-danger w-5 h-5 inline" />
-                            ) : (
-                              trim(col)
-                            )}
-                          </td>
-                        );
-                      }
-                    })}
-                  </tr>
-                ))}
+                {data &&
+                  data.map((row, row_index) => (
+                    <tr
+                      key={row_index}
+                      className={` ${
+                        typeof row[1] === "boolean" && row[1] === true
+                          ? "bg-primaryLight dark:bg-primaryDark cursor-not-allowed"
+                          : "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
+                      } max-w-xs`}
+                      onClick={() => rowClickHandler(row)}
+                    >
+                      {row.map((col, col_index) => {
+                        if (
+                          col_index === 0 ||
+                          (col_index === 1 && typeof col[1] !== "boolean")
+                        ) {
+                          return;
+                        } else {
+                          return (
+                            <td
+                              key={col_index}
+                              className="p-3 text-center truncate"
+                            >
+                              {col_index === (imageFieldIndex as number) ? (
+                                <div className="flex justify-center">
+                                  <img
+                                    src={col as string}
+                                    alt={"User avatar"}
+                                    className="cursor-pointer w-8 h-8 rounded-full"
+                                  />
+                                </div>
+                              ) : col_index === (badgeFieldIndex as number) &&
+                                col ? (
+                                <div className="flex justify-center">
+                                  <Badge text={col} />
+                                </div>
+                              ) : col === true ? (
+                                <CheckCircleIcon className="text-success w-5 h-5 inline" />
+                              ) : col === false ? (
+                                <XCircleIcon className="text-danger w-5 h-5 inline" />
+                              ) : (
+                                trim(col)
+                              )}
+                            </td>
+                          );
+                        }
+                      })}
+                    </tr>
+                  ))}
               </tbody>
             </table>
-            {data.length === 0 && (
+            {(!data || data.length === 0) && (
               <div className="flex justify-center italic my-4">
                 Aucun résultat trouvé
               </div>

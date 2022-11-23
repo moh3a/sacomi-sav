@@ -889,16 +889,16 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       { name: "Description" },
       { name: "Quantité" },
     ],
-    table_data: (data: any) => {
+    table_data: (data: any) =>
       data.map((stock: Stock & { part: Part & { product: Product } }) => {
         return [
           stock.id,
           stock.part.product.product_model || "",
+          stock.part.name || "",
           stock.part.description || "",
           stock.quantity || 0,
         ];
-      });
-    },
+      }),
     create_layout: [
       {
         group_title: "Produit",
