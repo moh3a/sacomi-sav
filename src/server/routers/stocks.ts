@@ -27,28 +27,28 @@ export const stockRouter = t.router({
         return { stocks: [], count: 0 };
       }
     }),
-  //   lock: t.procedure
-  //     .input(z.object({ id: z.string() }))
-  //     .mutation(async ({ ctx, input }) => {
-  //       if (ctx.session) {
-  //         await ctx.prisma.stock.update({
-  //           where: { id: input.id },
-  //           data: { locked: true, locker: ctx.session.user?.name },
-  //         });
-  //         ee.emit("action", "stocks");
-  //       }
-  //     }),
-  //   unlock: t.procedure
-  //     .input(z.object({ id: z.string() }))
-  //     .mutation(async ({ ctx, input }) => {
-  //       if (ctx.session) {
-  //         await ctx.prisma.stock.update({
-  //           where: { id: input.id },
-  //           data: { locked: false, locker: "" },
-  //         });
-  //         ee.emit("action", "stocks");
-  //       }
-  //     }),
+  lock: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        await ctx.prisma.stock.update({
+          where: { id: input.id },
+          data: { locked: "LOCKED", locker: ctx.session.user?.name },
+        });
+        ee.emit("action", "stocks");
+      }
+    }),
+  unlock: t.procedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        await ctx.prisma.stock.update({
+          where: { id: input.id },
+          data: { locked: "UNLOCKED", locker: "" },
+        });
+        ee.emit("action", "stocks");
+      }
+    }),
   byId: t.procedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -83,4 +83,20 @@ export const stockRouter = t.router({
         };
       } else return { exists: null, message: "" };
     }),
+  create: t.procedure.mutation(async ({ ctx, input }) => {
+    if (ctx.session) {
+      return {
+        success: true,
+        message: `Elément stocké avec succès.`,
+      };
+    }
+  }),
+  update: t.procedure.mutation(async ({ ctx, input }) => {
+    if (ctx.session) {
+      return {
+        success: true,
+        message: `Elément modifié avec succès.`,
+      };
+    }
+  }),
 });

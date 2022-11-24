@@ -7,6 +7,7 @@ import { SHADOW } from "../design";
 import { CollectionsNames, TableTitle } from "../../types";
 import Badge from "./Badge";
 import { useSelectedStore } from "../../utils/store";
+import { RowLock } from "@prisma/client";
 
 interface TableProps {
   titles: TableTitle[];
@@ -49,7 +50,7 @@ const Table = ({
 
   const rowClickHandler = (row: any[]) => {
     if (link) router.push(link + "/" + row[0]);
-    else if (row[0] && typeof row[1] === "boolean" && row[1] === false) {
+    else if (row[0] && row[1] !== RowLock.LOCKED) {
       setIsOpen && setIsOpen(true);
       if (collection) set_selected_id({ collection, id: row[0] });
     }
@@ -84,16 +85,18 @@ const Table = ({
                     <tr
                       key={row_index}
                       className={` ${
-                        typeof row[1] === "boolean" && row[1] === true
+                        row[1] === RowLock.LOCKED
                           ? "bg-primaryLight dark:bg-primaryDark cursor-not-allowed"
                           : "border-t border-contentDark dark:border-contentLight hover:bg-primaryLight dark:hover:bg-primaryDark cursor-pointer"
                       } max-w-xs`}
                       onClick={() => rowClickHandler(row)}
                     >
                       {row.map((col, col_index) => {
-                        if (
-                          col_index === 0 ||
-                          (col_index === 1 && typeof col[1] !== "boolean")
+                        if (col_index === 0) {
+                          return;
+                        } else if (
+                          col_index === 1 &&
+                          (col === RowLock.UNLOCKED || col === RowLock.LOCKED)
                         ) {
                           return;
                         } else {

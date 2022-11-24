@@ -265,4 +265,6 @@ model Stock {
   quantity  Int       @default(0)
   ok        Int       @default(0)
   hs        Int       @default(0)
+  locked       RowLock         @default(UNLOCKED)
+  locker       String?
 }

@@ -2,7 +2,6 @@
 
 ### Todo
 
-- move from (lock as boolean) to (lock as enum 'LOCKED' | 'UNLOCKED')
 - work on stock
 - add tasks
 

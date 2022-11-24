@@ -43,12 +43,40 @@ const PageSkeleton = ({
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openSearchModal, setOpenSearchModal] = useState(false);
 
+  const { selected } = useSelectedStore();
+  const lockMutation = trpc[page.collection].lock.useMutation();
+  const unlockMutation = trpc[page.collection].unlock.useMutation();
+
   const utils = trpc.useContext();
   trpc.onAction.useSubscription(undefined, {
     onData(collection) {
       if (collection === page.collection) utils[collection].all.invalidate();
     },
   });
+
+  useEffect(() => {
+    if (
+      selected[page.collection] &&
+      selected[page.collection]?.id &&
+      selected[page.collection]?.id?.toString()
+    ) {
+      if (openDetailsModal) {
+        lockMutation.mutate({
+          id: selected[page.collection]?.id?.toString() ?? "oops",
+        });
+      } else {
+        unlockMutation.mutate({
+          id: selected[page.collection]?.id?.toString() ?? "oops",
+        });
+      }
+    }
+    return () => {
+      unlockMutation.mutate({
+        id: selected[page.collection]?.id?.toString() ?? "oops",
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDetailsModal]);
 
   return (
     <>

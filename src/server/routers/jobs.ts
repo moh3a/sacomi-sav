@@ -63,7 +63,7 @@ export const jobRouter = t.router({
       if (ctx.session) {
         await ctx.prisma.job.update({
           where: { id: input.id },
-          data: { locked: true, locker: ctx.session.user?.name },
+          data: { locked: "LOCKED", locker: ctx.session.user?.name },
         });
         ee.emit("action", "jobs");
       }
@@ -74,7 +74,7 @@ export const jobRouter = t.router({
       if (ctx.session) {
         await ctx.prisma.job.update({
           where: { id: input.id },
-          data: { locked: false, locker: "" },
+          data: { locked: "UNLOCKED", locker: "" },
         });
         ee.emit("action", "jobs");
       }

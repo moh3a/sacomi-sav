@@ -51,7 +51,7 @@ export const entryRouter = t.router({
       if (ctx.session) {
         await ctx.prisma.entry.update({
           where: { id: input.id },
-          data: { locked: true, locker: ctx.session.user?.name },
+          data: { locked: "LOCKED", locker: ctx.session.user?.name },
         });
         ee.emit("action", "entries");
       }
@@ -62,7 +62,7 @@ export const entryRouter = t.router({
       if (ctx.session) {
         await ctx.prisma.entry.update({
           where: { id: input.id },
-          data: { locked: false, locker: "" },
+          data: { locked: "UNLOCKED", locker: "" },
         });
         ee.emit("action", "entries");
       }
