@@ -6,7 +6,7 @@ import superjson from "superjson";
 import getConfig from "next/config";
 import { NextPageContext } from "next";
 const { publicRuntimeConfig } = getConfig();
-const { PORT, HOST, WORK_ENV, WS_URL, APP_URL } = publicRuntimeConfig;
+const { PORT, HOST, WORK_ENV, WS_URL } = publicRuntimeConfig;
 
 function getBaseUrl() {
   if (typeof window !== "undefined")
@@ -18,7 +18,8 @@ function getBaseUrl() {
     return `https://${process.env.VERCEL_URL}`;
 
   // assume localhost
-  if (WORK_ENV) return `http://${HOST ?? "localhost"}:${PORT ?? 3000}`;
+  if (WORK_ENV === "local")
+    return `http://${HOST ?? "localhost"}:${PORT ?? 3000}`;
   return `http://localhost:3000`;
 }
 

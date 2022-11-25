@@ -7,21 +7,11 @@ import { parse } from "url";
 import ws from "ws";
 
 const port = parseInt(process.env.PORT || "3000", 10);
-const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
+const app = next({ dev: false, hostname: process.env.HOST, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = http.createServer((req, res) => {
-    // const proto = req.headers["x-forwarded-proto"];
-    // if (proto && proto === "http") {
-    //   // redirect to ssl
-    //   res.writeHead(303, {
-    //     location: `https://` + req.headers.host + (req.headers.url ?? ""),
-    //   });
-    //   res.end();
-    //   return;
-    // }
     const parsedUrl = parse(req.url!, true);
     handle(req, res, parsedUrl);
   });
@@ -34,10 +24,5 @@ app.prepare().then(() => {
   });
   server.listen(port);
 
-  // tslint:disable-next-line:no-console
-  console.log(
-    `> Server listening at http://localhost:${port} as ${
-      dev ? "development" : process.env.NODE_ENV
-    }`
-  );
+  console.log(`> Server listening at ${process.env.NEXTAUTH_URL}`);
 });

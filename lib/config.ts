@@ -49,6 +49,17 @@ export const PAGES = [
   { name: "Paramètres", url: "/settings" },
 ];
 
+const BASIC_PRODUCT_PARTS: Column[] = [
+  { name: "Nom de la pièce", field: "name", value: "", type: "text" },
+  {
+    name: "Description",
+    field: "description",
+    value: "",
+    type: "text",
+  },
+  { name: "Prix", field: "price", value: "", type: "number" },
+];
+
 const BASIC_ENTRY_PRODUCTS: Column[] = [
   {
     name: "N°",
@@ -286,6 +297,13 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             required: true,
           },
         ],
+      },
+      {
+        group_title: "Pièces",
+        group_fields: BASIC_PRODUCT_PARTS,
+        row_fields: [BASIC_PRODUCT_PARTS],
+        rows: true,
+        rows_collection: "parts",
       },
     ],
   },
@@ -901,29 +919,32 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       }),
     create_layout: [
       {
-        group_title: "Produit",
-        group_fields: [
-          {
-            name: "Modèle du produit",
-            field: "product_model",
-            collection: "products",
-            unit: "product",
-            value: "",
-            autocomplete: true,
-          },
-        ],
-      },
-      {
         group_title: "Pièce",
         group_fields: [
-          { name: "Nom de la pièce", field: "name", value: "", type: "text" },
+          {
+            name: "Nom de la pièce",
+            field: "name",
+            value: "",
+            collection: "parts",
+            unit: "part",
+            autocomplete: true,
+          },
           {
             name: "Description",
             field: "description",
             value: "",
-            type: "text",
+            collection: "parts",
+            unit: "part",
+            autocomplete: true,
           },
-          { name: "Prix", field: "price", value: "", type: "number" },
+          {
+            name: "Modèle du produit",
+            field: "product_model",
+            value: "",
+            collection: "products",
+            unit: "product",
+            autocomplete: true,
+          },
         ],
       },
       {
@@ -940,6 +961,31 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         group_title: "Stock",
       },
     ],
+  },
+  parts: {
+    // ! should not be needed for now
+    title: "Pièces",
+    collection: "parts",
+    unit: "part",
+    url: "/products",
+    table_titles: [
+      { name: "Modèle" },
+      { name: "Part name" },
+      { name: "Description" },
+      { name: "Prix" },
+      { name: "Image" },
+    ],
+    table_data: (data: any) =>
+      data.map((part: Part & { product: Product }) => {
+        return [
+          part.id,
+          part.product.product_model,
+          part.name,
+          part.description,
+          part.price,
+          part.price,
+        ];
+      }),
   },
   prestationDetails: {
     // ! should not be needed for now

@@ -11,6 +11,7 @@ import { prestationDetailsRouter } from "./serviceDetails";
 import { jobRouter } from "./jobs";
 import { transactionRouter } from "./transactions";
 import { stockRouter } from "./stocks";
+import { partRouter } from "./parts";
 import { userRouter } from "./users";
 import { configRouter } from "./config";
 
@@ -67,6 +68,7 @@ export const appRouter = t.router({
   jobs: jobRouter,
   transactions: transactionRouter,
   stocks: stockRouter,
+  parts: partRouter,
   users: userRouter,
 });
 

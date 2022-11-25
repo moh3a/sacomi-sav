@@ -7,14 +7,10 @@
     "dev:wss": "nodemon --watch src --ext .ts,.tsx,js,jsx --signal SIGTERM --exec \"ts-node --project tsconfig.server.json src/server/wssDevServer.ts\"",
     "dev:next": "tsc --project tsconfig.custom.json && node dist/set_env.js  && next dev",
     "dev": "run-p dev:*",
-    "build:server": "tsc --project tsconfig.server.json",
-    "build:next": "next build",
     "build": "run-s build:*",
-    "prerestart": "tsc --project tsconfig.custom.json && node dist/set_env.js",
-    "start": "next start",
-    "lint": "next lint",
-    "local:dev": "cross-env WORK_ENV=local tsc --project tsconfig.custom.json && node dist/set_env.js  && dotenv -- cross-var next dev -H %HOST%",
-    "local:start": "cross-env WORK_ENV=local tsc --project tsconfig.custom.json && node dist/set_env.js && dotenv -- cross-var next start -H %HOST%"
+    "build:next": "next build",
+    "build:server": "tsc --project tsconfig.server.json",
+    "start": "tsc --project tsconfig.custom.json && cross-env NODE_ENV=production WORK_ENV=local node dist/set_env.js && node dist/src/server/prodServer.js"
   },
   "dependencies": {
     "@headlessui/react": "1.6.6",

@@ -10,6 +10,13 @@ datasource db {
   referentialIntegrity = "prisma"
 }
 
+model Task {
+  id     String  @id @default(cuid())
+  done   Boolean @default(false)
+  userId String
+  user   User    @relation(fields: [userId], references: [id])
+}
+
 model User {
   id       String  @id @default(cuid())
   username String  @unique
@@ -20,6 +27,7 @@ model User {
   locked   RowLock @default(UNLOCKED)
   locker   String?
   role     Role    @default(TECHNICIAN)
+  tasks    Task[]
 
   @@index([username])
 }
@@ -38,8 +46,8 @@ model Product {
   product_type  String?
   locked        RowLock @default(UNLOCKED)
   locker        String?
-  Jobs          Job[]
-  Parts         Part[]
+  jobs          Job[]
+  parts         Part[]
 
   @@index([product_model])
 }
@@ -61,10 +69,10 @@ model Client {
   wilaya       String?
   locked       RowLock      @default(UNLOCKED)
   locker       String?
-  Entries      Entry[]
-  Jobs         Job[]
-  Deliveries   Delivery[]
-  Prestations  Prestation[]
+  entries      Entry[]
+  jobs         Job[]
+  deliveries   Delivery[]
+  prestations  Prestation[]
 
   @@index([name])
 }
@@ -81,7 +89,7 @@ model Entry {
   updatedAt    DateTime? @updatedAt
   clientId     String
   client       Client    @relation(fields: [clientId], references: [id])
-  Jobs         Job[]
+  jobs         Job[]
   locked       RowLock   @default(UNLOCKED)
   locker       String?
 
@@ -184,7 +192,7 @@ model Prestation {
   createdAt         DateTime?           @default(now())
   updatedAt         DateTime?           @updatedAt
   PrestationDetails PrestationDetails[]
-  Transactions      Transaction[]
+  transactions      Transaction[]
   locked            RowLock             @default(UNLOCKED)
   locker            String?
 
@@ -247,12 +255,12 @@ model Part {
   // id           Int       @id @default(autoincrement()) // ! mysql
   productId   String
   product     Product @relation(fields: [productId], references: [id])
-  name        String
+  name        String  @unique
   description String?
   image       String?
   price       Int     @default(0)
 
-  Stock Stock[]
+  stocks Stock[]
 }
 
 model Stock {
@@ -262,9 +270,9 @@ model Stock {
   updatedAt DateTime? @updatedAt @db.Date
   partId    String
   part      Part      @relation(fields: [partId], references: [id])
-  quantity  Int       @default(0)
-  ok        Int       @default(0)
-  hs        Int       @default(0)
-  locked       RowLock         @default(UNLOCKED)
-  locker       String?
+  quantity  Int?      @default(0)
+  ok        Int?      @default(0)
+  hs        Int?      @default(0)
+  locked    RowLock   @default(UNLOCKED)
+  locker    String?
 }

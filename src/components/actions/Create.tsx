@@ -119,6 +119,7 @@ const Create = ({ title, collection, layout, setIsOpen }: CreateProps) => {
     }
     if (client_name) input = { ...input, client_name };
     if (rows.length > 0) input = { ...input, rows };
+    console.log(input);
     await mutation.mutateAsync(input, {
       onSettled(data, err) {
         if (err) error(err.message, 5000);

@@ -37,6 +37,7 @@ export const productRouter = t.router({
         const products = await ctx.prisma.product.findMany({
           where: Object.keys(filters).length > 0 ? filters : undefined,
           skip: input.p * ITEMS_PER_PAGE,
+          include: { parts: true },
           take: ITEMS_PER_PAGE,
         });
         return { products, count };
@@ -72,6 +73,7 @@ export const productRouter = t.router({
       if (ctx.session) {
         const product = await ctx.prisma.product.findUnique({
           where: { id: input.id },
+          include: { parts: true },
         });
         return { product };
       } else return { product: null };
@@ -84,6 +86,7 @@ export const productRouter = t.router({
           where: {
             product_model: { contains: input.product_model.toUpperCase() },
           },
+          include: { parts: true },
           take: 20,
         });
         return { products };
@@ -108,12 +111,29 @@ export const productRouter = t.router({
         product_model: z.string(),
         product_type: z.string().nullish(),
         product_brand: z.string().nullish(),
+        rows: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          let parts = JSON.parse(JSON.stringify(input.rows));
+          delete input.rows;
           const product = await ctx.prisma.product.create({ data: input });
+
+          let get_parts = async () => {
+            if (parts) {
+              for (let part of parts) {
+                if (part.name) {
+                  await ctx.prisma.part.create({
+                    data: { productId: product.id, ...part },
+                  });
+                }
+              }
+            }
+          };
+          await get_parts();
+
           return {
             product,
             success: true,
@@ -140,15 +160,36 @@ export const productRouter = t.router({
         product_model: z.string(),
         product_type: z.string().nullish(),
         product_brand: z.string().nullish(),
+        rows: z.any(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       if (ctx.session) {
         if (ctx.session.user?.role === "ADMIN") {
+          let parts = JSON.parse(JSON.stringify(input.rows));
+          delete input.rows;
           const product = await ctx.prisma.product.update({
             where: { id: input.id },
             data: input,
           });
+          const update_parts = async () => {
+            if (parts) {
+              for (let part of parts) {
+                if (part.name) {
+                  part.productId = product.id;
+                  await ctx.prisma.part.upsert({
+                    where: {
+                      name: part.name,
+                    },
+                    update: part,
+                    create: part,
+                  });
+                }
+              }
+            }
+          };
+          await update_parts();
+
           return {
             product,
             success: true,

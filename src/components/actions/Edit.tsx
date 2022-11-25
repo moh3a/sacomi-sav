@@ -105,6 +105,12 @@ const Edit = ({
                   else if (field.type === "number")
                     field.value =
                       Number(selected[collection]?.one[field.field]) ?? 0;
+                  else if (field.type === "date")
+                    field.value =
+                      selected[collection]?.one[field.field] &&
+                      selected[collection]?.one[field.field]
+                        .toISOString()
+                        .substring(0, 10);
                   else
                     field.value = selected[collection]?.one[field.field] ?? "";
                   return field;

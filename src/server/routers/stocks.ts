@@ -83,20 +83,85 @@ export const stockRouter = t.router({
         };
       } else return { exists: null, message: "" };
     }),
-  create: t.procedure.mutation(async ({ ctx, input }) => {
-    if (ctx.session) {
-      return {
-        success: true,
-        message: `Elément stocké avec succès.`,
-      };
-    }
-  }),
-  update: t.procedure.mutation(async ({ ctx, input }) => {
-    if (ctx.session) {
-      return {
-        success: true,
-        message: `Elément modifié avec succès.`,
-      };
-    }
-  }),
+  create: t.procedure
+    .input(
+      z.object({
+        name: z.string().nullish(),
+        description: z.string().nullish(),
+        product_model: z.string().nullish(),
+        quantity: z.number().nullish(),
+        ok: z.number().nullish(),
+        hs: z.number().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          const part = await ctx.prisma.part.findUnique({
+            where: { name: input.name ?? "" },
+          });
+          if (part) {
+            delete input.name;
+            delete input.description;
+            delete input.product_model;
+            const stock = await ctx.prisma.stock.create({
+              data: { partId: part.id, ...input },
+            });
+            return {
+              stock,
+              success: true,
+              message: `Elément stocké avec succès.`,
+            };
+          } else
+            return {
+              stock: null,
+              success: false,
+              message: "Cette pièce n'existe pas.",
+            };
+        } else {
+          return {
+            product: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          stock: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
+  update: t.procedure
+    .input(
+      z.object({
+        name: z.string().nullish(),
+        description: z.string().nullish(),
+        product_model: z.string().nullish(),
+        quantity: z.number().nullish(),
+        ok: z.number().nullish(),
+        hs: z.number().nullish(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.session) {
+        if (ctx.session.user?.role === "ADMIN") {
+          return {
+            success: false,
+            message: `Elément ne peut pas être modifié.`,
+          };
+        } else {
+          return {
+            product: null,
+            success: false,
+            message: ERROR_MESSAGES.unauthorized_error,
+          };
+        }
+      } else
+        return {
+          stock: null,
+          success: false,
+          message: ERROR_MESSAGES.session_error,
+        };
+    }),
 });

@@ -2,7 +2,6 @@
 
 ### Todo
 
-- work on stock
 - add tasks
 
 ### Prerequisites

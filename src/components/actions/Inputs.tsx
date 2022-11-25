@@ -142,6 +142,11 @@ const Inputs = ({
                     });
                   } else {
                     g.group_fields = g.group_fields.map((f, fidx) => {
+                      if (f.autocomplete && f.collection && f.unit) {
+                        if (f.collection === field.collection) {
+                          if (f.field !== field.field) f.value = value[f.field];
+                        } else f.value = value[f.unit][f.field];
+                      }
                       if (fidx === field_index) {
                         if (f.unique) setUniqueError && setUniqueError("");
                         f.value = value[field.field];
