@@ -162,7 +162,12 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         group_title: "Entrée",
         group_fields: [
           { name: "ID Entrée", field: "entry_id", value: "" },
-          { name: "Date d'entrée", field: "entry_date", value: "" },
+          {
+            name: "Date d'entrée",
+            field: "entry_date",
+            value: "",
+            type: "date",
+          },
         ],
       },
       {
@@ -345,7 +350,12 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
         group_title: "BL",
         group_fields: [
           { name: "ID du BL", field: "delivery_id", value: "" },
-          { name: "Date du BL", field: "delivery_date", value: "" },
+          {
+            name: "Date du BL",
+            field: "delivery_date",
+            value: "",
+            type: "date",
+          },
         ],
       },
       {
@@ -382,7 +392,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
           },
           {
             name: "Date de livraison",
-            field: "delivery_date_1",
+            field: "date_delivered",
             value: "",
             type: "date",
           },
@@ -432,7 +442,12 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       {
         group_fields: [
           { name: "ID de la commande", field: "order_id", value: "" },
-          { name: "Date de la commande", field: "order_date", value: "" },
+          {
+            name: "Date de la commande",
+            field: "order_date",
+            value: "",
+            type: "date",
+          },
           { name: "Contenu de la commande", field: "order_content", value: "" },
         ],
       },
@@ -453,6 +468,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             field: "order_date",
             value: "",
             required: true,
+            type: "date",
           },
           {
             name: "Contenu de la commande",
@@ -511,10 +527,16 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             name: "Date de la prestation",
             field: "prestation_date",
             value: "",
+            type: "date",
           },
           { name: "Nom du client", field: "name", value: "" },
           { name: "Prestation payée", field: "is_paid", value: "" },
-          { name: "Date du paiement", field: "payment_date", value: "" },
+          {
+            name: "Date du paiement",
+            field: "payment_date",
+            value: "",
+            type: "date",
+          },
         ],
       },
     ],
@@ -623,7 +645,12 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
       {
         group_title: "Entrée",
         group_fields: [
-          { name: "Date d'entrée", field: "entry_date", value: "" },
+          {
+            name: "Date d'entrée",
+            field: "entry_date",
+            value: "",
+            type: "date",
+          },
           { name: "ID d'entrée", field: "entry_id", value: "" },
         ],
       },
@@ -648,7 +675,12 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             field: "status",
             value: "",
           },
-          { name: "Date de sortie", field: "exit_date", value: "" },
+          {
+            name: "Date de sortie",
+            field: "exit_date",
+            value: "",
+            type: "date",
+          },
         ],
       },
     ],
@@ -674,6 +706,7 @@ export const PAGE_ARCHITECTURE: PageEntry<PageArchitecture> = {
             unit: "entry",
             readonly: true,
             required: true,
+            type: "date",
           },
         ],
       },

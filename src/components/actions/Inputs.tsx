@@ -32,7 +32,7 @@ const Inputs = ({
   setUniqueError,
 }: InputsProps) => {
   return (
-    <div key={field_index} className={!rows ? "m-2 flex items-center" : ""}>
+    <div key={field_index} className={!rows ? "my-1" : ""}>
       {field.type === "checkbox" && (
         <Checkbox
           checked={field.value}
@@ -72,7 +72,7 @@ const Inputs = ({
         />
       )}
       {field.type !== "checkbox" && !rows && (
-        <div className={field.size ? "" : "w-36"}>
+        <div className={field.size ? "" : "w-full"}>
           {field.name}
           <span className="text-danger">{field.required && "*"}</span>
         </div>

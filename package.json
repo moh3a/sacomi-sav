@@ -1,12 +1,12 @@
 {
   "name": "sacomi-sav",
   "description": "Web app for Sacomi's customer service.",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
+    "dev": "run-p dev:*",
     "dev:wss": "nodemon --watch src --ext .ts,.tsx,js,jsx --signal SIGTERM --exec \"ts-node --project tsconfig.server.json src/server/wssDevServer.ts\"",
     "dev:next": "tsc --project tsconfig.custom.json && node dist/set_env.js  && next dev",
-    "dev": "run-p dev:*",
     "build": "run-s build:*",
     "build:next": "next build",
     "build:server": "tsc --project tsconfig.server.json",

@@ -48,24 +48,28 @@ export const entryRouter = t.router({
   lock: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session) {
-        await ctx.prisma.entry.update({
-          where: { id: input.id },
-          data: { locked: "LOCKED", locker: ctx.session.user?.name },
-        });
-        ee.emit("action", "entries");
-      }
+      try {
+        if (ctx.session) {
+          await ctx.prisma.entry.update({
+            where: { id: input.id },
+            data: { locked: "LOCKED", locker: ctx.session.user?.name },
+          });
+          ee.emit("action", "entries");
+        }
+      } catch (error) {}
     }),
   unlock: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session) {
-        await ctx.prisma.entry.update({
-          where: { id: input.id },
-          data: { locked: "UNLOCKED", locker: "" },
-        });
-        ee.emit("action", "entries");
-      }
+      try {
+        if (ctx.session) {
+          await ctx.prisma.entry.update({
+            where: { id: input.id },
+            data: { locked: "UNLOCKED", locker: "" },
+          });
+          ee.emit("action", "entries");
+        }
+      } catch (error) {}
     }),
   byId: t.procedure
     .input(z.object({ id: z.string() }))

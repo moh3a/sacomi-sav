@@ -31,24 +31,28 @@ export const prestationDetailsRouter = t.router({
   lock: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session) {
-        await ctx.prisma.prestationDetails.update({
-          where: { id: input.id },
-          data: { locked: "LOCKED", locker: ctx.session.user?.name },
-        });
-        ee.emit("action", "prestationDetails");
-      }
+      try {
+        if (ctx.session) {
+          await ctx.prisma.prestationDetails.update({
+            where: { id: input.id },
+            data: { locked: "LOCKED", locker: ctx.session.user?.name },
+          });
+          ee.emit("action", "prestationDetails");
+        }
+      } catch (error) {}
     }),
   unlock: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session) {
-        await ctx.prisma.prestationDetails.update({
-          where: { id: input.id },
-          data: { locked: "UNLOCKED", locker: "" },
-        });
-        ee.emit("action", "prestationDetails");
-      }
+      try {
+        if (ctx.session) {
+          await ctx.prisma.prestationDetails.update({
+            where: { id: input.id },
+            data: { locked: "UNLOCKED", locker: "" },
+          });
+          ee.emit("action", "prestationDetails");
+        }
+      } catch (error) {}
     }),
   byId: t.procedure
     .input(z.object({ id: z.string() }))

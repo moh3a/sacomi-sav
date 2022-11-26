@@ -23,7 +23,7 @@ const Rows = ({ action, state, setState }: RowsProps) => {
                 {group.row_fields?.map((row, row_index) => (
                   <div
                     key={row_index}
-                    className="w-full flex justify-between my-1"
+                    className="w-full flex justify-between my-1 flex-wrap"
                   >
                     {row.map((field, field_index) => (
                       <Inputs

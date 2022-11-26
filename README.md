@@ -21,7 +21,7 @@ The machine that will run this app should have installed:
   - `yarn`;
   - `yarn build`;
 - Then start the production server:
-  - `yarn start` for localhost, or `yarn start:local` for the local network;
+  - `yarn start` for the local network;
 - App uses Postgres by default, to change the datasource, go to `prisma/schema.prisma` and change the provider along with the URI in the .env file;
 
 ### Issues

@@ -60,24 +60,28 @@ export const jobRouter = t.router({
   lock: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session) {
-        await ctx.prisma.job.update({
-          where: { id: input.id },
-          data: { locked: "LOCKED", locker: ctx.session.user?.name },
-        });
-        ee.emit("action", "jobs");
-      }
+      try {
+        if (ctx.session) {
+          await ctx.prisma.job.update({
+            where: { id: input.id },
+            data: { locked: "LOCKED", locker: ctx.session.user?.name },
+          });
+          ee.emit("action", "jobs");
+        }
+      } catch (error) {}
     }),
   unlock: t.procedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session) {
-        await ctx.prisma.job.update({
-          where: { id: input.id },
-          data: { locked: "UNLOCKED", locker: "" },
-        });
-        ee.emit("action", "jobs");
-      }
+      try {
+        if (ctx.session) {
+          await ctx.prisma.job.update({
+            where: { id: input.id },
+            data: { locked: "UNLOCKED", locker: "" },
+          });
+          ee.emit("action", "jobs");
+        }
+      } catch (error) {}
     }),
   byId: t.procedure
     .input(z.object({ id: z.string() }))

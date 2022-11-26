@@ -49,17 +49,17 @@ const Search = ({ title, layout, setIsOpen }: SearchProps) => {
         Recherche | {title}
       </h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
-        {layout.map((group, index) => (
-          <div key={index}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-2 gap-x-2">
+        {layout.map((group, group_index) => (
+          <div key={group_index}>
             {group.group_title && (
               <div className={`text-lg uppercase text-primary`}>
                 {group.group_title}
               </div>
             )}
-            {group.group_fields.map((field) => (
-              <div key={field.field} className="my-4 mx-2 flex items-center">
-                <div className="w-36">{field.name}</div>
+            {group.group_fields.map((field, field_index) => (
+              <div key={field.field} className="m-1">
+                <div className="w-full">{field.name}</div>
                 <TextInput
                   placeholder={field.name}
                   value={state[field.field]}

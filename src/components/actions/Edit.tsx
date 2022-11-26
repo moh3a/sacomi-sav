@@ -4,7 +4,6 @@ import {
   SaveIcon,
   ExternalLinkIcon,
 } from "@heroicons/react/outline";
-import { useRouter } from "next/router";
 import { Client } from "@prisma/client";
 
 import { TEXT_GRADIENT } from "../design";
@@ -21,6 +20,7 @@ import {
 } from "../../types";
 import Autocomplete from "../shared/Autocomplete";
 import { useNotificationStore, useSelectedStore } from "../../utils/store";
+import Link from "next/link";
 
 interface EditProps {
   title: string;
@@ -41,7 +41,6 @@ const Edit = ({
 }: EditProps) => {
   const [loading, setLoading] = useState(false);
   const { selected, set_selected_one } = useSelectedStore();
-  const router = useRouter();
 
   trpc[collection].byId.useQuery(
     // @ts-ignore
@@ -99,18 +98,33 @@ const Edit = ({
               } else if (!group.rows) {
                 group.group_fields = group.group_fields.map((field) => {
                   if (field.unique) setUniqueField(field.field);
-                  if (field.unit && selected[collection]?.one[field.unit])
-                    field.value =
-                      selected[collection]?.one[field.unit][field.field];
-                  else if (field.type === "number")
+                  if (field.unit && selected[collection]?.one[field.unit]) {
+                    if (field.type === "number")
+                      field.value =
+                        Number(
+                          selected[collection]?.one[field.unit][field.field]
+                        ) ?? 0;
+                    else if (field.type === "date")
+                      field.value = selected[collection]?.one[field.unit][
+                        field.field
+                      ]
+                        ? selected[collection]?.one[field.unit][field.field]
+                            .toISOString()
+                            .substring(0, 10)
+                        : "";
+                    else
+                      field.value =
+                        selected[collection]?.one[field.unit][field.field] ??
+                        "";
+                  } else if (field.type === "number")
                     field.value =
                       Number(selected[collection]?.one[field.field]) ?? 0;
                   else if (field.type === "date")
-                    field.value =
-                      selected[collection]?.one[field.field] &&
-                      selected[collection]?.one[field.field]
-                        .toISOString()
-                        .substring(0, 10);
+                    field.value = selected[collection]?.one[field.field]
+                      ? selected[collection]?.one[field.field]
+                          .toISOString()
+                          .substring(0, 10)
+                      : "";
                   else
                     field.value = selected[collection]?.one[field.field] ?? "";
                   return field;
@@ -223,17 +237,20 @@ const Edit = ({
               className={`uppercase text-xl font-bold text-center ${TEXT_GRADIENT}`}
             >
               Modifier | {title}{" "}
-              <Button
-                type="button"
-                onClick={() =>
-                  router.push(`${url}/${selected[collection]?.id}`)
-                }
-              >
-                <ExternalLinkIcon
-                  className="h-6 w-6 text-primary inline"
-                  aria-hidden="true"
-                />
-              </Button>
+              <Link href={`${url}/${selected[collection]?.id}`}>
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setIsOpen && setIsOpen(false)}
+                >
+                  <Button type="button">
+                    <ExternalLinkIcon
+                      className="h-6 w-6 text-primary inline"
+                      aria-hidden="true"
+                    />
+                  </Button>
+                </a>
+              </Link>
             </h2>
 
             {state &&
@@ -278,7 +295,7 @@ const Edit = ({
                       setState={setState as any}
                     />
                   )}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-y-2 gap-x-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-y-2 gap-x-2">
                     {group &&
                       !group.rows &&
                       !group.findOrCreateClient &&

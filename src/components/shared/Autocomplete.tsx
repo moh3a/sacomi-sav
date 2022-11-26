@@ -59,9 +59,9 @@ const Autocomplete = ({
   return (
     <Combobox value={selected} onChange={setSelected}>
       <div className="relative mt-1">
-        <div className="relative w-full">
+        <div className="relative inline-flex">
           <Combobox.Input
-            className={` ${TEXT_INPUT} w-full`}
+            className={TEXT_INPUT}
             placeholder={placeholder}
             displayValue={(model: any) =>
               value ? value : model && model[displayValue]
